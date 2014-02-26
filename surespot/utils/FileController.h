@@ -29,4 +29,5 @@ extern NSString *const IDENTITY_EXTENSION;
 + (NSString*) getCacheDir;
 +(NSString *) getBackgroundImageFilename;
 +(void) wipeAllState;
++(NSString *) getBustedIdentityFile: (NSString *) username;
 @end

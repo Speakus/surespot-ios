@@ -160,13 +160,13 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         NSData * derivedPassword = [EncryptionController deriveKeyUsingPassword:password andSalt: decodedSalt];
         NSData * encodedPassword = [derivedPassword SR_dataByBase64Encoding];
         
-        NSData * signature = [EncryptionController signUsername:username andPassword: encodedPassword withPrivateKey:[identity getDsaPrivateKey]];
+        NSData * signature = [EncryptionController signUsername:identity.username andPassword: encodedPassword withPrivateKey:[identity getDsaPrivateKey]];
         NSString * passwordString = [derivedPassword SR_stringByBase64Encoding];
         NSString * signatureString = [signature SR_stringByBase64Encoding];
         
         DDLogVerbose(@"logging in to server");
         [[NetworkController sharedInstance]
-         loginWithUsername:username
+         loginWithUsername:identity.username
          andPassword:passwordString
          andSignature: signatureString
          successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {

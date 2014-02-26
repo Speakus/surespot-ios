@@ -11,7 +11,7 @@
 #import "DDLog.h"
 
 #ifdef DEBUG
-static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+static const int ddLogLevel = LOG_LEVEL_INFO;
 #else
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
@@ -43,7 +43,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [self enumerateSubstringsInRange:NSMakeRange(0,[self length])
                              options:NSStringEnumerationByComposedCharacterSequences
                           usingBlock: ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-                              DDLogInfo(@"char: %@", substring);
+                              DDLogVerbose(@"char: %@", substring);
                               unichar buffer[1];
                               
                               [self getCharacters:buffer range:substringRange];
@@ -75,35 +75,21 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     //return sb;
 }
 
-//-(NSString *) caseInsensitivize {
-//    NSMutableString * sb = [NSMutableString new];
-//
-//    for (int i = 0; i < [self length]; i++) {
-//        unichar uni = [self characterAtIndex:i];
-//
-//        if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:uni]) {
-//            [sb appendString:@"_"];
-//            [sb appendFormat:@"%c",[self characterAtIndex:i]];
-//        }
-//        else {
-//            [sb appendFormat:@"%c",uni];
-//        }
-//    }
-//    return sb;
-//}
+-(NSString *) oldCaseInsensitivize {
+    NSMutableString * sb = [NSMutableString new];
 
--(NSString *) caseInsensitivize: (NSInteger) version {
-    switch (version) {
-        case 0:
-            return [self caseInsensitivize];
-            break;
-        case 1:
-            return [self hexEncode];
-            
-        default:
-            break;
+    for (int i = 0; i < [self length]; i++) {
+        unichar uni = [self characterAtIndex:i];
+
+        if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:uni]) {
+            [sb appendString:@"_"];
+            [sb appendFormat:@"%c",[self characterAtIndex:i]];
+        }
+        else {
+            [sb appendFormat:@"%c",uni];
+        }
     }
-    return [self hexEncode];
+    return sb;
 }
 
 -(NSString *) caseSensitivize {
@@ -117,7 +103,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [cs enumerateSubstringsInRange:NSMakeRange(0,[cs length])
                              options:NSStringEnumerationByComposedCharacterSequences
                           usingBlock: ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-                              DDLogInfo(@"char: %@", substring);
+                              DDLogVerbose(@"char: %@", substring);
                               
                               if (prev_) {
                                   [sb appendString:[substring uppercaseString]];

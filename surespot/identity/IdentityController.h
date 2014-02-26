@@ -18,8 +18,6 @@
 
 
 - ( SurespotIdentity *) getIdentityWithUsername:(NSString *) username andPassword:(NSString *) password;
--( SurespotIdentity *) decodeIdentityData: (NSData *) identityData withUsername: (NSString *) username andPassword: (NSString *) password validate: (BOOL) validate ;
-
 - (void) createIdentityWithUsername: (NSString *) username andPassword: (NSString *) password andSalt: (NSString *) salt andKeys: (IdentityKeys *) keys;
 -(NSArray *) getIdentityNames;
 - (void) userLoggedInWithIdentity: (SurespotIdentity *) identity;

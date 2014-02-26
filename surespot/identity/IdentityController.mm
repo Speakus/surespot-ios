@@ -70,10 +70,17 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
 }
 
 -(SurespotIdentity *) loadIdentityUsername: (NSString * ) username password: (NSString *) password {
-    
     NSString *filePath = [FileController getIdentityFile:username];
-    
     NSData *myData = [NSData dataWithContentsOfFile:filePath];
+    BOOL save = NO;
+    if (!myData) {
+        //busted filename, recover and resave
+        NSDictionary * rawMap = [self getRawIdentityFilemap];
+        filePath = [rawMap objectForKey:username];
+        myData = [NSData dataWithContentsOfFile:filePath];
+        
+        save = YES;
+    }
     
     if (myData) {
         //gunzip the identity data
@@ -81,7 +88,12 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
         NSData* unzipped = [myData gzipInflate];
         NSData * identity = [EncryptionController decryptIdentity: unzipped withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
         if (identity) {
-            return [self decodeIdentityData:identity withUsername:username andPassword:password validate: NO];
+            SurespotIdentity * si = [self decodeIdentityData:identity password:password validate: NO];
+//            if (save) {
+//                [self saveIdentity:si withPassword: password];
+//            }
+            
+            return si;
         }
     }
     
@@ -126,7 +138,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     
 }
 
--( SurespotIdentity *) decodeIdentityData: (NSData *) identityData withUsername: (NSString *) username andPassword: (NSString *) password validate: (BOOL) validate {
+-( SurespotIdentity *) decodeIdentityData: (NSData *) identityData password: (NSString *) password validate: (BOOL) validate {
     
     NSError* error;
     
@@ -175,8 +187,26 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     return [identityNames sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
     }];
-        
+    
 }
+
+
+
+- (NSDictionary *) getRawIdentityFilemap {
+    NSString * identityDir = [FileController getIdentityDir];
+    NSArray * dirfiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:identityDir error:NULL];
+    NSMutableDictionary * identityNames = [[NSMutableDictionary alloc] init];
+    NSString * file;
+    for (file in dirfiles) {
+        if ([[file pathExtension] isEqualToString:IDENTITY_EXTENSION]) {
+            NSString * identity = [self identityNameFromFile:file];
+            [identityNames setObject:[[FileController getIdentityDir ] stringByAppendingPathComponent:file] forKey:identity];
+        }
+    }
+   
+    return identityNames;
+}
+
 
 - (NSString * ) identityNameFromFile: (NSString *) file {
     if ([[file pathExtension] isEqualToString:IDENTITY_EXTENSION]) {
@@ -250,9 +280,9 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
         pk.dsaPubKey = dsaPub;
         pk.version = version;
         
-        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil];        
+        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil];
         NSDate *date = [attributes fileModificationDate];
-    
+        
         pk.lastModified = date;
         DDLogInfo(@"loaded public keys for username: %@, version: %@ from filename: %@", username,version,filename);
         return pk;
@@ -347,7 +377,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     }
     
     //get the identity without validating to validate with server where we only need the latest ids
-    SurespotIdentity * identity = [self decodeIdentityData:decryptedIdentity withUsername:username andPassword:password validate:NO];
+    SurespotIdentity * identity = [self decodeIdentityData:decryptedIdentity password:password validate:NO];
     if (!identity) {
         callback([NSString stringWithFormat:NSLocalizedString(@"could_not_restore_identity_name", nil), username]);
         return;
@@ -363,12 +393,12 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     
     
     
-    [[NetworkController sharedInstance] validateUsername:username
+    [[NetworkController sharedInstance] validateUsername:identity.username
                                                 password:passwordString
                                                signature:signatureString
                                             successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                 //regenerate the identity with full validation for saving
-                                                SurespotIdentity * validatedIdentity = [self decodeIdentityData:decryptedIdentity withUsername:username andPassword:password validate:YES];
+                                                SurespotIdentity * validatedIdentity = [self decodeIdentityData:decryptedIdentity password:password validate:YES];
                                                 [self saveIdentity:validatedIdentity withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
                                                 callback(nil);
                                                 
