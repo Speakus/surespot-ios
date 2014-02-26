@@ -89,9 +89,13 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
         NSData * identity = [EncryptionController decryptIdentity: unzipped withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
         if (identity) {
             SurespotIdentity * si = [self decodeIdentityData:identity password:password validate: NO];
-//            if (save) {
-//                [self saveIdentity:si withPassword: password];
-//            }
+            
+            //recovered from busted filename, save it again and remove old one
+            if (save) {
+                if ([self saveIdentity:si withPassword: [password stringByAppendingString:CACHE_IDENTITY_ID]]) {
+                    [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                }
+            }
             
             return si;
         }
