@@ -638,11 +638,7 @@
 		66BB5A48187C7672007B5C47 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
 		66D3B04E182EAB4200B37A6C /* surespot.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = surespot.xcassets; sourceTree = "<group>"; };
 		66DAB60C186CBE91006C262F /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
-		66DAB60F186CBED0006C262F /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = surespot/libs/Submodules/ShareKit/Frameworks/FacebookSDK.framework; sourceTree = "<group>"; };
-		66DAB612186CBF1C006C262F /* GooglePlus.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GooglePlus.bundle; path = surespot/libs/Submodules/ShareKit/Frameworks/GooglePlus.bundle; sourceTree = "<group>"; };
-		66DAB613186CBF1C006C262F /* GooglePlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GooglePlus.framework; path = surespot/libs/Submodules/ShareKit/Frameworks/GooglePlus.framework; sourceTree = "<group>"; };
 		66DAB617186CBF59006C262F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		66DAB619186CC18E006C262F /* GoogleOpenSource.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleOpenSource.framework; path = surespot/libs/Submodules/ShareKit/Frameworks/GoogleOpenSource.framework; sourceTree = "<group>"; };
 		66DAB629186D0461006C262F /* SurespotSHKSharers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SurespotSHKSharers.plist; sourceTree = "<group>"; };
 		66DAB62C186DEEFC006C262F /* VoiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VoiceDelegate.h; path = voice/VoiceDelegate.h; sourceTree = "<group>"; };
 		66DAB62D186DEEFC006C262F /* VoiceDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; name = VoiceDelegate.mm; path = voice/VoiceDelegate.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -1052,11 +1048,7 @@
 				66DAB64D186F2B2F006C262F /* AudioToolbox.framework */,
 				66DAB648186F2911006C262F /* CoreAudio.framework */,
 				66DAB646186F289A006C262F /* Accelerate.framework */,
-				66DAB619186CC18E006C262F /* GoogleOpenSource.framework */,
 				66DAB617186CBF59006C262F /* CoreLocation.framework */,
-				66DAB612186CBF1C006C262F /* GooglePlus.bundle */,
-				66DAB613186CBF1C006C262F /* GooglePlus.framework */,
-				66DAB60F186CBED0006C262F /* FacebookSDK.framework */,
 				66DAB60C186CBE91006C262F /* Twitter.framework */,
 				6648B1EA186CB9EB007037B1 /* AddressBook.framework */,
 				6648B1E6186CB9D9007037B1 /* CoreMotion.framework */,
