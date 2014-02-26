@@ -111,7 +111,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 +(NSString*)getPublicKeyDirectoryForUsername: (NSString *) username  {
     NSString * dir = [self getDirectoryForUser:[[IdentityController sharedInstance] getLoggedInUser] ];
-    NSString * pkdir = [[dir stringByAppendingPathComponent:PUBLIC_KEYS_DIR] stringByAppendingPathComponent:[username caseInsensitivize: 1]];
+    NSString * pkdir = [[dir stringByAppendingPathComponent:PUBLIC_KEYS_DIR] stringByAppendingPathComponent:[username caseInsensitivize]];
     NSError * error;
     if (![[NSFileManager defaultManager] createDirectoryAtPath:pkdir withIntermediateDirectories:YES attributes:nil error:&error]) {
         DDLogError(@"%@", error.localizedDescription);
@@ -164,7 +164,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 +(NSString *) getFilename: (NSString *) filename forUser: (NSString *) user {
     if (user) {
         NSString * dir = [self getDirectoryForUser:user];
-        return [dir stringByAppendingPathComponent:[[filename caseInsensitivize: 1] stringByAppendingPathExtension:STATE_EXTENSION]];
+        return [dir stringByAppendingPathComponent:[[filename caseInsensitivize] stringByAppendingPathExtension:STATE_EXTENSION]];
     }
     
     return nil;
@@ -206,23 +206,23 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 +(NSString *) getIdentityFile: (NSString *) username {
-    NSString * caseun =[username caseInsensitivize: 1];
+    NSString * caseun =[username caseInsensitivize];
     NSString * filename = [caseun stringByAppendingPathExtension:IDENTITY_EXTENSION];
     return [[self getIdentityDir ] stringByAppendingPathComponent:filename];
 }
 
 +(NSString *) getSecretsFile: (NSString *) username {
-    NSString * filename = [[username caseInsensitivize: 1] stringByAppendingPathExtension:SECRET_EXTENSION];
+    NSString * filename = [[username caseInsensitivize] stringByAppendingPathExtension:SECRET_EXTENSION];
     return [[self getSecretsDir ] stringByAppendingPathComponent:filename];
 }
 
 +(NSString *) getLatestVersionsFile: (NSString *) username {
-    NSString * filename = [[username caseInsensitivize: 1] stringByAppendingPathExtension:LATEST_VERSIONS_EXTENSION];
+    NSString * filename = [[username caseInsensitivize] stringByAppendingPathExtension:LATEST_VERSIONS_EXTENSION];
     return [[self getLatestVersionsDir ] stringByAppendingPathComponent:filename];
 }
 
 +(NSString *) getDirectoryForUser: (NSString *) user {
-    NSString * dir = [[[FileController getAppSupportDir] stringByAppendingPathComponent:STATE_DIR ] stringByAppendingPathComponent:[user caseInsensitivize: 1]];
+    NSString * dir = [[[FileController getAppSupportDir] stringByAppendingPathComponent:STATE_DIR ] stringByAppendingPathComponent:[user caseInsensitivize]];
     NSError * error = nil;
     if (![[NSFileManager defaultManager] createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:&error]) {
         DDLogVerbose(@"%@", error.localizedDescription);
@@ -231,7 +231,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 +(NSString *) getBgImagesDirectoryForUser: (NSString *) user {
-    NSString * dir = [[[FileController getAppSupportDir] stringByAppendingPathComponent:BG_IMAGES_DIR ] stringByAppendingPathComponent:[user caseInsensitivize: 1]];
+    NSString * dir = [[[FileController getAppSupportDir] stringByAppendingPathComponent:BG_IMAGES_DIR ] stringByAppendingPathComponent:[user caseInsensitivize]];
     NSError * error = nil;
     if (![[NSFileManager defaultManager] createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:&error]) {
         DDLogVerbose(@"%@", error.localizedDescription);

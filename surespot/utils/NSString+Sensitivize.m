@@ -33,54 +33,54 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 -(NSString *) caseInsensitivize {
     
-        
-        
-        // char buffer[100];
-        //    BOOL gotFilename = [self getFileSystemRepresentation:buffer maxLength:100];
-        //  [NSString stringWithUTF8String: [self fileSystemRepresentation]];
-        
-        NSMutableString * sb = [NSMutableString new];
-        [self enumerateSubstringsInRange:NSMakeRange(0,[self length])
-                                 options:NSStringEnumerationByComposedCharacterSequences
-                              usingBlock: ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-                                  DDLogInfo(@"char: %@", substring);
-                                  unichar buffer[1];
+
+    
+    // char buffer[100];
+    //    BOOL gotFilename = [self getFileSystemRepresentation:buffer maxLength:100];
+    //  [NSString stringWithUTF8String: [self fileSystemRepresentation]];
+    
+    NSMutableString * sb = [NSMutableString new];
+    [self enumerateSubstringsInRange:NSMakeRange(0,[self length])
+                             options:NSStringEnumerationByComposedCharacterSequences
+                          usingBlock: ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                              DDLogInfo(@"char: %@", substring);
+                              unichar buffer[1];
+                              
+                              [self getCharacters:buffer range:substringRange];
+                              
+                              if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:buffer[0]]) {
                                   
-                                  [self getCharacters:buffer range:substringRange];
-                                  
-                                  if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:buffer[0]]) {
-                                      
-                                      [sb appendString:@"_"];
-                                  }
-                                  [sb appendFormat:@"%@",substring];
-                              }];
-        
-        
-        //    for (int i = 0; i < [self length]; i++) {
-        //        unichar uni = [self characterAtIndex:i];
-        //
-        //        NSString * newchar = [NSString stringWithFormat:@"%c", uni];
-        //        DDLogInfo(@"newchar: %@", newchar);
-        //
-        //        if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:uni]) {
-        //            [sb appendString:@"_"];
-        //            [sb appendFormat:@"%c",uni];
-        //        }
-        //        else {
-        //            [sb appendFormat:@"%c",uni];
-        //        }
-        //    }
-        //    NSString * s = [NSString stringWithString:sb];
-        //    return s;
-        return sb;
-    }
+                                  [sb appendString:@"_"];
+                              }
+                              [sb appendString: substring];
+                          }];
+    
+    
+    //    for (int i = 0; i < [self length]; i++) {
+    //        unichar uni = [self characterAtIndex:i];
+    //
+    //        NSString * newchar = [NSString stringWithFormat:@"%c", uni];
+    //        DDLogInfo(@"newchar: %@", newchar);
+    //
+    //        if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:uni]) {
+    //            [sb appendString:@"_"];
+    //            [sb appendFormat:@"%c",uni];
+    //        }
+    //        else {
+    //            [sb appendFormat:@"%c",uni];
+    //        }
+    //    }
+    NSString * s = [NSString stringWithString:sb];
+        return s;
+    //return sb;
+}
 
 //-(NSString *) caseInsensitivize {
 //    NSMutableString * sb = [NSMutableString new];
-//    
+//
 //    for (int i = 0; i < [self length]; i++) {
 //        unichar uni = [self characterAtIndex:i];
-//        
+//
 //        if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:uni]) {
 //            [sb appendString:@"_"];
 //            [sb appendFormat:@"%c",[self characterAtIndex:i]];
@@ -107,27 +107,58 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(NSString *) caseSensitivize {
-    if ([self hasPrefix:@"1-"]) {
-        //new filename format
-        return [self hexDecode: [self substringFromIndex:[@"1-" length]]];
-    }
-    else {
-        
-        NSMutableString * sb = [NSMutableString new];
-        
-        for (int i = 0; i < [self length]; i++) {
-            unichar uni = [self characterAtIndex:i];
-            
-            if (uni == '_') {
-                [sb appendFormat: @"%c",[[self uppercaseString] characterAtIndex: ++i]];
-            }
-            else {
-                [sb appendFormat: @"%c",uni];
-            }
-        }
-        
-        return sb;
-    }
+    __block BOOL prev_ = NO;
+    
+    //this is key to not having jacked up characters
+    //NSString uses compacted UTF-8 which doesn't play well with others
+    NSString * cs = [self precomposedStringWithCompatibilityMapping];    
+    
+    NSMutableString * sb = [NSMutableString new];
+    [cs enumerateSubstringsInRange:NSMakeRange(0,[cs length])
+                             options:NSStringEnumerationByComposedCharacterSequences
+                          usingBlock: ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                              DDLogInfo(@"char: %@", substring);
+                              
+                              if (prev_) {
+                                  [sb appendString:[substring uppercaseString]];
+                                  prev_ = NO;
+                              }
+                              else {
+                                  
+                                  if ([substring isEqualToString: @"_"]) {
+                                      prev_ = YES;
+                                  }
+                                  else {
+                                      
+                                      
+                                      [sb appendString: substring];
+                                      
+                                  }
+                              }}];
+    
+//    if ([self hasPrefix:@"1-"]) {
+//        //new filename format
+//        return [self hexDecode: [self substringFromIndex:[@"1-" length]]];
+//    }
+//    else {
+//        
+//        NSMutableString * sb = [NSMutableString new];
+//        
+//        for (int i = 0; i < [self length]; i++) {
+//            unichar uni = [self characterAtIndex:i];
+//            
+//            if (uni == '_') {
+//                [sb appendFormat: @"%c",[[self uppercaseString] characterAtIndex: ++i]];
+//            }
+//            else {
+//                [sb appendFormat: @"%c",uni];
+//            }
+//        }
+//        
+//        return sb;
+//    }
+    
+    return sb;
 }
 
 @end

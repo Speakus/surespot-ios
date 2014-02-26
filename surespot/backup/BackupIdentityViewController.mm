@@ -329,7 +329,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
 
 -(void) getIdentityFile: (NSString *) identityDirId name: (NSString *) name callback: (CallbackBlock) callback {
     GTLQueryDrive *queryFilesList = [GTLQueryDrive queryForChildrenListWithFolderId:identityDirId];
-    queryFilesList.q = [NSString stringWithFormat:@"title = '%@' and trashed = false", [[name  caseInsensitivize: 0] stringByAppendingPathExtension: IDENTITY_EXTENSION]];
+    queryFilesList.q = [NSString stringWithFormat:@"title = '%@' and trashed = false", [[name  caseInsensitivize] stringByAppendingPathExtension: IDENTITY_EXTENSION]];
     
     [_driveService executeQuery:queryFilesList
               completionHandler:^(GTLServiceTicket *ticket, GTLDriveFileList *files,
@@ -433,7 +433,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
                         driveFile.parents = @[parentRef];
                         
                         driveFile.mimeType = @"application/octet-stream";
-                        NSString * caseInsensiveUsername = [name caseInsensitivize: 0];
+                        NSString * caseInsensiveUsername = [name caseInsensitivize];
                         NSString * filename = [caseInsensiveUsername stringByAppendingPathExtension: IDENTITY_EXTENSION];
                         driveFile.originalFilename = filename;
                         driveFile.title = filename;

@@ -10,5 +10,5 @@
 
 @interface NSString (Sensitivize)
 -(NSString *) caseSensitivize;
--(NSString *) caseInsensitivize: (NSInteger) version;
+-(NSString *) caseInsensitivize;
 @end
