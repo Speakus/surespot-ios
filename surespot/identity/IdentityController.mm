@@ -26,7 +26,7 @@
 
 
 #ifdef DEBUG
-static const int ddLogLevel = LOG_LEVEL_INFO;
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 #else
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
@@ -390,7 +390,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
 -(void) exportIdentityDataForUsername: (NSString *) username password: (NSString *) password callback: (CallbackErrorBlock) callback {
     SurespotIdentity * identity = [self getIdentityWithUsername:username andPassword:password];
     if (!identity) {
-        callback(NSLocalizedString(@"could_not_backup_identity_to_google_drive", nil), nil);
+        callback(NSLocalizedString(@"could_not_backup_identity_to_google_drive", username), nil);
         return;
     }
     

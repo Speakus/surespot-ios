@@ -17,4 +17,5 @@
 
 + (BOOL) isOurMessage: (SurespotMessage *) message;
 + (NSString *) hexFromData: (NSData *) data ;
++(NSData *)dataFromHex:(NSString *)hex;
 @end
