@@ -1728,7 +1728,7 @@ const Float32 voiceRecordDelay = 0.3;
     }
     
     REMenuItem * shareItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"share_invite_link", nil) image:[UIImage imageNamed:@"blue_heart"] highlightedImage:nil action:^(REMenuItem * menuitem){
-        NSString * inviteUrl = [NSString stringWithFormat:@"%@%@%@", @"https://server.surespot.me/autoinvite/", [[IdentityController sharedInstance] getLoggedInUser], @"/ios"];
+        NSString * inviteUrl = [NSString stringWithFormat:@"%@%@%@", @"https://server.surespot.me/autoinvite/", [[[IdentityController sharedInstance] getLoggedInUser] stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding], @"/ios"];
         
         [[NetworkController sharedInstance] getShortUrl:inviteUrl callback:^(id shortUrl) {
             NSString * text = [NSString stringWithFormat:NSLocalizedString(@"external_invite_message", nil), shortUrl];

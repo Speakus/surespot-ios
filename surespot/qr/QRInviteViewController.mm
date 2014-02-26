@@ -52,10 +52,7 @@
 
 -(UIImage *) generateQRInviteImage: (NSString *) username {
     int qrcodeImageDimension = 250;
-    NSString * baseUrl = serverSecure ?
-    [NSString stringWithFormat: @"https://%@", serverBaseIPAddress] :
-    [NSString stringWithFormat: @"http://%@:%d", serverBaseIPAddress, serverPort];
-    NSString* inviteUrl = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, @"/autoinvite/", username, @"/qr_ios"];
+    NSString * inviteUrl = [NSString stringWithFormat:@"%@%@%@", @"https://server.surespot.me/autoinvite/", [username stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding], @"/qr_ios"];
     
     //first encode the string into a matrix of bools, TRUE for black dot and FALSE for white. Let the encoder decide the error correction level and version
     DataMatrix* qrMatrix = [QREncoder encodeWithECLevel:QR_ECLEVEL_Q version:QR_VERSION_AUTO string:inviteUrl];
