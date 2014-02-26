@@ -186,18 +186,18 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              
              switch (operation.response.statusCode) {
                  case 429:
-                     [UIUtils showToastKey: @"user_creation_throttled"];
+                     [UIUtils showToastKey: @"user_creation_throttled" duration:3];
                      [_tbUsername becomeFirstResponder];
                      break;
                  case 409:
-                     [UIUtils showToastKey: @"username_exists"];
+                     [UIUtils showToastKey: @"username_exists" duration:2];
                      [_tbUsername becomeFirstResponder];
                      break;
                  case 403:
-                     [UIUtils showToastKey: @"signup_update"];
+                     [UIUtils showToastKey: @"signup_update" duration:4];
                      break;
                  default:
-                     [UIUtils showToastKey: @"could_not_create_user"];
+                     [UIUtils showToastKey: @"could_not_create_user" duration:2];
              }
              
              self.navigationItem.rightBarButtonItem.enabled = YES;
