@@ -256,10 +256,7 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
     DDLogInfo(@"restore complete, transactions: %d", queue.transactions.count);
-    for (SKPaymentTransaction *transaction in queue.transactions)
-    {
-        [self restoreTransaction:transaction];
-    }
+    //official docs say do nothing here https://developer.apple.com/library/ios/documentation/StoreKit/Reference/SKPaymentTransactionObserver_Protocol/Reference/Reference.html#//apple_ref/occ/intfm/SKPaymentTransactionObserver/paymentQueueRestoreCompletedTransactionsFinished:
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
