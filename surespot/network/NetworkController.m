@@ -237,7 +237,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 -(void) getMessageDataForUsername:(NSString *)username andMessageId:(NSInteger)messageId andControlId:(NSInteger) controlId successBlock:(JSONSuccessBlock)successBlock failureBlock: (JSONFailureBlock) failureBlock {
     
-    NSString * path = [[NSString stringWithFormat:@"messageData/%@/%u/%u", username, messageId, controlId]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString * path = [[NSString stringWithFormat:@"messagedataopt/%@/%u/%u", username, messageId, controlId]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters: nil];
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:successBlock
                                                                                         failure: failureBlock];
@@ -262,7 +262,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     DDLogVerbose(@"GetLatestData: params; %@", params);
     
-    NSString * path = [NSString stringWithFormat:@"latestdata/%d", latestUserControlId];
+    NSString * path = [NSString stringWithFormat:@"optdata/%d", latestUserControlId];
     NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters: params];
     
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:successBlock failure:failureBlock];
@@ -345,7 +345,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 -(void) getEarlierMessagesForUsername: (NSString *) username messageId: (NSInteger) messageId successBlock:(JSONSuccessBlock)successBlock failureBlock: (JSONFailureBlock) failureBlock {
     
-    NSString * path = [[NSString stringWithFormat:@"messages/%@/before/%d", username, messageId]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString * path = [[NSString stringWithFormat:@"messagesopt/%@/before/%d", username, messageId]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters: nil];
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:successBlock
                                                                                         failure: failureBlock];

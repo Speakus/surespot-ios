@@ -97,13 +97,13 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             [[NetworkController sharedInstance] getMessageDataForUsername:_username andMessageId:_latestMessageId andControlId:_latestControlMessageId successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                 DDLogVerbose(@"get messageData response: %d",  [response statusCode]);
                 
-                NSArray * controlMessageStrings =[((NSDictionary *) JSON) objectForKey:@"controlMessages"];
+                NSArray * controlMessages =[((NSDictionary *) JSON) objectForKey:@"controlMessages"];
                 
-                [self handleControlMessages:controlMessageStrings];
+                [self handleControlMessages:controlMessages];
                 
-                NSArray * messageStrings =[((NSDictionary *) JSON) objectForKey:@"messages"];
+                NSArray * messages =[((NSDictionary *) JSON) objectForKey:@"messages"];
                 
-                [self handleMessages:messageStrings];
+                [self handleMessages:messages];
                 
                 DDLogInfo(@"stopProgress");
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"stopProgress" object:nil];
@@ -370,7 +370,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     SurespotMessage * lastMessage;
     BOOL areNew = NO;
     for (id jsonMessage in messages) {
-        lastMessage = [[SurespotMessage alloc] initWithJSONString:jsonMessage];
+        lastMessage = [[SurespotMessage alloc] initWithDictionary:jsonMessage];
         BOOL isNew = [self addMessage:lastMessage refresh:NO callback:^(id result) {
             if ([weakSelf.decryptionQueue operationCount] == 0) {
                 [weakSelf postRefresh];
@@ -393,7 +393,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     __weak ChatDataSource* weakSelf =self;
     SurespotMessage * lastMessage;
     for (id jsonMessage in messages) {
-        lastMessage = [[SurespotMessage alloc] initWithJSONString:jsonMessage];
+        lastMessage = [[SurespotMessage alloc] initWithDictionary:jsonMessage];
         DDLogInfo(@"adding earlier message, id: %d", lastMessage.serverid);
         [self addMessage:lastMessage refresh:NO callback:^(id result) {
             if ([weakSelf.decryptionQueue operationCount] == 0) {
@@ -420,7 +420,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     for (id jsonMessage in controlMessages) {
         
         
-        message = [[SurespotControlMessage alloc] initWithJSONString: jsonMessage];
+        message = [[SurespotControlMessage alloc] initWithDictionary: jsonMessage];
         [self handleControlMessage:message];
         
     }

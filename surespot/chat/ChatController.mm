@@ -342,9 +342,9 @@ static const int MAX_CONNECTION_RETRIES = 16;
             
             DDLogVerbose(@"getting message and control data for spot: %@",spot );
             NSMutableDictionary * messageId = [[NSMutableDictionary alloc] init];
-            [messageId setObject: username forKey:@"username"];
-            [messageId setObject: [NSNumber numberWithInteger: [chatDataSource latestMessageId]] forKey:@"messageid"];
-            [messageId setObject: [NSNumber numberWithInteger:[chatDataSource latestControlMessageId]] forKey:@"controlmessageid"];
+            [messageId setObject: username forKey:@"u"];
+            [messageId setObject: [NSNumber numberWithInteger: [chatDataSource latestMessageId]] forKey:@"m"];
+            [messageId setObject: [NSNumber numberWithInteger:[chatDataSource latestControlMessageId]] forKey:@"cm"];
             [messageIds addObject:messageId];
         }
     }
@@ -357,22 +357,26 @@ static const int MAX_CONNECTION_RETRIES = 16;
         
         DDLogVerbose(@"network call complete");
         
-        NSArray * conversationIds = [JSON objectForKey:@"conversationIds"];
+        NSDictionary * conversationIds = [JSON objectForKey:@"conversationIds"];
         if (conversationIds) {
-            for (id convoId in conversationIds) {
-                NSString * spot = [convoId objectForKey:@"conversation"];
-                NSInteger availableId = [[convoId objectForKey:@"id"] integerValue];
+            
+            NSEnumerator * keyEnumerator = [conversationIds keyEnumerator];
+            NSString * spot;
+            while (spot = [keyEnumerator nextObject]) {
+
+                NSInteger availableId = [[conversationIds objectForKey:spot] integerValue];
                 NSString * user = [ChatUtils getOtherUserFromSpot:spot andUser:[[IdentityController sharedInstance] getLoggedInUser]];
                 
                 [_homeDataSource setAvailableMessageId:availableId forFriendname: user];
             }
         }
         
-        NSArray * controlIds = [JSON objectForKey:@"controlIds"];
+        NSDictionary * controlIds = [JSON objectForKey:@"controlIds"];
         if (controlIds) {
-            for (id controlId in controlIds) {
-                NSString * spot = [controlId objectForKey:@"conversation"];
-                NSInteger availableId = [[controlId objectForKey:@"id"] integerValue];
+            NSEnumerator * keyEnumerator = [controlIds keyEnumerator];
+            NSString * spot;
+            while (spot = [keyEnumerator nextObject]) {
+                NSInteger availableId = [[controlIds objectForKey:spot] integerValue];
                 NSString * user = [ChatUtils getOtherUserFromSpot:spot andUser:[[IdentityController sharedInstance] getLoggedInUser]];
                 
                 [_homeDataSource setAvailableMessageControlId:availableId forFriendname: user];
@@ -659,7 +663,7 @@ static const int MAX_CONNECTION_RETRIES = 16;
         Friend * afriend = [_homeDataSource getFriendByName:username];
         if (afriend) {
             
-            SurespotMessage * message = [[SurespotMessage alloc] initWithJSONString:[messages objectAtIndex:[messages count ] -1]];
+            SurespotMessage * message = [[SurespotMessage alloc] initWithDictionary:[messages objectAtIndex:[messages count ] -1]];
             
             if  (message.serverid > 0) {
                 
@@ -733,7 +737,7 @@ static const int MAX_CONNECTION_RETRIES = 16;
     for (id jsonMessage in controlMessages) {
         
         
-        SurespotControlMessage * message = [[SurespotControlMessage alloc] initWithJSONString: jsonMessage];
+        SurespotControlMessage * message = [[SurespotControlMessage alloc] initWithDictionary: jsonMessage];
         [self handleUserControlMessage:message];
     }
 }
