@@ -1607,15 +1607,18 @@ const Float32 voiceRecordDelay = 0.3;
     if (numRows > 0) {
         DDLogVerbose(@"scrolling to row: %d", numRows);
         NSIndexPath *scrollIndexPath = [NSIndexPath indexPathForRow:(numRows - 1) inSection:0];
-        [tableView scrollToRowAtIndexPath:scrollIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if ( [tableView numberOfSections] > scrollIndexPath.section && [tableView numberOfRowsInSection:0] > scrollIndexPath.row ) {
+            [tableView scrollToRowAtIndexPath:scrollIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
     }
 }
 
 
 - (void) scrollTableViewToCell: (UITableView *) tableView  indexPath: (NSIndexPath *) indexPath {
     DDLogInfo(@"scrolling to cell: %@", indexPath);
-    // NSIndexPath *scrollIndexPath = [NSIndexPath indexPathForRow:(numRows - 1) inSection:0];
-    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    if ( [tableView numberOfSections] > indexPath.section && [tableView numberOfRowsInSection:0] > indexPath.row ) {
+        [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    }
     
 }
 
@@ -1730,10 +1733,10 @@ const Float32 voiceRecordDelay = 0.3;
     }
     
     REMenuItem * shareItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"share_invite_link", nil) image:[UIImage imageNamed:@"blue_heart"] highlightedImage:nil action:^(REMenuItem * menuitem){
-
+        
         _progressView = [LoadingView showViewKey:@"invite_progress_text"];
         NSString * inviteUrl = [NSString stringWithFormat:@"%@%@%@", @"https://server.surespot.me/autoinvite/", [[[IdentityController sharedInstance] getLoggedInUser] stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding], @"/ios"];
-
+        
         
         [[NetworkController sharedInstance] getShortUrl:inviteUrl callback:^(id shortUrl) {
             NSString * text = [NSString stringWithFormat:NSLocalizedString(@"external_invite_message", nil), shortUrl];
@@ -2129,7 +2132,7 @@ const Float32 voiceRecordDelay = 0.3;
             NSString * name = [self nameForPage:page];
             NSArray * messages =[[ChatController sharedInstance] getDataSourceForFriendname: name].messages;
             if (indexPath.row < messages.count) {
-                SurespotMessage * message =[messages objectAtIndex:indexPath.row];                
+                SurespotMessage * message =[messages objectAtIndex:indexPath.row];
                 _menu = [self createChatMenuMessage:message];
             }
         }
