@@ -2118,8 +2118,11 @@ const Float32 voiceRecordDelay = 0.3;
     if (!_menu) {
         
         if (page == 0) {
-            Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource].friends objectAtIndex:indexPath.row];
-            _menu = [self createHomeMenuFriend:afriend];
+            NSArray * friends = [[ChatController sharedInstance] getHomeDataSource].friends;
+            if (indexPath.row < [friends count]) {
+                Friend * afriend = [friends objectAtIndex:indexPath.row];
+                _menu = [self createHomeMenuFriend:afriend];
+            }
         }
         
         else {
