@@ -291,7 +291,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSString * statusText = nil;
     switch (errorStatus) {
 		case 400:
-			statusText = NSLocalizedString(@"message_error_invalid",nil);
+			statusText = NSLocalizedString(@"error_message_generic",nil);
 			break;
 		case 402:
 			// if it's voice message they need to have upgraded, otherwise fall through to 403

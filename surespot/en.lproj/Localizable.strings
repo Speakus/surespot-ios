@@ -176,7 +176,6 @@
 "image"="image";
 "pan_and_zoom"="pan and zoom";
 "done"="done";
-"message_error_invalid"="error sending message: invalid message";
 "message_error_unauthorized"="error sending message: unauthorized";
 "error_message_throttled"="error sending message: throttled";
 "error_message_generic"="error sending message";
