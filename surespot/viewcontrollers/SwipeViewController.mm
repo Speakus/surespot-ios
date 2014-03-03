@@ -38,6 +38,7 @@
 #import "SurespotSettingsStore.h"
 #import "HelpViewController.h"
 #import "UIAlertView+Blocks.h"
+#import "LoadingView.h"
 
 
 #ifdef DEBUG
@@ -78,6 +79,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 - (IBAction)buttonTouchUpInside:(id)sender;
 @property (strong, nonatomic) IBOutlet UIView *textFieldContainer;
 @property (atomic, strong) ALAssetsLibrary * assetLibrary;
+@property (atomic, strong) LoadingView * progressView;
 @end
 @implementation SwipeViewController
 
@@ -1729,6 +1731,7 @@ const Float32 voiceRecordDelay = 0.3;
     
     REMenuItem * shareItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"share_invite_link", nil) image:[UIImage imageNamed:@"blue_heart"] highlightedImage:nil action:^(REMenuItem * menuitem){
         NSString * inviteUrl = [NSString stringWithFormat:@"%@%@%@", @"https://server.surespot.me/autoinvite/", [[IdentityController sharedInstance] getLoggedInUser], @"/ios"];
+        _progressView = [LoadingView showViewKey:@"invite_progress_text"];
         
         [[NetworkController sharedInstance] getShortUrl:inviteUrl callback:^(id shortUrl) {
             NSString * text = [NSString stringWithFormat:NSLocalizedString(@"external_invite_message", nil), shortUrl];
@@ -1738,7 +1741,9 @@ const Float32 voiceRecordDelay = 0.3;
             SHKActionSheet* actionSheet = [SHKActionSheet actionSheetForItem:item];
             [SHK setRootViewController:self];
             
+            [_progressView removeView];
             [actionSheet showInView:self.view];
+            
         }];
     }];
     [menuItems addObject:shareItem];
