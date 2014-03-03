@@ -127,6 +127,8 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 
 -(void) failedTransaction: (SKPaymentTransaction *) transaction {
     DDLogWarn(@"payment failed: %@", transaction.error);
+    SKPaymentQueue *queue = [SKPaymentQueue defaultQueue];
+    [queue finishTransaction:transaction];
     //1005 is "could not sign in with test account" error apparently
     if (transaction.error.code != SKErrorPaymentCancelled && transaction.error.code != SKErrorPaymentNotAllowed && transaction.error.code != 1005 && transaction.error.localizedFailureReason) {
         [UIUtils showToastMessage: [NSString stringWithFormat:@"%@%@ - %@",@"In App Purchase Error: ",transaction.error.localizedDescription, transaction.error.localizedFailureReason] duration: 4];
@@ -173,7 +175,10 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 }
 
 -(void) setHasVoiceMessaging:(BOOL)hasVoiceMessaging {
-    _hasVoiceMessaging = hasVoiceMessaging;
+    
+    _hasVoiceMessaging = true;
+    return;
+    
     [_viewController setVoiceOn:hasVoiceMessaging];
     NSUserDefaults *storage = [NSUserDefaults standardUserDefaults];
     [storage setBool:hasVoiceMessaging forKey:@"voice_messaging"];
