@@ -2128,11 +2128,8 @@ const Float32 voiceRecordDelay = 0.3;
         else {
             NSString * name = [self nameForPage:page];
             NSArray * messages =[[ChatController sharedInstance] getDataSourceForFriendname: name].messages;
-            if (messages.count > 0) {
-                
-                
-                SurespotMessage * message =[messages objectAtIndex:indexPath.row];
-                
+            if (indexPath.row < messages.count) {
+                SurespotMessage * message =[messages objectAtIndex:indexPath.row];                
                 _menu = [self createChatMenuMessage:message];
             }
         }
