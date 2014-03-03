@@ -175,10 +175,7 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 }
 
 -(void) setHasVoiceMessaging:(BOOL)hasVoiceMessaging {
-    
-    _hasVoiceMessaging = true;
-    return;
-    
+    _hasVoiceMessaging = hasVoiceMessaging;
     [_viewController setVoiceOn:hasVoiceMessaging];
     NSUserDefaults *storage = [NSUserDefaults standardUserDefaults];
     [storage setBool:hasVoiceMessaging forKey:@"voice_messaging"];
