@@ -2590,7 +2590,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/surespot/",
 					"$(SRCROOT)/surespot/libs/cryptopp/lib/",
-					/Users/adam/dev/surespot/ios/surespot/libs/TestFlightSDK,
+					"/Users/adam/dev/surespot/surespot-ios/surespot/libs/TestFlightSDK",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
@@ -2628,7 +2628,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/surespot/",
 					"$(SRCROOT)/surespot/libs/cryptopp/lib/",
-					/Users/adam/dev/surespot/ios/surespot/libs/TestFlightSDK,
+					"/Users/adam/dev/surespot/surespot-ios/surespot/libs/TestFlightSDK",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
