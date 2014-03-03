@@ -34,7 +34,6 @@
 "settings"="settings";
 "no_friends"="No friends...yet. Invite surespot users by entering their username below.";
 "help_invite"="Invite surespot users by entering their username on the home tab.";
-"invite_contacts"="Use the 'invite contacts' menu option to invite users via QR code, email, text message, or other applications.";
 "navigate_between_chat_tabs"="Navigate between tabs by swiping.";
 "help_holdmessage"="Hold on a message for message options.";
 "help_holdfriend"="Hold on a friend for friend options.";
@@ -216,7 +215,6 @@
 "clear_local_cache"="clear local cache";
 "delete_all_messages"="delete all messages";
 "pay_what_you_like"="pay what you like";
-"menu_invite_contacts"="invite contacts";
 "delete_identity"="delete identity";
 "surespot_help"="surespot help";
 "backup_drive_button"="Execute Google Drive Backup";
