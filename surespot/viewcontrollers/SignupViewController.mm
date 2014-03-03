@@ -156,12 +156,10 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              DDLogVerbose(@"signup response: %d",  [operation.response statusCode]);
              [[IdentityController sharedInstance] createIdentityWithUsername:username andPassword:password andSalt:salt andKeys:keys];
              UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
-             LoginViewController * lvc =[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
              SwipeViewController * svc = [storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"];
              BackupIdentityViewController * bvc = [[BackupIdentityViewController alloc] initWithNibName:@"BackupIdentityView" bundle:nil];
              
              NSMutableArray *  controllers = [NSMutableArray new];
-             [controllers addObject:lvc];
              [controllers addObject:svc];
              [controllers addObject:bvc];
              

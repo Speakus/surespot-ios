@@ -185,7 +185,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              SwipeViewController * svc = [storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"];
              
              NSMutableArray *  controllers = [NSMutableArray new];
-             [controllers addObject:self];
              [controllers addObject:svc];
              
              

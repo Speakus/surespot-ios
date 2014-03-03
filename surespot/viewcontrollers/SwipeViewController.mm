@@ -2202,7 +2202,25 @@ const Float32 voiceRecordDelay = 0.3;
         // [_swipeView reloadData];
     }
     
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    //could be logging out as a result of deleting the logged in identity, which could be the only identity
+    //if this is the case we want to go to the signup screen not the login screen
+    //make it like a pop by inserting view controller into stack and popping
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
+    UIViewController * viewController;
+    
+    if ([[[IdentityController sharedInstance] getIdentityNames ] count] == 0 ) {
+        viewController = [storyboard instantiateViewControllerWithIdentifier:@"signupViewController"];
+    }
+    else {
+        viewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+    }
+    
+    NSArray *vcs =  @[viewController, self];
+    [self.navigationController setViewControllers:vcs animated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    
 }
 
 -(void) ensureVoiceDelegate {
