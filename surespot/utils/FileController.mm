@@ -41,7 +41,7 @@ NSInteger const GZIP_MAGIC_1 = 0x1f;
 NSInteger const GZIP_MAGIC_2 = 0x8b;
 
 #ifdef DEBUG
-static const int ddLogLevel = LOG_LEVEL_INFO;
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 #else
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
@@ -206,7 +206,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 +(NSString *) getIdentityFile: (NSString *) username {
-    NSString * filename = [[username caseInsensitivize] stringByAppendingPathExtension:IDENTITY_EXTENSION];
+    NSString * caseun =[username caseInsensitivize];
+    NSString * filename = [caseun stringByAppendingPathExtension:IDENTITY_EXTENSION];
     return [[self getIdentityDir ] stringByAppendingPathComponent:filename];
 }
 

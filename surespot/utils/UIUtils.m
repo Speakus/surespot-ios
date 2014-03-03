@@ -60,7 +60,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 +(void) showToastKey: (NSString *) key {
-    [self showToastKey:key duration:1.0];
+    [self showToastKey:key duration:2.0];
 }
 +(void) showToastKey: (NSString *) key duration: (CGFloat) duration {
     

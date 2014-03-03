@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (Sensitivize)
--(NSString *) caseInsensitivize;
 -(NSString *) caseSensitivize;
+-(NSString *) caseInsensitivize;
 @end
