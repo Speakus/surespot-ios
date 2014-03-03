@@ -37,14 +37,7 @@ static NSInteger const retryAttempts = 5;
                 completed:(SDWebImageCompletedBlock)completedBlock
              retryAttempt: (NSInteger) retryAttempt
 {
-    [self cancelCurrentImageLoad];
-    
-    self.friendImage.image = placeholder;
-    [self.friendImage setAlpha:0.5];
-    
-    
-    
-    
+    [self cancelCurrentImageLoad];    
     if (afriend.imageUrl)
     {
         NSURL * nsurl = [NSURL URLWithString:afriend.imageUrl];

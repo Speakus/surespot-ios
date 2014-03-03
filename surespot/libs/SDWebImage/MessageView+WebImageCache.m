@@ -36,7 +36,6 @@ static const NSInteger retryAttempts = 5;
 {
     [self cancelCurrentImageLoad];
     
-    //    self.uiImageView.image = placeholder;
     
     NSURL * url = [NSURL URLWithString:message.data];
     
