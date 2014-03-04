@@ -954,6 +954,9 @@ const Float32 voiceRecordDelay = 0.3;
             
             if (afriend.isInviter) {
                 cell.friendStatus.text = NSLocalizedString(@"friend_status_is_inviting", nil);
+                [cell.blockButton setTitle:NSLocalizedString(@"block_underline", nil) forState:UIControlStateNormal];
+                [cell.ignoreButton setTitle:NSLocalizedString(@"ignore_underline", nil) forState:UIControlStateNormal];
+                [cell.acceptButton setTitle:NSLocalizedString(@"accept_underline", nil) forState:UIControlStateNormal];
             }
             cell.friendStatus.textAlignment = NSTextAlignmentCenter;
             cell.friendStatus.lineBreakMode = NSLineBreakByWordWrapping;
@@ -1923,7 +1926,7 @@ const Float32 voiceRecordDelay = 0.3;
     
     //copy
     if ([message.mimeType isEqualToString:MIME_TYPE_TEXT] && message.plainData) {
-        REMenuItem * copyItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"copy", nil) image:[UIImage imageNamed:@"ic_menu_copy"] highlightedImage:nil action:^(REMenuItem * item){
+        REMenuItem * copyItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_copy", nil) image:[UIImage imageNamed:@"ic_menu_copy"] highlightedImage:nil action:^(REMenuItem * item){
             
             [[UIPasteboard generalPasteboard]  setString: message.plainData];
             

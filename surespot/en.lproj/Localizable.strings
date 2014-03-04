@@ -48,9 +48,9 @@
 "action_settings"="Settings";
 "no_messages"="no messages";
 "delete_message"="delete message";
-"block_underline"="<u>block</u>";
-"ignore_underline"="<u>ignore</u>";
-"accept_underline"="<u>accept</u>";
+"block_underline"="block";
+"ignore_underline"="ignore";
+"accept_underline"="accept";
 "crash_toast_text"="houston we have a problem";
 "crash_dialog_title"="surespot has crashed";
 "crash_dialog_text"="We must confess that an unexpected error has occurred.\n\nPlease help us to fix the issue by touching OK to send an error report containing no personally identifying information.";
