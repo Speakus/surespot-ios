@@ -1,4 +1,4 @@
-surespot-ios
+surespot-ios  [![App Store](https://www.surespot.me/images/Available_AppStore.png)](https://itunes.apple.com/us/app/surespot/id790314865) 
 ============
 
 ios surespot client
@@ -15,31 +15,32 @@ corporations and authorities have taken with our communications. We created sure
 If you support this work and appreciate surespot please show it and consider donating your time or money.
 In turn, we will pass along support to the Electronic Frontier Foundation (EFF) who work tirelessly to defend your digital rights.
 
-[![donation](https://www.surespot.me/images/contribute-button.png/)](https://www.surespot.me/contribute.html)
+[![donation](https://www.surespot.me/images/contribute-button.png)](https://www.surespot.me/contribute.html)
 
-
-License
+Localization
 =========
 
-	Software License Agreement (GPLv3+)
+If you would like to contribute/improve a translation:
 
-	Copyright (c) 2014, 2fours. All rights reserved.
+ 1. Visit our [Transifex project page](https://www.transifex.com/projects/p/surespot) and make an account if you don't have one already.
+ 2. Go to the [resources tab](https://www.transifex.com/projects/p/surespot/resources/) to add a new language or improve an existing translation.
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+THANK YOU TO OUR CONTRIBUTORS:
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* Jean Schmitt, repat, mrbiber, leibi,gehfab for the German translations.
+* Jorge Iván Andrés Contreras Pereira, Cesar Schulzbacher, Manuel Perez, vndtta for the Spanish translations.
+* sharkyiwc and boing for the French translations.
+* lgasp, dickhead, Mauriziopz, mangholb and riky, besa, for the Italian translations.
 
-If you would like to re-license this code to sell it,
+
+About
+=========
+
+Copyright (c) 2012-14, 2fours. All rights reserved.
+If you would like to use this code
 please contact us at [support@2fours.com](mailto:support@2fours.com).
+
 
 This software additionally references or incorporates the following sources
 of intellectual property, the license terms for which are set forth
