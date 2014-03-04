@@ -230,6 +230,7 @@
 		66EC6111176E494900937467 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EC6106176E494900937467 /* AFURLConnectionOperation.m */; };
 		66EC6112176E494900937467 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EC6108176E494900937467 /* AFXMLRequestOperation.m */; };
 		66EC6113176E494900937467 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EC610A176E494900937467 /* UIImageView+AFNetworking.m */; };
+		66F7E94518C57EF60032C77E /* GooglePlus.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 66A786B618BE36F60044BB22 /* GooglePlus.bundle */; };
 		66F831FF185B9EB500ADD2F1 /* OurMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66EBDF171855C96F00F2452D /* OurMessageCell.xib */; };
 		66FB799718905360009CA47B /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66FB799418905360009CA47B /* HPGrowingTextView.m */; };
 		66FB799818905360009CA47B /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 66FB799618905360009CA47B /* HPTextViewInternal.m */; };
@@ -966,7 +967,6 @@
 				66CFB77F18BE3C34006B15A5 /* libText Message.a in Frameworks */,
 				66CFB78018BE3C34006B15A5 /* libTumblr.a in Frameworks */,
 				66CFB78118BE3C34006B15A5 /* libTwitter.a in Frameworks */,
-				66A786D518BE3A120044BB22 /* libShareKitCore.a in Frameworks */,
 				66A786B818BE36F60044BB22 /* GoogleOpenSource.framework in Frameworks */,
 				66A786BA18BE36F60044BB22 /* GooglePlus.framework in Frameworks */,
 				66A786B418BE36DE0044BB22 /* FacebookSDK.framework in Frameworks */,
@@ -996,6 +996,7 @@
 				66FF0FF6182AE6960038ECA6 /* QuartzCore.framework in Frameworks */,
 				661C2ED31763CB57000649E7 /* libz.dylib in Frameworks */,
 				66E4F5C417629B6400596E6B /* Security.framework in Frameworks */,
+				66A786D518BE3A120044BB22 /* libShareKitCore.a in Frameworks */,
 				66E4F5C217629B5C00596E6B /* libicucore.dylib in Frameworks */,
 				66E4F5C017629B4500596E6B /* CFNetwork.framework in Frameworks */,
 				6604A2BF17626B9E0072216A /* UIKit.framework in Frameworks */,
@@ -2172,6 +2173,7 @@
 				66EBE0CF1855C97100F2452D /* GTMOAuth2ViewTouch.xib in Resources */,
 				66E21E001847E1220005D91E /* InAppSettings.bundle in Resources */,
 				661F469E1864C0BE004A71B0 /* BackupIdentityView.xib in Resources */,
+				66F7E94518C57EF60032C77E /* GooglePlus.bundle in Resources */,
 				6637012D187A33A6006D17CA /* PWYLView.xib in Resources */,
 				66F831FF185B9EB500ADD2F1 /* OurMessageCell.xib in Resources */,
 				668D24FF186A36520096D155 /* QRInviteView.xib in Resources */,
