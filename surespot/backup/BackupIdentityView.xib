@@ -29,7 +29,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <pickerView contentMode="scaleToFill" id="cQt-Gd-JwU">
-                            <rect key="frame" x="3" y="33" width="314" height="171"/>
+                            <rect key="frame" x="3" y="34" width="314" height="171"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                             <inset key="insetFor6xAndEarlier" minX="0.0" minY="-11" maxX="0.0" maxY="11"/>
                             <connections>
@@ -101,7 +101,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="e7c-sU-S8e">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="30"/>
+                            <rect key="frame" x="0.0" y="2" width="320" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
