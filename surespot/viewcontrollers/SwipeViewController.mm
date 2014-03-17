@@ -109,7 +109,7 @@ const Float32 voiceRecordDelay = 0.3;
     _swipeView.truncateFinalPage =NO ;
     _swipeView.delaysContentTouches = YES;
     
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7)
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
     {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }

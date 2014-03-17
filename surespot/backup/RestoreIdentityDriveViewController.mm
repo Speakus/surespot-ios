@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 2fours. All rights reserved.
 //
 
-#import "RestoreIdentityViewController.h"
+#import "RestoreIdentityDriveViewController.h"
 #import "GTLDrive.h"
 #import "GTMOAuth2ViewControllerTouch.h"
 #import "DDLog.h"
@@ -26,7 +26,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 static NSString *const kKeychainItemName = @"Google Drive surespot";
 static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
 
-@interface RestoreIdentityViewController ()
+@interface RestoreIdentityDriveViewController ()
 @property (strong, nonatomic) IBOutlet UITableView *tvDrive;
 @property (nonatomic, strong) GTLServiceDrive *driveService;
 @property (strong) NSMutableArray * driveIdentities;
@@ -42,13 +42,20 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
 
 @end
 
-@implementation RestoreIdentityViewController
+@implementation RestoreIdentityDriveViewController
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.navigationController.navigationBar.translucent = NO;
-    [self.navigationItem setTitle:NSLocalizedString(@"restore", nil)];
+    self.navigationController.tabBarController.tabBar.translucent = NO;
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+    {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
+    
+
     
 	self.driveService = [[GTLServiceDrive alloc] init];
     

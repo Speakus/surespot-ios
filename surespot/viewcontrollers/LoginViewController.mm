@@ -14,7 +14,7 @@
 #import "UIUtils.h"
 #import "LoadingView.h"
 #import "DDLog.h"
-#import "RestoreIdentityViewController.h"
+#import "RestoreIdentitiesViewController.h"
 #import "SwipeViewController.h"
 #import "HelpViewController.h"
 
@@ -344,7 +344,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [menuItems addObject:createItem];
     
     REMenuItem * restoreItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"import_identities", nil) image:[UIImage imageNamed:@"ic_menu_archive"] highlightedImage:nil action:^(REMenuItem * item){
-        RestoreIdentityViewController * controller = [[RestoreIdentityViewController alloc] initWithNibName:@"RestoreIdentityViewController" bundle:[NSBundle mainBundle]];
+        RestoreIdentitiesViewController * controller = [[RestoreIdentitiesViewController alloc] init];
         [self.navigationController pushViewController:controller animated:YES];
         
     }];

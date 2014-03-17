@@ -179,6 +179,13 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     return written ? filePath : nil;
 }
 
+- (NSString *) saveIdentityDocuments: (SurespotIdentity *) identity withPassword: (NSString *) password {
+    NSString * filePath = [FileController getIdentityFileDocuments:identity.username];
+    NSData * encryptedCompressedIdentityData = [[self encryptIdentity:identity withPassword:[password stringByAppendingString:EXPORT_IDENTITY_ID]] gzipDeflate];
+    BOOL written = [encryptedCompressedIdentityData writeToFile:filePath atomically:TRUE];
+    return written ? filePath : nil;
+}
+
 - (NSArray *) getIdentityNames {
     NSString * identityDir = [FileController getIdentityDir];
     NSArray * dirfiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:identityDir error:NULL];
@@ -194,8 +201,6 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     
 }
 
-
-
 - (NSDictionary *) getRawIdentityFilemap {
     NSString * identityDir = [FileController getIdentityDir];
     NSArray * dirfiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:identityDir error:NULL];
@@ -207,7 +212,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
             [identityNames setObject:[[FileController getIdentityDir ] stringByAppendingPathComponent:file] forKey:identity];
         }
     }
-   
+    
     return identityNames;
 }
 
@@ -419,6 +424,65 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
                                                         break;
                                                 }
                                             }];
+}
+
+-(BOOL) importIdentityFilename: (NSString *) filePath username: (NSString * ) username password: (NSString *) password {
+    
+    NSData *myData = [NSData dataWithContentsOfFile:filePath];
+    
+    if (myData) {
+        //gunzip the identity data
+        //NSError* error = nil;
+        NSData* unzipped = [myData gzipInflate];
+        NSData * identity = [EncryptionController decryptIdentity: unzipped withPassword:[password stringByAppendingString:EXPORT_IDENTITY_ID]];
+        if (identity) {
+            SurespotIdentity * si = [self decodeIdentityData:identity password:password validate: NO];
+            
+            return [self saveIdentity:si withPassword: [password stringByAppendingString:CACHE_IDENTITY_ID]] != nil;
+            
+        }
+    }
+    
+    return NO;
+}
+
+-(void) exportIdentityToDocumentsForUsername: (NSString *) username password: (NSString *) password callback: (CallbackErrorBlock) callback {
+    SurespotIdentity * identity = [self getIdentityWithUsername:username andPassword:password];
+    if (!identity) {
+        callback(NSLocalizedString(@"no_identity_exported", username), nil);
+        return;
+    }
+    
+    NSData * saltBytes = [NSData dataFromBase64String:identity.salt];
+    NSData * derivedPassword = [EncryptionController deriveKeyUsingPassword:password andSalt:saltBytes];
+    NSData * encodedPassword = [derivedPassword SR_dataByBase64Encoding];
+    
+    NSData * signature = [EncryptionController signUsername:username andPassword: encodedPassword withPrivateKey:[identity getDsaPrivateKey]];
+    NSString * passwordString = [derivedPassword SR_stringByBase64Encoding];
+    NSString * signatureString = [signature SR_stringByBase64Encoding];
+    
+    
+    
+    [[NetworkController sharedInstance] validateUsername:username password:passwordString signature:signatureString successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        
+        if ([self saveIdentityDocuments:identity withPassword:password]) {
+            callback(nil,nil);
+        }
+        else {
+            callback(nil, @"no_identity_exported");
+        }
+    } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
+        switch (operation.response.statusCode) {
+            case 403:
+            case 404:
+                callback(NSLocalizedString(@"incorrect_password_or_key", nil), nil);
+                break;
+            default:
+                callback([NSString stringWithFormat:NSLocalizedString(@"no_identity_exported", nil), username], nil);
+                break;
+        }
+    }];
 }
 
 -(void) exportIdentityDataForUsername: (NSString *) username password: (NSString *) password callback: (CallbackErrorBlock) callback {

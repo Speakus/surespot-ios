@@ -77,6 +77,20 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     return appSupportDir;
 }
 
++ (NSString*) getDocumentsDir {
+    NSString *documentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    //If there isn't a Documents Directory yet ...
+    if (![[NSFileManager defaultManager] fileExistsAtPath:documentsDir isDirectory:NULL]) {
+        NSError *error = nil;
+        //Create one
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:documentsDir withIntermediateDirectories:YES attributes:nil error:&error]) {
+            DDLogVerbose(@"%@", error.localizedDescription);
+        }
+    }
+    
+    return documentsDir;
+}
+
 + (NSString*) getCacheDir {
     NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
     //If there isn't an App Support Directory yet ...
@@ -209,6 +223,12 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSString * caseun =[username caseInsensitivize];
     NSString * filename = [caseun stringByAppendingPathExtension:IDENTITY_EXTENSION];
     return [[self getIdentityDir ] stringByAppendingPathComponent:filename];
+}
+
++(NSString *) getIdentityFileDocuments: (NSString *) username {
+    NSString * caseun =[username caseInsensitivize];
+    NSString * filename = [caseun stringByAppendingPathExtension:IDENTITY_EXTENSION];
+    return [[self getDocumentsDir ] stringByAppendingPathComponent:filename];
 }
 
 +(NSString *) getSecretsFile: (NSString *) username {

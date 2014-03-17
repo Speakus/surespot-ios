@@ -189,7 +189,7 @@
 "copy_address_to_clipboard"="copy address to clipboard";
 "send_address_and_qr_code_in_email"="email yourself address and QR code";
 "open_bitcoin_wallet"="open bitcoin wallet (if supported)";
-"select_identity"="select identity";
+"select_identity"="Select identity";
 "current_password"="current password";
 "new_password"="new password";
 "confirm_password"="confirm password";
@@ -236,8 +236,7 @@
 "last_modified"="last modified";
 "help"="help";
 "menu_import"="import";
-"backup_device"="DEVICE STORAGE IDENTITY BACKUP";
-"backup_drive"="GOOGLE DRIVE IDENTITY BACKUP";
+"backup_drive"="Backup to Google Drive";
 "let_me_select"="let me select";
 "could_not_import_identity_drive_404"="Could not load identity - please make sure you selected the same Google account that you were using in Google Drive.";
 "pick_same_drive_account"="Please pick the same account that you were using in Google Drive:";
@@ -365,3 +364,9 @@ If you elect to backup your identity on Google Drive you will be storing a copy 
 "tos_match"="terms of service";
 "tos_link"="https://www.surespot.me/documents/surespot_terms_of_service.html";
 "help_agreement"="By touching OK you agree to the surespot terms of service.";
+
+"restore_from_documents"="Restore from Documents folder";
+"documents"="Documents";
+"google_drive"="Google Drive";
+"backup_to_documents"="Backup to Documents Folder";
+"backed_up_identity_to_documents"="Backed up identity to Documents folder";
