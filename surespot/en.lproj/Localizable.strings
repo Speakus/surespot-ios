@@ -58,7 +58,7 @@
 "crash_dialog_ok_toast"="Thank you!";
 "external_invite_message"="I'd like to chat with you privately via surespot. Click %@ to invite me as a friend / install the app.";
 "help_backupIdentities1"="Because surespot uses encryption keys that are never uploaded to our servers, if you lose your phone, or uninstall then re-install the app, or wipe the app's data, you will not be able to login unless you have backed up your identity.";
-"help_backupIdentities2"="Surespot can use Google Drive for backing up your identity, available in settings.";
+"help_backupIdentities2"="Surespot can backup your identities to the Documents folder where they can be downloaded via iTunes File Sharing, or use Google Drive, available in settings.";
 "help_backup_drive2"="Your identities will be stored on Google Drive in the folder 'surespot identity backups'. Identities can be restored from the create user screen or in identity management settings.";
 "help_messageHistory"="Surespot has a 1000 message history. Once you reach 1000 messages your oldest message will be deleted so you will only ever have 1000 (encrypted) messages stored on the server. Of course you can delete any and all of your messages at any time.";
 "notification_title"="surespot";
@@ -358,6 +358,10 @@ Custom notification sounds created by Marco Angelo.";
 "strength_match"="strength";
 "strength_link"="https://en.wikipedia.org/wiki/Password_strength";
 "help_backup_what"="This will export a copy of the selected identity encrypted with 256 bit AES-GCM using a key derived from your password through a PBKDF (Password Based Key Derivation Function).
+
+Surespot can backup your identities to the Documents folder where they will be available in iTunes via File Sharing, or Google Drive.
+
+For maximum security we recommend using the Documents folder backup. Once backed up, the identity file should then be saved from iTunes (via File Sharing 'Save to...') to a secure location so that it may be restored in the case of app uninstall, restoring an old backup, lost or stolen device, or other data loss.
 
 If you elect to backup your identity on Google Drive you will be storing a copy of your private keys on Google Drive servers. Should a third party somehow gain access to the Google Drive servers and attempt to decrypt your identity file by brute force attack, be aware that the strength of your password will ultimately determine their success.";
 
