@@ -179,6 +179,21 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     BOOL imported = [[IdentityController sharedInstance] importIdentityFilename:filename username:name password:password];
     if (imported) {
         [UIUtils showToastKey:@"identity_imported_successfully" duration:2];
+        
+        
+        //update stored password
+        if (![UIUtils stringIsNilOrEmpty:_storedPassword] && ![_storedPassword isEqualToString:password]) {
+            [[IdentityController sharedInstance] storePasswordForIdentity:name password:password];
+        }
+        
+        _storedPassword = nil;
+        
+        //if we now only have 1 identity, go to login view controller
+        if ([[[IdentityController sharedInstance] getIdentityNames] count] == 1) {
+            UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+            [self.navigationController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"]]];
+        }
+
     }
     else {
         [UIUtils showToastKey:@"could_not_import_identity" duration:2];
