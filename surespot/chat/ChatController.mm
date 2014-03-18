@@ -99,7 +99,7 @@ static const int MAX_CONNECTION_RETRIES = 16;
     if([reach isReachable])
     {
         DDLogInfo(@"wifi: %hhd, wwan, %hhd",[reach isReachableViaWiFi], [reach isReachableViaWWAN]);
-        //reachibility changed, disconnect and reconnect        
+        //reachibility changed, disconnect and reconnect
         [self disconnect];
         [self reconnect];
     }
@@ -128,8 +128,17 @@ static const int MAX_CONNECTION_RETRIES = 16;
 }
 
 -(void) connect {
-    if (_socketIO && [[IdentityController sharedInstance] getLoggedInUser]) {
+    NSString * loggedInUser = [[IdentityController sharedInstance] getLoggedInUser];
+    if (_socketIO && loggedInUser) {
         DDLogVerbose(@"connecting socket");
+        
+       [[NetworkController sharedInstance] clearCookies];
+        NSHTTPCookie * cookie = [[CredentialCachingController sharedInstance] getCookieForUsername: loggedInUser];
+        if (cookie) {
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+        }
+        
+        
         self.socketIO.useSecure = serverSecure;
         [self.socketIO connectToHost:serverBaseIPAddress onPort:serverPort];
     }
@@ -363,7 +372,7 @@ static const int MAX_CONNECTION_RETRIES = 16;
             NSEnumerator * keyEnumerator = [conversationIds keyEnumerator];
             NSString * spot;
             while (spot = [keyEnumerator nextObject]) {
-
+                
                 NSInteger availableId = [[conversationIds objectForKey:spot] integerValue];
                 NSString * user = [ChatUtils getOtherUserFromSpot:spot andUser:[[IdentityController sharedInstance] getLoggedInUser]];
                 
@@ -1012,15 +1021,15 @@ static const int MAX_CONNECTION_RETRIES = 16;
 
 -(void) logout {
     [self pause];
+    [self clearData];
+}
+
+-(void) clearData {
     @synchronized (_chatDataSources) {
         [_chatDataSources removeAllObjects];
     }
     //  _homeDataSource.currentChat = nil;
-    _homeDataSource = nil;
-    
-    
-    
-    
+    _homeDataSource = nil;    
 }
 
 - (void) deleteFriend: (Friend *) thefriend {

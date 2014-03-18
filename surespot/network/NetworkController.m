@@ -85,9 +85,17 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"unauthorized" object: nil];
 }
 
+-(void) clearCookies {
+    //clear the cookie store
+    for (NSHTTPCookie * cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+    }
+}
+
 -(void) loginWithUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature
-             successBlock:(JSONSuccessBlock)successBlock failureBlock: (JSONFailureBlock) failureBlock
+             successBlock:(JSONCookieSuccessBlock) successBlock failureBlock: (JSONFailureBlock) failureBlock
 {
+    [self clearCookies];
     
     NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
@@ -112,9 +120,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        BOOL gotCookie = [self extractConnectCookie];
-        if (gotCookie) {
-            successBlock(request, response, JSON);
+        NSHTTPCookie * cookie = [self extractConnectCookie];
+        if (cookie) {
+            successBlock(request, response, JSON, cookie);
         }
         else {
             failureBlock(request, response, nil, nil);
@@ -131,7 +139,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 
--(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
+-(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
+   
+    [self clearCookies];
     
     NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
@@ -161,9 +171,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        BOOL gotCookie = [self extractConnectCookie];
-        if (gotCookie) {
-            successBlock(operation, responseObject);
+        NSHTTPCookie * cookie = [self extractConnectCookie];
+        if (cookie) {
+            successBlock(operation, responseObject, cookie);
         }
         else {
             failureBlock(operation, nil);
@@ -176,21 +186,19 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 
--(BOOL) extractConnectCookie {
+-(NSHTTPCookie *) extractConnectCookie {
     //save the cookie
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:_baseUrl]];
     
-    NSHTTPCookie * surespotCookie;
     for (NSHTTPCookie *cookie in cookies)
     {
         if ([cookie.name isEqualToString:@"connect.sid"]) {
             _loggedOut = NO;
-            surespotCookie = cookie;
-            return YES;
+            return cookie;
         }
     }
     
-    return NO;
+    return nil;
     
 }
 

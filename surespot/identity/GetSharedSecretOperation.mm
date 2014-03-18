@@ -23,7 +23,7 @@
 #import "FileController.h"
 
 #ifdef DEBUG
-static const int ddLogLevel = LOG_LEVEL_INFO;
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 #else
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
@@ -70,7 +70,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     
     //see if we have the shared secret cached already
-    NSString * sharedSecretKey = [NSString stringWithFormat:@"%@:%@:%@", self.ourVersion, self.theirUsername, self.theirVersion];
+    NSString * sharedSecretKey = [NSString stringWithFormat:@"%@:%@:%@:%@", self.cache.loggedInUsername, self.ourVersion, self.theirUsername, self.theirVersion];
     
     DDLogVerbose(@"checking dictionary for shared secret for:  %@" , sharedSecretKey);
     NSData * sharedSecret = [self.cache.sharedSecretsDict objectForKey:sharedSecretKey];
@@ -81,7 +81,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     else {
         DDLogVerbose(@"shared secret not cached");
-        SurespotIdentity * identity = self.cache.loggedInIdentity;
+        SurespotIdentity * identity = [self.cache getLoggedInIdentity];
         if (!identity) {
             [self finish:nil];
             return;

@@ -31,4 +31,7 @@ extern NSString *const IDENTITY_EXTENSION;
 +(void) wipeAllState;
 +(NSString *) getIdentityFileDocuments: (NSString *) username;
 + (NSString*) getDocumentsDir;
++(void) saveCookie:(NSHTTPCookie *) cookie forUsername: (NSString *) username withPassword: (NSString *) password;
++(NSHTTPCookie *) loadCookieForUsername: (NSString *) username password: password;
++(void) deleteOldSecrets;
 @end

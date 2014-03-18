@@ -12,8 +12,10 @@
 
 typedef void (^JSONResponseBlock) (NSDictionary* json);
 typedef void (^JSONSuccessBlock) (NSURLRequest *request, NSHTTPURLResponse *response, id JSON);
+typedef void (^JSONCookieSuccessBlock) (NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSHTTPCookie * cookie);
 typedef void (^JSONFailureBlock) (NSURLRequest *operation, NSHTTPURLResponse *responseObject, NSError *Error, id JSON);
 typedef void (^HTTPSuccessBlock) (AFHTTPRequestOperation *operation , id responseObject);
+typedef void (^HTTPCookieSuccessBlock) (AFHTTPRequestOperation *operation , id responseObject, NSHTTPCookie * cookie);
 typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *error );
 
 
@@ -21,8 +23,8 @@ typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *e
 
 +(NetworkController*)sharedInstance;
 
--(void) loginWithUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature              successBlock:(JSONSuccessBlock) successBlock failureBlock: (JSONFailureBlock) failureBlock;
--(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
+-(void) loginWithUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature              successBlock:(JSONCookieSuccessBlock) successBlock failureBlock: (JSONFailureBlock) failureBlock;
+-(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
 -(void) getFriendsSuccessBlock:(JSONSuccessBlock)successBlock failureBlock: (JSONFailureBlock) failureBlock;
 -(void) inviteFriend: (NSString *) friendname successBlock: (HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock ;
 -(void) getKeyVersionForUsername:(NSString *)username successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
@@ -104,5 +106,7 @@ typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *e
 -(void) uploadReceipt: (NSString *) receipt
                 successBlock:(HTTPSuccessBlock) successBlock
                 failureBlock: (HTTPFailureBlock) failureBlock;
+
+-(void) clearCookies;
 
 @end

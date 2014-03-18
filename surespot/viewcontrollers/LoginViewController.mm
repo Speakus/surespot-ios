@@ -49,7 +49,15 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [self loadIdentityNames];
     [self registerForKeyboardNotifications];
     self.navigationController.navigationBar.translucent = NO;
-    [self updatePassword:[_identityNames objectAtIndex:[ _userPicker selectedRowInComponent:0]]];
+    
+    NSString * lastUser = [[NSUserDefaults standardUserDefaults] stringForKey:@"last_user"];
+    NSInteger index = 0;
+    
+    if (lastUser) {
+        index = [_identityNames indexOfObject:lastUser];
+    }
+    
+    [self updatePassword:[_identityNames objectAtIndex:index]];
     [self.storePassword setTintColor:[UIUtils surespotBlue]];
     [self.storePassword setOnTintColor:[UIUtils surespotBlue]];
     [self.bLogin setTintColor:[UIUtils surespotBlue]];
@@ -169,7 +177,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
          loginWithUsername:identity.username
          andPassword:passwordString
          andSignature: signatureString
-         successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+         successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSHTTPCookie * cookie) {
              DDLogVerbose(@"login response: %d",  [response statusCode]);
              
              if (_storePassword.isOn) {
@@ -179,7 +187,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                  [[IdentityController sharedInstance] clearStoredPasswordForIdentity:username];
              }
              
-             [[IdentityController sharedInstance] userLoggedInWithIdentity:identity];
+             [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie];
              
              UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
              SwipeViewController * svc = [storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"];
@@ -190,7 +198,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              
              //show help view on iphone if tos hasn't been clicked
              BOOL tosClicked = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasClickedTOS"];
-             if (!tosClicked && ![UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+             if (!tosClicked && [UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPad) {
                  HelpViewController *hvc = [[HelpViewController alloc] initWithNibName:@"HelpView" bundle:nil];
                  [controllers addObject:hvc];
              }

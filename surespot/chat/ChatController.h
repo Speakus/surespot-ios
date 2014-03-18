@@ -38,4 +38,5 @@
 -(void) toggleMessageShareable: (SurespotMessage *) message;
 -(void) resendFileMessage: (SurespotMessage *) message;
 -(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: version iv: iv;
+-(void) clearData;
 @end

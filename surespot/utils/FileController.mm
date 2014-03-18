@@ -31,11 +31,16 @@ NSString * const UPLOADS_DIR = @"uploads";
 
 NSString * const PUBLIC_KEYS_EXTENSION = @"spk";
 NSString * const IDENTITY_EXTENSION = @"ssi";
+
+NSString * const SECRETS_FILENAME = @"secrets";
+NSString * const LATEST_VERSIONS_FILENAME = @"latestversions";
+NSString * const BACKGROUND_IMAGE_FILENAME = @"bgImage";
+NSString * const COOKIE_FILENAME = @"cookie";
+
 NSString * const SECRET_EXTENSION = @"sse";
 NSString * const LATEST_VERSIONS_EXTENSION = @"ssv";
 NSString * const SECRETS_DIR = @"secrets";
 NSString * const LATEST_VERSIONS_DIR = @"latestVersions";
-NSString * const BACKGROUND_IMAGE_FILENAME = @"bgImage";
 
 NSInteger const GZIP_MAGIC_1 = 0x1f;
 NSInteger const GZIP_MAGIC_2 = 0x8b;
@@ -148,7 +153,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     //file manager thread safe supposedly
     NSFileManager * fileMgr = [NSFileManager defaultManager];
     BOOL wiped = [fileMgr removeItemAtPath:messageFile error:nil];
-
+    
     DDLogInfo(@"wiped: %@", wiped ? @"YES" : @"NO");
     
 }
@@ -260,7 +265,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 +(NSDictionary *) loadSharedSecretsForUsername: (NSString *) username withPassword: (NSString *) password {
-    NSString * filePath = [self getSecretsFile:username];
+    NSString * filePath = [self getFilename:SECRETS_FILENAME forUser:username];
     
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     
@@ -278,7 +283,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 +(void) saveSharedSecrets:(NSDictionary *) sharedSecretsDict forUsername: (NSString *) username withPassword: (NSString *) password{
-    NSString * filePath = [self getSecretsFile:username];
+    NSString * filePath = [self getFilename:SECRETS_FILENAME forUser:username];
     NSData * secretData = [NSKeyedArchiver archivedDataWithRootObject:sharedSecretsDict];
     
     NSData * encryptedSecretData = [EncryptionController encryptData:secretData withPassword:password];
@@ -286,32 +291,56 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 +(void) saveLatestVersions:(NSDictionary *) latestVersionsDict forUsername: (NSString *) username {
-    NSString * filePath = [self getLatestVersionsFile:username];
+    NSString * filePath = [self getFilename:LATEST_VERSIONS_FILENAME forUser:username];
     NSData * latestVersions = [NSKeyedArchiver archivedDataWithRootObject:latestVersionsDict];
     [latestVersions writeToFile:filePath atomically:TRUE];
 }
 
-+(NSDictionary *) loadLatestVersionsForUsername: (NSString *) username {
-    NSString * filePath = [self getLatestVersionsFile:username];
++(void) saveCookie:(NSHTTPCookie *) cookie forUsername: (NSString *) username withPassword: (NSString *) password{
+    NSString * filePath = [self getFilename:COOKIE_FILENAME forUser:username];
+    NSData * secretData = [NSKeyedArchiver archivedDataWithRootObject:cookie];
+    
+    NSData * encryptedSecretData = [EncryptionController encryptData:secretData withPassword:password];
+    [encryptedSecretData writeToFile:filePath atomically:TRUE];
+}
+
++(NSHTTPCookie *) loadCookieForUsername: (NSString *) username password: password {
+    NSString * filePath = [self getFilename:COOKIE_FILENAME forUser:username];
     
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     
     if (data) {
         
+        //NSError* error = nil;
+        NSData * secrets = [EncryptionController decryptData: data withPassword:password];
+        if (secrets) {
+            return [NSKeyedUnarchiver unarchiveObjectWithData:secrets];
+        }
+    }
+    
+    return nil;
+}
+
++(NSDictionary *) loadLatestVersionsForUsername: (NSString *) username {
+    NSString * filePath = [self getFilename:LATEST_VERSIONS_FILENAME forUser:username];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+    
+    if (data) {        
         return [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        
     }
     
     return nil;
     
 }
 
-+(void) deleteDataForUsername: (NSString *) username; {
-    NSString * filePath = [self getSecretsFile:username];
++(void) deleteSecretDataForUsername: (NSString *) username; {
+    NSString * filePath = [self getFilename:SECRETS_FILENAME forUser:username];
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-    filePath = [self getLatestVersionsFile:username];
+    filePath = [self getFilename:LATEST_VERSIONS_FILENAME forUser:username];
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-
+    filePath = [self getFilename:COOKIE_FILENAME forUser:username];
+    [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+    
 }
 
 +(BOOL) isGzipCompressed: (NSData *) data {
@@ -335,11 +364,20 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     DDLogInfo( @"wiping all data"); //except bg images
     
     NSFileManager * fileMgr = [NSFileManager defaultManager];
-    [fileMgr removeItemAtPath:[self getLatestVersionsDir] error:nil];
-    [fileMgr removeItemAtPath:[self getSecretsDir] error:nil];
     [fileMgr removeItemAtPath:[self getUploadsDir] error:nil];
     [fileMgr removeItemAtPath:[[FileController getAppSupportDir] stringByAppendingPathComponent:STATE_DIR ] error:nil];
     [fileMgr removeItemAtPath:[self getCacheDir] error:nil];
+}
+
++(void) deleteOldSecrets {
+    BOOL deleted = [[NSUserDefaults standardUserDefaults] boolForKey:@"deletedOldSecrets"];
+    if (!deleted) {
+        NSString * secretsPath = [self getSecretsDir];
+        NSString * latestVersionsPath = [self getLatestVersionsDir];
+        [[NSFileManager defaultManager] removeItemAtPath:secretsPath error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:latestVersionsPath error:nil];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletedOldSecrets"];
+    }
 }
 
 

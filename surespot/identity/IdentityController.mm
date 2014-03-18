@@ -32,9 +32,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
 
 @interface IdentityController()
-@property (nonatomic, strong) SurespotIdentity * loggedInIdentity;
 @property (nonatomic, strong) NSMutableDictionary * keychainWrappers;
-@property (nonatomic, strong) NSMutableDictionary * identities;
 @property (nonatomic, strong) NSMutableDictionary * expectedVersions;
 @end
 
@@ -46,7 +44,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     dispatch_once(&oncePredicate, ^{
         sharedInstance = [[self alloc] init];
         sharedInstance.keychainWrappers = [NSMutableDictionary new];
-        sharedInstance.identities = [NSMutableDictionary new];
         sharedInstance.expectedVersions = [NSMutableDictionary new];
     });
     
@@ -59,15 +56,11 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
 
 
 - (SurespotIdentity *) getIdentityWithUsername:(NSString *) username andPassword:(NSString *) password {
-    
-    SurespotIdentity * identity = [_identities objectForKey:username];
-    if (!identity) {
-        identity = [self loadIdentityUsername: (NSString *) username password:password];
-        
-    }
+    SurespotIdentity * identity = [[CredentialCachingController sharedInstance] getIdentityForUsername:username password:password];
     return identity;
-    
 }
+
+
 
 -(SurespotIdentity *) loadIdentityUsername: (NSString * ) username password: (NSString *) password {
     NSString *filePath = [FileController getIdentityFile:username];
@@ -150,27 +143,30 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     return [[SurespotIdentity alloc] initWithDictionary: dic validate: validate];
 }
 
--(void) setLoggedInUserIdentity: (SurespotIdentity *) identity {
+-(void) setLoggedInUserIdentity: (SurespotIdentity *) identity password: (NSString *) password cookie: (NSHTTPCookie *) cookie{
     @synchronized (self) {
-        self.loggedInIdentity = identity;
+        // self.loggedInIdentity = identity;
         [[ChatController sharedInstance] login];
-        [[CredentialCachingController sharedInstance] loginIdentity:identity];
+        [[CredentialCachingController sharedInstance] loginIdentity:identity password: password cookie: cookie];
+        //set last logged in user pref
+        [[NSUserDefaults standardUserDefaults] setObject:identity.username forKey:@"last_user"];
     }
 }
+
+
 
 - (void) createIdentityWithUsername: (NSString *) username
                         andPassword: (NSString *) password
                             andSalt: (NSString *) salt
-                            andKeys: (IdentityKeys *) keys {
+                            andKeys: (IdentityKeys *) keys
+                             cookie: (NSHTTPCookie *) cookie {
     
     
     SurespotIdentity * identity = [[SurespotIdentity alloc] initWithUsername:username andSalt:salt keys:keys];
     
     [self saveIdentity:identity  withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
-    [self setLoggedInUserIdentity:identity];
+    [self setLoggedInUserIdentity:identity password: password cookie:cookie];
 }
-
-
 
 - (NSString *) saveIdentity: (SurespotIdentity *) identity withPassword: (NSString *) password {
     NSString * filePath = [FileController getIdentityFile:identity.username];
@@ -225,30 +221,28 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     return nil;
 }
 
-- (void) userLoggedInWithIdentity: (SurespotIdentity *) identity {
-    [self setLoggedInUserIdentity:identity];
+- (void) userLoggedInWithIdentity: (SurespotIdentity *) identity password: (NSString *) password cookie:(NSHTTPCookie *) cookie {
+    [self setLoggedInUserIdentity:identity password: password cookie: cookie];
 }
-
 
 
 - (NSString *) getLoggedInUser {
-    return [[self getLoggedInIdentity] username];
+    return [[CredentialCachingController sharedInstance] loggedInUsername];
 }
 
-
-- (SurespotIdentity *) getLoggedInIdentity {
-    @synchronized (self) { return self.loggedInIdentity; }
+-(NSString *) getLastLoggedInUser {
+    return [[NSUserDefaults standardUserDefaults] stringForKey:@"last_user"];    
 }
 
 -(void) logout {
     @synchronized (self) {
-        self.loggedInIdentity = nil;
         [[CredentialCachingController sharedInstance] logout];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"last_user"];
     }
 }
 
 - (NSString *) getOurLatestVersion {
-    return [[self getLoggedInIdentity] latestVersion];
+    return [[[CredentialCachingController sharedInstance] getLoggedInIdentity] latestVersion];
 }
 
 - (void) getTheirLatestVersionForUsername: (NSString *) username callback:(CallbackStringBlock) callback {
@@ -340,6 +334,10 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
 }
 
 -(NSString *) getStoredPasswordForIdentity: (NSString *) username {
+    if ([UIUtils stringIsNilOrEmpty:username]) {
+        return nil;
+    }
+    
     KeychainItemWrapper * wrapper = [_keychainWrappers objectForKey:username];
     if (!wrapper) {
         wrapper = [[KeychainItemWrapper alloc] initWithIdentifier:username accessGroup:nil];
@@ -374,7 +372,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     [wrapper resetKeychainItem];
     [_keychainWrappers removeObjectForKey:username];
     
-    //remove secrets from disk
+    //remove secrets, cookies, etc. from disk
     [FileController deleteDataForUsername:username];
 }
 
@@ -532,8 +530,8 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     [self saveIdentity:identity withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
     
     if ([username isEqualToString:[self getLoggedInUser]]) {
-        _loggedInIdentity = identity;
-        [[CredentialCachingController sharedInstance] loginIdentity: identity];
+        //     _loggedInIdentity = identity;
+        [[CredentialCachingController sharedInstance] updateIdentity: identity onlyIfExists: YES];
     }
     
     [self removeExpectedKeyVersionForUsername:username];

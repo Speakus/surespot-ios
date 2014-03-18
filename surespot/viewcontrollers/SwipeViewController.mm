@@ -2206,6 +2206,8 @@ const Float32 voiceRecordDelay = 0.3;
     //blow the views away
     
     _friendView = nil;
+    [_swipeView removeFromSuperview];
+    
     
     [[NetworkController sharedInstance] logout];
     [[ChatController sharedInstance] logout];

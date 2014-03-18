@@ -152,9 +152,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
          dhKey: encodedDHKey
          dsaKey: encodedDSAKey
          signature: signature
-         successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
+         successBlock:^(AFHTTPRequestOperation *operation, id responseObject, NSHTTPCookie * cookie) {
              DDLogVerbose(@"signup response: %d",  [operation.response statusCode]);
-             [[IdentityController sharedInstance] createIdentityWithUsername:username andPassword:password andSalt:salt andKeys:keys];
+             [[IdentityController sharedInstance] createIdentityWithUsername:username andPassword:password andSalt:salt andKeys:keys cookie:cookie];
              UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
              SwipeViewController * svc = [storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"];
              BackupIdentityViewController * bvc = [[BackupIdentityViewController alloc] initWithNibName:@"BackupIdentityView" bundle:nil];
@@ -166,7 +166,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              
              //show help view on iphone if it hasn't been shown
              BOOL tosClicked = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasClickedTOS"];
-             if (!tosClicked && ![UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+             if ((!tosClicked) && [UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPad) {
                  HelpViewController *hvc = [[HelpViewController alloc] initWithNibName:@"HelpView" bundle:nil];
                  [controllers addObject:hvc];
              }

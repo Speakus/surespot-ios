@@ -18,11 +18,10 @@
 
 
 - ( SurespotIdentity *) getIdentityWithUsername:(NSString *) username andPassword:(NSString *) password;
-- (void) createIdentityWithUsername: (NSString *) username andPassword: (NSString *) password andSalt: (NSString *) salt andKeys: (IdentityKeys *) keys;
+- (void) createIdentityWithUsername: (NSString *) username andPassword: (NSString *) password andSalt: (NSString *) salt andKeys: (IdentityKeys *) keys cookie: (NSHTTPCookie *) cookie;
 -(NSArray *) getIdentityNames;
-- (void) userLoggedInWithIdentity: (SurespotIdentity *) identity;
+- (void) userLoggedInWithIdentity: (SurespotIdentity *) identity password: (NSString *) password cookie: (NSHTTPCookie *) cookie;
 - (NSString *) getLoggedInUser;
-- (SurespotIdentity *) loggedInIdentity;
 - (NSString *) getOurLatestVersion;
 - (void) getTheirLatestVersionForUsername: (NSString *) username callback:(CallbackStringBlock) callback;
 -(BOOL) verifyPublicKeys: (NSDictionary *) keys;
@@ -47,5 +46,7 @@
 -(NSInteger) getIdentityCount;
 -(void) exportIdentityToDocumentsForUsername: (NSString *) username password: (NSString *) password callback: (CallbackErrorBlock) callback;
 -(BOOL) importIdentityFilename: (NSString *) filePath username: (NSString * ) username password: (NSString *) password;
+-(SurespotIdentity *) loadIdentityUsername: (NSString * ) username password: (NSString *) password;
+-(NSString *) getLastLoggedInUser;
 @end
 

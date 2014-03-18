@@ -24,6 +24,8 @@
 #import <StoreKit/StoreKit.h>
 #import "PurchaseDelegate.h"
 #import "SoundController.h"
+#import "CredentialCachingController.h"
+#import "FileController.h"
 
 #ifdef DEBUG
 static const int ddLogLevel = LOG_LEVEL_INFO;
@@ -54,22 +56,31 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [[DDTTYLogger sharedInstance]setLogFormatter: [SurespotLogFormatter new]];
     [UIUtils setAppAppearances];
     
-    
-    
-    //show create if we don't have any identities, otherwise login
-    
     UIStoryboard *storyboard = self.window.rootViewController.storyboard;
     UINavigationController *rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"navigationController"];
     self.window.rootViewController = rootViewController;
     
+    NSString * lastUser = [[IdentityController sharedInstance] getLastLoggedInUser];
     
+    //see if we have a last user
+    BOOL setSession = NO;
     
-    
-    if ([[[IdentityController sharedInstance] getIdentityNames ] count] == 0 ) {
-        [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"signupViewController"]]];
+    if (lastUser) {
+        setSession = [[CredentialCachingController sharedInstance] setSessionForUsername:lastUser];
     }
+    
+    if (setSession) {
+        [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"]]];
+    }
+    
     else {
-        [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"]]];
+        //show create if we don't have any identities, otherwise login
+        if ([[[IdentityController sharedInstance] getIdentityNames ] count] == 0 ) {
+            [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"signupViewController"]]];
+        }
+        else {
+            [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"]]];
+        }
     }
     
     NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -91,6 +102,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     _overlayView.supportedInterfaceOrientations = AGInterfaceOrientationMaskAll;
     
     [[SKPaymentQueue defaultQueue] addTransactionObserver:[PurchaseDelegate sharedInstance]];
+    
+    //clean up old file locations
+    [FileController deleteOldSecrets];
     return YES;
 }
 
@@ -188,20 +202,41 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             case UIApplicationStateBackground:
                 //started application from notification, move to correct tab
                 
+                BOOL hasNotification = NO;
                 //set user default so we can move to the right tab
                 if ([notificationType isEqualToString:@"notification_invite"] || [notificationType isEqualToString:@"notification_invite_accept"]) {
                     [[NSUserDefaults standardUserDefaults] setObject:@"invite" forKey:@"notificationType"];
                     [[NSUserDefaults standardUserDefaults] setObject:to forKey:@"notificationTo"];
+                    hasNotification = YES;
                 }
                 else {
                     if ([notificationType isEqualToString:@"notification_message"]) {
                         [[NSUserDefaults standardUserDefaults] setObject:@"message" forKey:@"notificationType"];
                         [[NSUserDefaults standardUserDefaults] setObject:to forKey:@"notificationTo"];
                         [[NSUserDefaults standardUserDefaults] setObject:from forKey:@"notificationFrom"];
+                        hasNotification = YES;
                     }
                 }
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"openedFromNotification" object:nil ];
+                //if it's the same user fire notification
+                if ([to isEqualToString:[[IdentityController sharedInstance] getLoggedInUser]]) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"openedFromNotification" object:nil ];
+                }
+                else {
+                    //set the session
+                    UIStoryboard *storyboard = self.window.rootViewController.storyboard;
+                    [[ChatController sharedInstance] logout];
+                    if ([[CredentialCachingController sharedInstance] setSessionForUsername:to]) {
+                        
+                        [[ChatController sharedInstance] login];
+                        [(UINavigationController *) self.window.rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"]]];
+                        
+                    }
+                    else {
+                        //show login
+                        [(UINavigationController *) self.window.rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"]]];
+                    }
+                }
         }
     }
     
