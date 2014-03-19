@@ -296,7 +296,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [latestVersions writeToFile:filePath atomically:TRUE];
 }
 
-+(void) saveCookie:(NSHTTPCookie *) cookie forUsername: (NSString *) username withPassword: (NSString *) password{
++(void) saveCookie:(NSHTTPCookie *) cookie forUsername: (NSString *) username withPassword: (NSString *) password {
+    DDLogInfo(@"saveCookie, username: %@, cookie: %@", username, cookie);
     NSString * filePath = [self getFilename:COOKIE_FILENAME forUser:username];
     NSData * secretData = [NSKeyedArchiver archivedDataWithRootObject:cookie];
     

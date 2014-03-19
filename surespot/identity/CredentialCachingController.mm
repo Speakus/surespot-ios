@@ -66,8 +66,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 -(void) loginIdentity: (SurespotIdentity *) identity password: (NSString *) password cookie: (NSHTTPCookie *) cookie{
     self.loggedInUsername = identity.username;
     
-    //load encrypted shared secrets from disk if we have a password in the keychain
-    //    NSString * password = [[IdentityController sharedInstance] getStoredPasswordForIdentity:identity.username];
+    //load encrypted shared secrets from disk if we have a password
     if (password) {
         [self loadSharedSecretsForUsername:identity.username password:password];
         
@@ -116,10 +115,18 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 -(void) logout {
     if (_loggedInUsername) {
         [self saveSharedSecrets];
-        //todo only remove objects for the logging out user
-        [_sharedSecretsDict removeAllObjects];
-        [_publicKeysDict removeAllObjects];
-        [_latestVersionsDict removeAllObjects];
+        //only remove objects for the logging out user
+        NSMutableArray * keysToRemove = [[NSMutableArray alloc] init];
+        
+        for (NSString * key in [_sharedSecretsDict keyEnumerator]) {
+            if ([key hasPrefix:_loggedInUsername]) {
+                DDLogInfo(@"removing shared secret key: %@", key);
+                [keysToRemove addObject:key];
+            }
+        }
+        
+        [_sharedSecretsDict removeObjectsForKeys:keysToRemove];
+
         [_identitiesDict removeObjectForKey:_loggedInUsername];
         _loggedInUsername = nil;
     }
@@ -129,8 +136,17 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     //save encrypted shared secrets to disk if we have a password in the keychain for this user
     NSString * password = [[IdentityController sharedInstance] getStoredPasswordForIdentity:_loggedInUsername];
     if (password) {
-        [FileController saveSharedSecrets: _sharedSecretsDict forUsername: _loggedInUsername withPassword:password];
-        DDLogInfo(@"saved %d encrypted secrets to disk", [_sharedSecretsDict count]);
+        NSMutableDictionary * ourSecrets = [[NSMutableDictionary alloc] init];
+        for (NSString * key in [_sharedSecretsDict keyEnumerator]) {
+            if ([key hasPrefix:_loggedInUsername]) {
+                DDLogInfo(@"saving shared secret key: %@", key);
+                [ourSecrets setObject:[_sharedSecretsDict objectForKey:key] forKey:key];
+            }
+        }
+
+        
+        [FileController saveSharedSecrets: ourSecrets forUsername: _loggedInUsername withPassword:password];
+        DDLogInfo(@"saved %d encrypted secrets to disk", [ourSecrets count]);
     }
     
 }
@@ -146,7 +162,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 -(void) clearUserData: (NSString *) friendname {
     [_latestVersionsDict removeObjectForKey:friendname];
     
-    //    NSString * sharedSecretKey = [NSString stringWithFormat:@"%@:%@:%@:%@",self.ourVersion, self.theirUsername, self.theirVersion];
+    //for ref
+    //    NSString * sharedSecretKey = [NSString stringWithFormat:@"%@:%@:%@:%@",loggedinuser, self.ourVersion, self.theirUsername, self.theirVersion];
     //      NSString * publicKeysKey = [NSString stringWithFormat:@"%@:%@", self.theirUsername, self.theirVersion];
     
     NSMutableArray * keysToRemove = [NSMutableArray new];
@@ -238,16 +255,20 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(NSHTTPCookie *) getCookieForUsername:(NSString *)username {
+    DDLogInfo(@"getCookieForUsername: %@", username);
     NSHTTPCookie * cookie = [_cookiesDict objectForKey:username];
     if (!cookie) {
         NSString * password = [[IdentityController sharedInstance] getStoredPasswordForIdentity:username];
         if (password) {
+
             cookie = [FileController loadCookieForUsername:username password:password];
             if (cookie) {
+                DDLogInfo(@"getCookieForUsername, caching cookie: %@", username);
                 [_cookiesDict setObject:cookie forKey:username];
             }
         }
     }
+    DDLogInfo(@"getCookieForUsername cookie: %@", cookie);
     return cookie;
 }
 

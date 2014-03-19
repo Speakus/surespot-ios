@@ -145,11 +145,10 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
 
 -(void) setLoggedInUserIdentity: (SurespotIdentity *) identity password: (NSString *) password cookie: (NSHTTPCookie *) cookie{
     @synchronized (self) {
-        // self.loggedInIdentity = identity;
-        [[ChatController sharedInstance] login];
         [[CredentialCachingController sharedInstance] loginIdentity:identity password: password cookie: cookie];
         //set last logged in user pref
         [[NSUserDefaults standardUserDefaults] setObject:identity.username forKey:@"last_user"];
+        [[ChatController sharedInstance] login];
     }
 }
 
@@ -237,7 +236,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
 -(void) logout {
     @synchronized (self) {
         [[CredentialCachingController sharedInstance] logout];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"last_user"];
+      //  [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"last_user"];
     }
 }
 

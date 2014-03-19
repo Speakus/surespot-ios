@@ -132,12 +132,12 @@ static const int MAX_CONNECTION_RETRIES = 16;
     if (_socketIO && loggedInUser) {
         DDLogVerbose(@"connecting socket");
         
-       [[NetworkController sharedInstance] clearCookies];
+        [[NetworkController sharedInstance] clearCookies];
         NSHTTPCookie * cookie = [[CredentialCachingController sharedInstance] getCookieForUsername: loggedInUser];
         if (cookie) {
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+            self.socketIO.cookies = @[cookie];
         }
-        
         
         self.socketIO.useSecure = serverSecure;
         [self.socketIO connectToHost:serverBaseIPAddress onPort:serverPort];
@@ -167,14 +167,10 @@ static const int MAX_CONNECTION_RETRIES = 16;
 
 - (void) socketIO:(SocketIO *)socket onError:(NSError *)error {
     DDLogInfo(@"error %@", error);
-    id internalError = [error.userInfo objectForKey:NSLocalizedDescriptionKey];
-    if ([internalError isMemberOfClass:[NSError class]])  {
-        DDLogInfo(@"internal error %@", internalError);
-        if ( [internalError code] == 403) {
-            DDLogInfo(@"socket unauthorized");
-            [[NetworkController sharedInstance] setUnauthorized];
-            return;
-        }
+    if ([error code] == SocketIOUnauthorized) {
+        DDLogInfo(@"socket unauthorized");
+        [[NetworkController sharedInstance] setUnauthorized];
+        return;
     }
     [self reconnect];
     
@@ -1029,7 +1025,7 @@ static const int MAX_CONNECTION_RETRIES = 16;
         [_chatDataSources removeAllObjects];
     }
     //  _homeDataSource.currentChat = nil;
-    _homeDataSource = nil;    
+    _homeDataSource = nil;
 }
 
 - (void) deleteFriend: (Friend *) thefriend {

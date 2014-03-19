@@ -57,6 +57,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         index = [_identityNames indexOfObject:lastUser];
     }
     
+    [_userPicker selectRow:index inComponent:0 animated:YES];
+    
     [self updatePassword:[_identityNames objectAtIndex:index]];
     [self.storePassword setTintColor:[UIUtils surespotBlue]];
     [self.storePassword setOnTintColor:[UIUtils surespotBlue]];
