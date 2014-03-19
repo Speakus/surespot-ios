@@ -77,7 +77,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     
     _latestVersionsDict = [NSMutableDictionary dictionaryWithDictionary:[FileController loadLatestVersionsForUsername:identity.username]];
-    DDLogInfo(@"loaded %d latest versions from disk", [_latestVersionsDict count]);
+    DDLogVerbose(@"loaded %d latest versions from disk", [_latestVersionsDict count]);
     
     [self updateIdentity:identity onlyIfExists:NO];
     
@@ -87,7 +87,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     if (password) {
         NSDictionary * secrets  =  [FileController loadSharedSecretsForUsername: username withPassword:password];
         [_sharedSecretsDict addEntriesFromDictionary:secrets];
-        DDLogInfo(@"loaded %d encrypted secrets from disk", [secrets count]);
+        DDLogVerbose(@"loaded %d encrypted secrets from disk", [secrets count]);
     }
 }
 
@@ -120,7 +120,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         
         for (NSString * key in [_sharedSecretsDict keyEnumerator]) {
             if ([key hasPrefix:_loggedInUsername]) {
-                DDLogInfo(@"removing shared secret key: %@", key);
+                DDLogVerbose(@"removing shared secret key: %@", key);
                 [keysToRemove addObject:key];
             }
         }
@@ -139,14 +139,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         NSMutableDictionary * ourSecrets = [[NSMutableDictionary alloc] init];
         for (NSString * key in [_sharedSecretsDict keyEnumerator]) {
             if ([key hasPrefix:_loggedInUsername]) {
-                DDLogInfo(@"saving shared secret key: %@", key);
+                DDLogVerbose(@"saving shared secret key: %@", key);
                 [ourSecrets setObject:[_sharedSecretsDict objectForKey:key] forKey:key];
             }
         }
         
         
         [FileController saveSharedSecrets: ourSecrets forUsername: _loggedInUsername withPassword:password];
-        DDLogInfo(@"saved %d encrypted secrets to disk", [ourSecrets count]);
+        DDLogVerbose(@"saved %d encrypted secrets to disk", [ourSecrets count]);
     }
     
 }
@@ -154,7 +154,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 -(void) saveLatestVersions {
     
     [FileController saveLatestVersions: _latestVersionsDict forUsername: _loggedInUsername];
-    DDLogInfo(@"saved %d latest versions to disk", [_latestVersionsDict count]);
+    DDLogVerbose(@"saved %d latest versions to disk", [_latestVersionsDict count]);
     
     
 }
@@ -171,7 +171,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     for (NSString * key in [_sharedSecretsDict allKeys]) {
         NSArray * keyComponents = [key componentsSeparatedByString:@":"];
         if ([[keyComponents objectAtIndex:2] isEqualToString:friendname] ) {
-            DDLogInfo(@"removing shared secret for: %@", key);
+            DDLogVerbose(@"removing shared secret for: %@", key);
             [keysToRemove addObject:key];
         }
     }
@@ -183,7 +183,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     for (NSString * key in [_publicKeysDict allKeys]) {
         NSArray * keyComponents = [key componentsSeparatedByString:@":"];
         if ([[keyComponents objectAtIndex:0] isEqualToString:friendname] ) {
-            DDLogInfo(@"removing public key for: %@", key);
+            DDLogVerbose(@"removing public key for: %@", key);
             [keysToRemove addObject:key];
         }
     }
@@ -198,7 +198,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 -(void) clearIdentityData:(NSString *) username {
     if ([username isEqualToString:_loggedInUsername]) {
-        DDLogInfo(@"purging cached identity data from RAM for: %@",  username);
+        DDLogVerbose(@"purging cached identity data from RAM for: %@",  username);
         [_sharedSecretsDict removeAllObjects];
         [_publicKeysDict removeAllObjects];
         [_latestVersionsDict removeAllObjects];
@@ -220,7 +220,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     if (username && version) {
         NSString * latestVersion = [_latestVersionsDict objectForKey:username];
         if (!latestVersion || [version integerValue] > [latestVersion integerValue]) {
-            DDLogInfo(@"updating latest key version to %@ for %@", version, username);
+            DDLogVerbose(@"updating latest key version to %@ for %@", version, username);
             [_latestVersionsDict setObject:version forKey:username];
             [self saveLatestVersions];
         }
@@ -255,7 +255,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(NSHTTPCookie *) getCookieForUsername:(NSString *)username {
-    DDLogInfo(@"getCookieForUsername: %@", username);
+    DDLogVerbose(@"getCookieForUsername: %@", username);
     NSHTTPCookie * cookie = nil;
     if (username) {
         cookie = [_cookiesDict objectForKey:username];
@@ -265,13 +265,13 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                 
                 cookie = [FileController loadCookieForUsername:username password:password];
                 if (cookie) {
-                    DDLogInfo(@"getCookieForUsername, caching cookie: %@", username);
+                    DDLogVerbose(@"getCookieForUsername, caching cookie: %@", username);
                     [_cookiesDict setObject:cookie forKey:username];
                 }
             }
         }
     }
-    DDLogInfo(@"getCookieForUsername cookie: %@", cookie);
+    DDLogVerbose(@"getCookieForUsername cookie: %@", cookie);
     return cookie;
 }
 

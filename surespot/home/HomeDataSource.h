@@ -13,7 +13,6 @@
 
 @property (strong, atomic) NSMutableArray *friends;
 @property (atomic, assign) NSInteger latestUserControlId;
-@property (strong, nonatomic) NSString * currentChat;
 
 - (void) addFriendInvited: (NSString *) name;
 - (void) addFriendInviter: (NSString *) name;
@@ -27,4 +26,7 @@
 -(void) loadFriendsCallback: (void(^)(BOOL success)) callback;
 -(BOOL) hasAnyNewMessages;
 -(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: version iv: iv;
+
+-(void) setCurrentChat: (NSString *) username;
+-(NSString *) getCurrentChat;
 @end

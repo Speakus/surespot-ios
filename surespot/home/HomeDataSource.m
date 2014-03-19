@@ -13,13 +13,14 @@
 #import "SDWebImageManager.h"
 
 #ifdef DEBUG
-static const int ddLogLevel = LOG_LEVEL_INFO;
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 #else
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
 
 
 @interface  HomeDataSource()
+@property (strong, atomic) NSString * cChat;
 @end
 
 @implementation HomeDataSource
@@ -49,7 +50,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         }
     }
     
-    DDLogVerbose(@"HomeDataSource init, latestUserControlId: %d, currentChat: %@", _latestUserControlId, _currentChat);
+    DDLogVerbose(@"HomeDataSource init, latestUserControlId: %d", _latestUserControlId);
     return self;
 }
 
@@ -183,7 +184,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     @synchronized (_friends) {
         if (_latestUserControlId > 0 || _friends.count > 0) {
             NSString * filename =[FileController getHomeFilename];
-            DDLogVerbose(@"saving home data to disk at %@, latestUserControlId: %d, currentChat: %@",filename, _latestUserControlId, _currentChat);
+            DDLogVerbose(@"saving home data to disk at %@, latestUserControlId: %d, currentChat: %@",filename, _latestUserControlId, [self getCurrentChat]);
             NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
             if (_friends.count > 0) {
                 [dict setObject:_friends  forKey:@"friends"];
@@ -191,8 +192,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             if (_latestUserControlId > 0) {
                 [dict setObject:[NSNumber numberWithInteger: _latestUserControlId] forKey:@"userControlId"];
             }
-            if (_currentChat) {
-                [dict setObject:_currentChat forKey:@"currentChat"];
+            if ([self getCurrentChat]) {
+                [dict setObject:[self getCurrentChat] forKey:@"currentChat"];
             }
             BOOL saved =[NSKeyedArchiver archiveRootObject:dict toFile:filename];
             DDLogVerbose(@"save success?: %@",saved ? @"YES" : @"NO");
@@ -201,15 +202,30 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(void) setCurrentChat: (NSString *) username {
-    if (username) {
-        Friend * afriend = [self getFriendByName:username];
-        [afriend setChatActive:YES];
-        afriend.lastReceivedMessageId = afriend.availableMessageId;
-        afriend.hasNewMessages = NO;
-        [self postRefresh];
+    @synchronized (self) {
+        if (username) {
+            Friend * afriend = [self getFriendByName:username];
+            [afriend setChatActive:YES];
+            afriend.lastReceivedMessageId = afriend.availableMessageId;
+            afriend.hasNewMessages = NO;
+            [self postRefresh];
+        }
+        
+        DDLogInfo(@"setCurrentChat: %@", username);
+        self.cChat = username;
+    }
+}
+
+-(NSString *) getCurrentChat {
+    
+    NSString * theCurrentChat;
+    @synchronized (self) {
+        theCurrentChat = _cChat;
     }
     
-    _currentChat = username;    
+    DDLogInfo(@"currentChat: %@", theCurrentChat);
+    return theCurrentChat;
+    
 }
 
 -(void) sort {
@@ -221,7 +237,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 -(BOOL) hasAnyNewMessages {
     @synchronized (_friends) {
-      
+        
         for (Friend * afriend in _friends) {
             if (afriend.hasNewMessages ) {
                 return YES;
@@ -230,8 +246,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     
     return NO;
-  
-  
+    
+    
 }
 
 -(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: version iv: iv {

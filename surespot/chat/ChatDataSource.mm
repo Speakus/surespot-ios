@@ -88,7 +88,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             
         }
         
-        if (availableId > _latestMessageId || availableControlId > _latestControlMessageId) {
+        
+        //If the socket is connected get the data from the server, otherwise it'll be retrieved when the socket connects
+        if ([[ChatController sharedInstance] isConnected] && (availableId > _latestMessageId || availableControlId > _latestControlMessageId)) {
             
             DDLogVerbose(@"getting messageData latestMessageId: %d, latestControlId: %d", _latestMessageId ,_latestControlMessageId);
             //load message data

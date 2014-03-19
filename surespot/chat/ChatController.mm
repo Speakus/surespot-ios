@@ -132,20 +132,22 @@ static const int MAX_RETRY_DELAY = 30;
     NSString * loggedInUser = [[IdentityController sharedInstance] getLoggedInUser];
     if (_socketIO && loggedInUser) {
         DDLogVerbose(@"connecting socket");
-        
+
+        self.socketIO.cookies = nil;
         [[NetworkController sharedInstance] clearCookies];
         NSHTTPCookie * cookie = [[CredentialCachingController sharedInstance] getCookieForUsername: loggedInUser];
         if (cookie) {
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
             self.socketIO.cookies = @[cookie];
         }
-        else {
-            self.socketIO.cookies = nil;
-        }
         
         self.socketIO.useSecure = serverSecure;
         [self.socketIO connectToHost:serverBaseIPAddress onPort:serverPort];
     }
+}
+
+-(BOOL) isConnected {
+    return [_socketIO isConnected];
 }
 
 -(void) resume {
@@ -453,7 +455,7 @@ static const int MAX_RETRY_DELAY = 30;
 - (HomeDataSource *) getHomeDataSource {
     
     if (_homeDataSource == nil) {
-        self.homeDataSource = [[HomeDataSource alloc] init];
+        _homeDataSource = [[HomeDataSource alloc] init];
     }
     return _homeDataSource;
 }
@@ -644,7 +646,7 @@ static const int MAX_RETRY_DELAY = 30;
         if (cds) {
             afriend.lastReceivedMessageId = message.serverid;
             
-            if ([_homeDataSource.currentChat isEqualToString: otherUser]) {
+            if ([[_homeDataSource getCurrentChat] isEqualToString: otherUser]) {
                 afriend.hasNewMessages = NO;
             }
             else {
@@ -653,7 +655,7 @@ static const int MAX_RETRY_DELAY = 30;
         }
         else {
             
-            if (![_homeDataSource.currentChat isEqualToString: otherUser] ) {
+            if (![[_homeDataSource getCurrentChat] isEqualToString: otherUser] ) {
                 afriend.hasNewMessages = isNew;
             }
         }
@@ -705,7 +707,7 @@ static const int MAX_RETRY_DELAY = 30;
                 if (cds) {
                     afriend.lastReceivedMessageId = message.serverid;
                     
-                    if ([_homeDataSource.currentChat isEqualToString: username]) {
+                    if ([[_homeDataSource getCurrentChat] isEqualToString: username]) {
                         afriend.hasNewMessages = NO;
                     }
                     else {
@@ -714,7 +716,7 @@ static const int MAX_RETRY_DELAY = 30;
                 }
                 else {
                     
-                    if (![_homeDataSource.currentChat isEqualToString: username] ) {
+                    if (![[_homeDataSource getCurrentChat] isEqualToString: username] ) {
                         afriend.hasNewMessages = isNew;
                     }
                 }
@@ -1034,16 +1036,20 @@ static const int MAX_RETRY_DELAY = 30;
 }
 
 -(NSString *) getCurrentChat {
-    return [_homeDataSource currentChat];
+    NSString * currentChat = [_homeDataSource getCurrentChat];
+    DDLogInfo(@"currentChat: %@", currentChat);
+    return currentChat;
 }
 
 
 -(void) login {
+    DDLogInfo(@"login");
     // [self connect];
     _homeDataSource = [[HomeDataSource alloc] init];
 }
 
 -(void) logout {
+    DDLogInfo(@"logout");
     [self pause];
     [self clearData];
 }

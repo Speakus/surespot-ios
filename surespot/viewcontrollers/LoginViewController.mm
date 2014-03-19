@@ -189,7 +189,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                  [[IdentityController sharedInstance] clearStoredPasswordForIdentity:username];
              }
              
-             [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie];
+             [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie reglogin:NO];
              
              UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
              SwipeViewController * svc = [storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"];

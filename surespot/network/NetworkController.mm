@@ -184,7 +184,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              andSignature: signatureString
              successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSHTTPCookie * cookie) {
                  DDLogVerbose(@"login response: %d",  [response statusCode]);
-                 [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie];
+                 [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie reglogin:YES];
                  successBlock(request, response, JSON, cookie);
              }
              failureBlock: failureBlock];
