@@ -38,6 +38,11 @@
 
 -(BOOL) isFriend;
 
+-(BOOL) hasFriendImageAssigned;
+-(BOOL) hasFriendAliasAssigned;
+-(NSString *) nameOrAlias;
+-(void) decryptAlias;
+
 
 
 @end

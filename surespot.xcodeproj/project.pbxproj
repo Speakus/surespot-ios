@@ -219,7 +219,7 @@
 		66EBE1381855C97100F2452D /* NSString+Sensitivize.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBE09B1855C97100F2452D /* NSString+Sensitivize.m */; };
 		66EBE13A1855C97100F2452D /* SurespotLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBE09F1855C97100F2452D /* SurespotLogFormatter.m */; };
 		66EBE13B1855C97100F2452D /* UIUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBE0A11855C97100F2452D /* UIUtils.m */; };
-		66EBE13C1855C97100F2452D /* Friend.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBE0A41855C97100F2452D /* Friend.m */; };
+		66EBE13C1855C97100F2452D /* Friend.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBE0A41855C97100F2452D /* Friend.mm */; };
 		66EBE13D1855C97100F2452D /* HomeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBE0A71855C97100F2452D /* HomeCell.m */; };
 		66EBE13E1855C97100F2452D /* HomeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66EBE0A81855C97100F2452D /* HomeCell.xib */; };
 		66EBE13F1855C97100F2452D /* HomeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBE0AA1855C97100F2452D /* HomeDataSource.m */; };
@@ -919,7 +919,7 @@
 		66EBE0A01855C97100F2452D /* UIUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIUtils.h; sourceTree = "<group>"; };
 		66EBE0A11855C97100F2452D /* UIUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = UIUtils.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		66EBE0A31855C97100F2452D /* Friend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Friend.h; sourceTree = "<group>"; };
-		66EBE0A41855C97100F2452D /* Friend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Friend.m; sourceTree = "<group>"; };
+		66EBE0A41855C97100F2452D /* Friend.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Friend.mm; sourceTree = "<group>"; };
 		66EBE0A51855C97100F2452D /* FriendDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendDelegate.h; sourceTree = "<group>"; };
 		66EBE0A61855C97100F2452D /* HomeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeCell.h; sourceTree = "<group>"; };
 		66EBE0A71855C97100F2452D /* HomeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HomeCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -1910,7 +1910,7 @@
 			isa = PBXGroup;
 			children = (
 				66EBE0A31855C97100F2452D /* Friend.h */,
-				66EBE0A41855C97100F2452D /* Friend.m */,
+				66EBE0A41855C97100F2452D /* Friend.mm */,
 				66EBE0A51855C97100F2452D /* FriendDelegate.h */,
 				66EBE0A61855C97100F2452D /* HomeCell.h */,
 				66EBE0A71855C97100F2452D /* HomeCell.m */,
@@ -2264,7 +2264,7 @@
 				6686623F18565AD5001491B1 /* SwipeViewController.mm in Sources */,
 				661F46A31865E063004A71B0 /* DeleteIdentityViewController.mm in Sources */,
 				6646AE15185CADC700CBACDE /* MBProgressHUD.m in Sources */,
-				66EBE13C1855C97100F2452D /* Friend.m in Sources */,
+				66EBE13C1855C97100F2452D /* Friend.mm in Sources */,
 				6686623E18565AD5001491B1 /* SignupViewController.mm in Sources */,
 				66EBE13B1855C97100F2452D /* UIUtils.m in Sources */,
 				661F46A91865EDC3004A71B0 /* ChangePasswordViewController.mm in Sources */,

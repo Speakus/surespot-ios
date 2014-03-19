@@ -924,7 +924,7 @@ const Float32 voiceRecordDelay = 0.3;
         
         // Configure the cell...
         Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource].friends objectAtIndex:indexPath.row];
-        cell.friendLabel.text = afriend.name;
+        cell.friendLabel.text = afriend.nameOrAlias;
         cell.friendLabel.textColor = [self getTextColor];
         cell.friendName = afriend.name;
         cell.friendDelegate = [ChatController sharedInstance];
@@ -973,7 +973,7 @@ const Float32 voiceRecordDelay = 0.3;
         bgColorView.layer.masksToBounds = YES;
         cell.selectedBackgroundView = bgColorView;
         
-        if (afriend.imageUrl) {
+        if ([afriend hasFriendImageAssigned]) {
             EncryptionParams * ep = [[EncryptionParams alloc] initWithOurUsername:[[IdentityController sharedInstance] getLoggedInUser]
                                                                        ourVersion:afriend.imageVersion
                                                                     theirUsername:afriend.name
@@ -1871,64 +1871,97 @@ const Float32 voiceRecordDelay = 0.3;
             }];
             [menuItems addObject:fingerprintsItem];
             
-            REMenuItem * selectImageItem = [[REMenuItem alloc]
-                                            initWithTitle:NSLocalizedString(@"menu_assign_image", nil)
-                                            image:[UIImage imageNamed:@"ic_menu_gallery"]
-                                            highlightedImage:nil
-                                            action:^(REMenuItem * item){
-                                                
-                                                _imageDelegate = [[ImageDelegate alloc]
-                                                                  initWithUsername:[[IdentityController sharedInstance] getLoggedInUser]
-                                                                  ourVersion:[[IdentityController sharedInstance] getOurLatestVersion]
-                                                                  theirUsername:thefriend.name
-                                                                  assetLibrary:nil];
-                                                
-                                                [ImageDelegate startFriendImageSelectControllerFromViewController:self usingDelegate:_imageDelegate];
-                                                
-                                                
-                                            }];
-            [menuItems addObject:selectImageItem];
             
-            REMenuItem * assignAliasItem = [[REMenuItem alloc]
-                                            initWithTitle:NSLocalizedString(@"menu_assign_alias", nil)
-                                            image:[UIImage imageNamed:@"ic_menu_gallery"]
-                                            highlightedImage:nil
-                                            action:^(REMenuItem * item){
-                                                
-                                                //show alert view to get password
-                                                UIAlertView * av = [[UIAlertView alloc]
-                                                                    initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"enter_alias", nil), [thefriend name]]
-                                                                    message:[NSString stringWithFormat:NSLocalizedString(@"enter_alias_for", nil), [thefriend name]]
-                                                                    delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", nil)
-                                                                    otherButtonTitles:NSLocalizedString(@"ok", nil), nil];
-                                                av.alertViewStyle = UIAlertViewStylePlainTextInput;
-                                                av.shouldEnableFirstOtherButtonBlock = ^BOOL(UIAlertView * alertView) {
-                                                    return ([[[alertView textFieldAtIndex:0] text] length] <= 20);
-                                                };
-                                                av.tapBlock =^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                                    if (buttonIndex == alertView.firstOtherButtonIndex) {
-                                                        NSString * alias = [[alertView textFieldAtIndex:0] text];
-                                                        DDLogInfo(@"entered alias: %@", alias);
-                                                        [[ChatController sharedInstance] assignFriendAlias:alias toFriendName:[thefriend name] callbackBlock:^(id result) {
-                                                            BOOL success = [result boolValue];
-                                                            if (!success) {
-                                                                [UIUtils showToastKey:@"could_not_assign_friend_alias" duration:1];
+            if (![thefriend hasFriendImageAssigned]) {
+                REMenuItem * selectImageItem = [[REMenuItem alloc]
+                                                initWithTitle:NSLocalizedString(@"menu_assign_image", nil)
+                                                image:[UIImage imageNamed:@"ic_menu_gallery"]
+                                                highlightedImage:nil
+                                                action:^(REMenuItem * item){
+                                                    
+                                                    _imageDelegate = [[ImageDelegate alloc]
+                                                                      initWithUsername:[[IdentityController sharedInstance] getLoggedInUser]
+                                                                      ourVersion:[[IdentityController sharedInstance] getOurLatestVersion]
+                                                                      theirUsername:thefriend.name
+                                                                      assetLibrary:nil];
+                                                    
+                                                    [ImageDelegate startFriendImageSelectControllerFromViewController:self usingDelegate:_imageDelegate];
+                                                    
+                                                    
+                                                }];
+                [menuItems addObject:selectImageItem];
+            }
+            else {
+                REMenuItem * removeImageItem = [[REMenuItem alloc]
+                                                initWithTitle:NSLocalizedString(@"menu_remove_friend_image", nil)
+                                                image:[UIImage imageNamed:@"ic_menu_gallery"]
+                                                highlightedImage:nil
+                                                action:^(REMenuItem * item){
+                                                    [[ChatController sharedInstance] removeFriendImage:[thefriend name] callbackBlock:^(id result) {
+                                                        BOOL success = [result boolValue];
+                                                        if (!success) {
+                                                            [UIUtils showToastKey:@"could_not_remove_friend_image" duration:1];
+                                                        }
+                                                    }];
+                                                    
+                                                    
+                                                }];
+                [menuItems addObject:removeImageItem];
+                
+            }
+            
+            if (![thefriend hasFriendAliasAssigned]) {
+                REMenuItem * assignAliasItem = [[REMenuItem alloc]
+                                                initWithTitle:NSLocalizedString(@"menu_assign_alias", nil)
+                                                image:[UIImage imageNamed:@"ic_menu_gallery"]
+                                                highlightedImage:nil
+                                                action:^(REMenuItem * item){
+                                                    
+                                                    //show alert view to get password
+                                                    UIAlertView * av = [[UIAlertView alloc]
+                                                                        initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"enter_alias", nil), [thefriend name]]
+                                                                        message:[NSString stringWithFormat:NSLocalizedString(@"enter_alias_for", nil), [thefriend name]]
+                                                                        delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                                                                        otherButtonTitles:NSLocalizedString(@"ok", nil), nil];
+                                                    av.alertViewStyle = UIAlertViewStylePlainTextInput;
+                                                    av.shouldEnableFirstOtherButtonBlock = ^BOOL(UIAlertView * alertView) {
+                                                        return ([[[alertView textFieldAtIndex:0] text] length] <= 20);
+                                                    };
+                                                    av.tapBlock =^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                                        if (buttonIndex == alertView.firstOtherButtonIndex) {
+                                                            NSString * alias = [[alertView textFieldAtIndex:0] text];
+                                                            if (![UIUtils stringIsNilOrEmpty:alias]) {
+                                                                DDLogInfo(@"entered alias: %@", alias);
+                                                                [[ChatController sharedInstance] assignFriendAlias:alias toFriendName:[thefriend name] callbackBlock:^(id result) {
+                                                                    BOOL success = [result boolValue];
+                                                                    if (!success) {
+                                                                        [UIUtils showToastKey:@"could_not_assign_friend_alias" duration:1];
+                                                                    }
+                                                                }];
                                                             }
-                                                        }];
-
-                                                    }
-                                                };
-                                                [av show];
-                                                
-                                                
-                                            }];
-            [menuItems addObject:assignAliasItem];
-            
-            
-            
-            
-            
-            
+                                                        }
+                                                    };
+                                                    
+                                                    [[av textFieldAtIndex:0] setText:[thefriend name]];                                                    
+                                                    [av show];
+                                                }];
+                [menuItems addObject:assignAliasItem];
+            }
+            else {
+                REMenuItem * removeAliasItem = [[REMenuItem alloc]
+                                                initWithTitle:NSLocalizedString(@"menu_remove_friend_alias", nil)
+                                                image:[UIImage imageNamed:@"ic_menu_gallery"]
+                                                highlightedImage:nil
+                                                action:^(REMenuItem * item){
+                                                    [[ChatController sharedInstance] removeFriendAlias:[thefriend name] callbackBlock:^(id result) {
+                                                        BOOL success = [result boolValue];
+                                                        if (!success) {
+                                                            [UIUtils showToastKey:@"could_not_remove_friend_alias" duration:1];
+                                                        }
+                                                    }];
+                                                }];
+                [menuItems addObject:removeAliasItem];
+            }
         }
     }
     

@@ -274,9 +274,12 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         [afriend setAliasVersion:version];
         [afriend setAliasIv:iv];
         
-        //if we were passed plain, assign it
+        //assign plain
         if (alias) {
             [afriend setAliasPlain: alias];
+        }
+        else {
+            [afriend decryptAlias];
         }
         
         [self writeToDisk];
@@ -291,8 +294,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         [afriend setAliasVersion:nil];
         [afriend setAliasIv:nil];
         
-        [afriend setAliasPlain: nil];
-        
+        [afriend setAliasPlain: nil];        
         
         [self writeToDisk];
         [self postRefresh];

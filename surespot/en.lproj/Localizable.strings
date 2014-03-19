@@ -346,4 +346,11 @@ If you elect to backup your identity on Google Drive you will be storing a copy 
 "notification_message_no_from"="%1$@: New message received.";
 "notification_invite_no_from"="%1$@: Friend invite received.";
 "notification_invite_accept_no_from"="%1$@: Friend invite accepted.";
-
+"menu_assign_alias"="assign alias";
+"could_not_assign_friend_alias"="could not assign friend alias";
+"enter_alias"="enter alias";
+"enter_alias_for"="enter alias for %@";
+"menu_remove_friend_image"="remove image";
+"menu_remove_friend_alias"="remove alias";
+"could_not_remove_friend_image"="could not remove friend image";
+"could_not_remove_friend_alias"="could not remove friend alias";

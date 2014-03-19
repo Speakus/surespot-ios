@@ -1028,7 +1028,12 @@ static const int MAX_RETRY_DELAY = 30;
     Friend * theFriend = [_homeDataSource getFriendByName:message.data];
     
     if (theFriend) {
-        [self setFriendImageUrl:[message.moreData objectForKey:@"url"] forFriendname: message.data version:[message.moreData objectForKey:@"version"] iv:[message.moreData objectForKey:@"iv"]];
+        if (message.moreData) {
+            [self setFriendImageUrl:[message.moreData objectForKey:@"url"] forFriendname: message.data version:[message.moreData objectForKey:@"version"] iv:[message.moreData objectForKey:@"iv"]];
+        }
+        else {
+            [_homeDataSource removeFriendImage:message.data];
+        }
     }
 }
 
@@ -1291,7 +1296,7 @@ static const int MAX_RETRY_DELAY = 30;
                                           }
                                           else {
                                               callbackBlock([NSNumber numberWithBool:NO]);
-                                              [self stopProgress];                                              
+                                              [self stopProgress];
                                           }
                                       }];
     
@@ -1307,9 +1312,8 @@ static const int MAX_RETRY_DELAY = 30;
 - (void)handleFriendAlias: (SurespotControlMessage *) message  {
     Friend * theFriend = [_homeDataSource getFriendByName:message.data];
     if (theFriend) {
-        
-        
         if (message.moreData) {
+            
             [self setFriendAlias:nil data:[message.moreData objectForKey:@"data"] friendname:message.data version:[message.moreData objectForKey:@"version"] iv:[message.moreData objectForKey:@"iv"]];
         }
         else {
@@ -1319,10 +1323,30 @@ static const int MAX_RETRY_DELAY = 30;
 }
 
 -(void) removeFriendAlias: (NSString *) friendname callbackBlock: (CallbackBlock) callbackBlock {
-    
+    [self startProgress];
+    [[NetworkController sharedInstance]
+     deleteFriendAlias:friendname
+     successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
+         [_homeDataSource removeFriendAlias: friendname];
+         callbackBlock([NSNumber numberWithBool:YES]);
+         [self stopProgress];
+     } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
+         callbackBlock([NSNumber numberWithBool:NO]);
+         [self stopProgress];
+     }];
 }
 -(void) removeFriendImage: (NSString *) friendname callbackBlock: (CallbackBlock) callbackBlock {
-    
+    [self startProgress];
+    [[NetworkController sharedInstance]
+     deleteFriendImage:friendname
+     successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
+         [_homeDataSource removeFriendImage: friendname];
+         callbackBlock([NSNumber numberWithBool:YES]);
+         [self stopProgress];
+     } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
+         callbackBlock([NSNumber numberWithBool:NO]);
+         [self stopProgress];
+     }];
 }
 
 

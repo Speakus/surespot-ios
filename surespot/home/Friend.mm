@@ -7,6 +7,9 @@
 //
 
 #import "Friend.h"
+#import "UIUtils.h"
+#import "EncryptionController.h"
+#import "IdentityController.h"
 
 #define INVITER 32
 #define MESSAGE_ACTIVITY 16
@@ -29,6 +32,7 @@
     NSDictionary * friendData = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
     
     [self parseDictionary:friendData];
+    [self decryptAlias];
     return self;
 }
 
@@ -38,6 +42,7 @@
     self = [super init];
     if( !self ) return nil;
     [self parseDictionary:dictionary];
+    [self decryptAlias];
     return self;
 }
 
@@ -56,6 +61,7 @@
         _aliasData = [coder decodeObjectForKey:@"aliasData"];
         _aliasIv = [coder decodeObjectForKey:@"aliasIv"];
         _aliasVersion = [coder decodeObjectForKey:@"aliasVersion"];
+        [self decryptAlias];
     }
     return self;
 }
@@ -70,6 +76,7 @@
     _aliasData = [dictionary objectForKey:@"aliasData"];
     _aliasIv = [dictionary objectForKey:@"aliasIv"];
     _aliasVersion = [dictionary objectForKey:@"aliasVersion"];
+    
 }
 
 -(void) encodeWithCoder:(NSCoder *)encoder {
@@ -83,10 +90,18 @@
     [encoder encodeObject:_imageUrl forKey:@"imageUrl"];
     [encoder encodeObject:_imageIv forKey:@"imageIv"];
     [encoder encodeObject:_aliasVersion forKey:@"aliasVersion"];
-    [encoder encodeObject:_aliasData forKey:@"aliasUrl"];
+    [encoder encodeObject:_aliasData forKey:@"aliasData"];
     [encoder encodeObject:_aliasIv forKey:@"aliasIv"];
+}
 
-   }
+-(void) decryptAlias {
+    if ([self hasFriendAliasAssigned] && [UIUtils stringIsNilOrEmpty: _aliasPlain]) {
+        [EncryptionController symmetricDecryptString:_aliasData ourVersion:_aliasVersion theirUsername:[[IdentityController sharedInstance] getLoggedInUser] theirVersion:_aliasVersion iv:_aliasIv callback:^(id result) {
+            _aliasPlain = result;
+        }];
+        
+    }
+}
 
 -(void) setFriend {
     //   if (set) {
@@ -211,6 +226,17 @@
 
 
 
+-(BOOL) hasFriendImageAssigned {
+    return _imageIv && _imageUrl && _imageVersion;
+}
+
+-(BOOL) hasFriendAliasAssigned {
+    return _aliasData && _aliasIv && _aliasVersion;
+}
+
+-(NSString *) nameOrAlias {
+    return [UIUtils stringIsNilOrEmpty:_aliasPlain] ? _name : _aliasPlain;
+}
 
 
 @end
