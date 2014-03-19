@@ -223,6 +223,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"openedFromNotification" object:nil ];
                 }
                 else {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"userSwitch" object:nil ];
                     //set the session
                     UIStoryboard *storyboard = self.window.rootViewController.storyboard;
                     [[ChatController sharedInstance] logout];

@@ -126,7 +126,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         }
         
         [_sharedSecretsDict removeObjectsForKeys:keysToRemove];
-
+        
         [_identitiesDict removeObjectForKey:_loggedInUsername];
         _loggedInUsername = nil;
     }
@@ -143,7 +143,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                 [ourSecrets setObject:[_sharedSecretsDict objectForKey:key] forKey:key];
             }
         }
-
+        
         
         [FileController saveSharedSecrets: ourSecrets forUsername: _loggedInUsername withPassword:password];
         DDLogInfo(@"saved %d encrypted secrets to disk", [ourSecrets count]);
@@ -256,15 +256,18 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 -(NSHTTPCookie *) getCookieForUsername:(NSString *)username {
     DDLogInfo(@"getCookieForUsername: %@", username);
-    NSHTTPCookie * cookie = [_cookiesDict objectForKey:username];
-    if (!cookie) {
-        NSString * password = [[IdentityController sharedInstance] getStoredPasswordForIdentity:username];
-        if (password) {
-
-            cookie = [FileController loadCookieForUsername:username password:password];
-            if (cookie) {
-                DDLogInfo(@"getCookieForUsername, caching cookie: %@", username);
-                [_cookiesDict setObject:cookie forKey:username];
+    NSHTTPCookie * cookie = nil;
+    if (username) {
+        cookie = [_cookiesDict objectForKey:username];
+        if (!cookie) {
+            NSString * password = [[IdentityController sharedInstance] getStoredPasswordForIdentity:username];
+            if (password) {
+                
+                cookie = [FileController loadCookieForUsername:username password:password];
+                if (cookie) {
+                    DDLogInfo(@"getCookieForUsername, caching cookie: %@", username);
+                    [_cookiesDict setObject:cookie forKey:username];
+                }
             }
         }
     }

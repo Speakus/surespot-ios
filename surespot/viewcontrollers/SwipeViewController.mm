@@ -52,7 +52,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 @interface SwipeViewController ()
 @property (nonatomic, strong) dispatch_queue_t dateFormatQueue;
 @property (nonatomic, strong) NSDateFormatter * dateFormatter;
-@property (nonatomic, weak) HomeDataSource * homeDataSource;
 @property (nonatomic, strong) UIViewPager * viewPager;
 @property (nonatomic, strong) NSMutableDictionary * needsScroll;
 @property (strong, readwrite, nonatomic) REMenu *menu;
@@ -88,7 +87,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 - (void)viewDidLoad
 {
-    DDLogVerbose(@"swipeviewdidload %@", self);
+    DDLogInfo(@"swipeviewdidload %@", self);
     [super viewDidLoad];
     
     _assetLibrary = [ALAssetsLibrary new];
@@ -154,9 +153,8 @@ const Float32 voiceRecordDelay = 0.3;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(purchaseStatusChanged:) name:@"purchaseStatusChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundImageChanged:) name:@"backgroundImageChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification) name:@"openedFromNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSwitch) name:@"userSwitch" object:nil];
     
-    
-    _homeDataSource = [[ChatController sharedInstance] getHomeDataSource];
     
     _viewPager = [[UIViewPager alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30)];
     _viewPager.autoresizingMask =UIViewAutoresizingFlexibleWidth;
@@ -165,7 +163,7 @@ const Float32 voiceRecordDelay = 0.3;
     
     
     //open active tabs, don't load data now well get it after connect
-    for (Friend * afriend in [_homeDataSource friends]) {
+    for (Friend * afriend in [[[ChatController sharedInstance] getHomeDataSource] friends]) {
         if ([afriend isChatActive]) {
             [self loadChat:[afriend name] show:NO availableId: -1 availableControlId:-1];
         }
@@ -301,6 +299,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 
 -(void) dealloc {
+    DDLogInfo(@"dealloc");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -487,7 +486,7 @@ const Float32 voiceRecordDelay = 0.3;
         for (id key in [_bottomIndexPaths allKeys]) {
             if ([key isEqualToString:@""]) {
                 
-                if (!_homeDataSource.currentChat) {
+                if (![[[ChatController sharedInstance] getHomeDataSource] currentChat]) {
                     id indexPath =[_bottomIndexPaths objectForKey:key];
                     DDLogInfo(@"Scrolling home view to index %@", indexPath);
                     [self scrollTableViewToCell:_friendView indexPath: indexPath];
@@ -495,7 +494,7 @@ const Float32 voiceRecordDelay = 0.3;
                 }
             }
             else {
-                if ([_homeDataSource.currentChat isEqualToString:key]) {
+                if ([[[[ChatController sharedInstance] getHomeDataSource] currentChat] isEqualToString:key]) {
                     id indexPath =[_bottomIndexPaths objectForKey:key];
                     DDLogInfo(@"Scrolling %@ view to index %@", key,indexPath);
                     
@@ -584,7 +583,6 @@ const Float32 voiceRecordDelay = 0.3;
 - (NSInteger)numberOfItemsInSwipeView:(SwipeView *)swipeView
 {
     @synchronized (_chats) {
-        
         return 1 + [_chats count];
     }
 }
@@ -681,7 +679,7 @@ const Float32 voiceRecordDelay = 0.3;
                 [[ChatController sharedInstance] setCurrentChat: [self sortedChats][currPage-1]];
                 _scrollingTo = -1;
                 
-                if (!_homeDataSource.hasAnyNewMessages) {
+                if (![[[ChatController sharedInstance] getHomeDataSource] hasAnyNewMessages]) {
                     //stop pulsing
                     [UIUtils stopPulseAnimation:_backImageView];
                 }
@@ -1418,7 +1416,7 @@ const Float32 voiceRecordDelay = 0.3;
 -(void) showChat:(NSString *) username {
     DDLogVerbose(@"showChat, %@", username);
     
-    Friend * afriend = [_homeDataSource getFriendByName:username];
+    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:username];
     
     [self loadChat:username show:YES availableId:[afriend availableMessageId] availableControlId:[afriend availableMessageControlId]];
     //   [_textField resignFirstResponder];
@@ -1431,7 +1429,7 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 - (BOOL) handleTextActionResign: (BOOL) resign {
-    if (!_homeDataSource.currentChat) {
+    if (![[[ChatController sharedInstance] getHomeDataSource] currentChat]) {
         NSString * text = _inviteTextView.text;
         
         if ([text length] > 0) {
@@ -1518,14 +1516,14 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 -(void) updateTabChangeUI {
-    if (!_homeDataSource.currentChat) {
+    if (![[[ChatController sharedInstance] getHomeDataSource] currentChat]) {
         [_theButton setImage:[UIImage imageNamed:@"ic_menu_invite"] forState:UIControlStateNormal];
         _messageTextView.hidden = YES;
         _inviteTextView.hidden = NO;
     }
     else {
         _inviteTextView.hidden = YES;
-        Friend *afriend = [_homeDataSource getFriendByName:_homeDataSource.currentChat];
+        Friend *afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] currentChat]];
         if (afriend.isDeleted) {
             [_theButton setImage:[UIImage imageNamed:@"ic_menu_home"] forState:UIControlStateNormal];
             _messageTextView.hidden = YES;
@@ -1573,9 +1571,9 @@ const Float32 voiceRecordDelay = 0.3;
 - (void)refreshMessages:(NSNotification *)notification {
     NSString * username = [notification.object objectForKey:@"username"];
     BOOL scroll = [[notification.object objectForKey:@"scroll"] boolValue];
-    DDLogVerbose(@"username: %@, currentchat: %@, scroll: %hhd", username, _homeDataSource.currentChat, scroll);
+    DDLogVerbose(@"username: %@, currentchat: %@, scroll: %hhd", username, [[[ChatController sharedInstance] getHomeDataSource] currentChat], scroll);
     
-    if ([username isEqualToString: _homeDataSource.currentChat]) {
+    if ([username isEqualToString: [[[ChatController sharedInstance] getHomeDataSource] currentChat]]) {
         
         UITableView * tableView;
         @synchronized (_chats) {
@@ -1656,10 +1654,10 @@ const Float32 voiceRecordDelay = 0.3;
     
     NSMutableArray * menuItems = [NSMutableArray new];
     
-    if (_homeDataSource.currentChat) {
-        Friend * theFriend = [_homeDataSource getFriendByName:_homeDataSource.currentChat];
+    if ([[[ChatController sharedInstance] getHomeDataSource] currentChat]) {
+        Friend * theFriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] currentChat]];
         if ([theFriend isFriend] && ![theFriend isDeleted]) {
-            NSString * theirUsername = _homeDataSource.currentChat;
+            NSString * theirUsername = [[[ChatController sharedInstance] getHomeDataSource] currentChat];
             
             REMenuItem * selectImageItem = [[REMenuItem alloc]
                                             initWithTitle:NSLocalizedString(@"select_image", nil)
@@ -1720,14 +1718,14 @@ const Float32 voiceRecordDelay = 0.3;
                                       if (buttonIndex == [alertView cancelButtonIndex]) {
                                           DDLogVerbose(@"delete cancelled");
                                       } else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:okString]) {
-                                          [[ChatController sharedInstance] deleteMessagesForFriend: [_homeDataSource getFriendByName:_homeDataSource.currentChat]];
+                                          [[ChatController sharedInstance] deleteMessagesForFriend: [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] currentChat]]];
                                       };
                                       
                                   }];
             }
             else {
                 
-                [[ChatController sharedInstance] deleteMessagesForFriend: [_homeDataSource getFriendByName:_homeDataSource.currentChat]];
+                [[ChatController sharedInstance] deleteMessagesForFriend: [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] currentChat]]];
             }
             
         }];
@@ -2164,7 +2162,7 @@ const Float32 voiceRecordDelay = 0.3;
     }
     else {
         [self updateTabChangeUI];
-        if ([name isEqualToString:_homeDataSource.currentChat]) {
+        if ([name isEqualToString:[[[ChatController sharedInstance] getHomeDataSource] currentChat]]) {
             [_messageTextView resignFirstResponder];
         }
     }
@@ -2173,14 +2171,14 @@ const Float32 voiceRecordDelay = 0.3;
 -(void) closeTabName: (NSString *) name {
     if (name) {
         [[ChatController sharedInstance] destroyDataSourceForFriendname: name];
-        [[_homeDataSource getFriendByName:name] setChatActive:NO];
+        [[[[ChatController sharedInstance] getHomeDataSource] getFriendByName:name] setChatActive:NO];
         @synchronized (_chats) {
             [_chats removeObjectForKey:name];
         }
         [_swipeView reloadData];
         NSInteger page = [_swipeView currentPage];
         
-        if ([name isEqualToString:_homeDataSource.currentChat]) {
+        if ([name isEqualToString:[[[ChatController sharedInstance] getHomeDataSource] currentChat] ]) {
             
             
             if (page >= _swipeView.numberOfPages) {
@@ -2191,22 +2189,23 @@ const Float32 voiceRecordDelay = 0.3;
         DDLogVerbose(@"page after close: %d", page);
         NSString * name = [self nameForPage:page];
         DDLogVerbose(@"name after close: %@", name);
-        [_homeDataSource setCurrentChat:name];
-        [_homeDataSource postRefresh];
+        [[[ChatController sharedInstance] getHomeDataSource] setCurrentChat:name];
+        [[[ChatController sharedInstance] getHomeDataSource] postRefresh];
         
     }
 }
 
 -(void) closeTab {
-    [self closeTabName: _homeDataSource.currentChat];
+    [self closeTabName: [[[ChatController sharedInstance] getHomeDataSource] currentChat]];
 }
 
 -(void) logout {
+    DDLogInfo(@"logout");
     
     //blow the views away
     
     _friendView = nil;
-    [_swipeView removeFromSuperview];
+    
     
     
     [[NetworkController sharedInstance] logout];
@@ -2216,6 +2215,9 @@ const Float32 voiceRecordDelay = 0.3;
         [_chats removeAllObjects];
         // [_swipeView reloadData];
     }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     
     //could be logging out as a result of deleting the logged in identity, which could be the only identity
     //if this is the case we want to go to the signup screen not the login screen
@@ -2236,7 +2238,13 @@ const Float32 voiceRecordDelay = 0.3;
     [self.navigationController popViewControllerAnimated:YES];
     
     
+    [_swipeView removeFromSuperview];
+    _swipeView = nil;
+    
+    
 }
+
+
 
 -(void) ensureVoiceDelegate {
     
@@ -2251,7 +2259,7 @@ const Float32 voiceRecordDelay = 0.3;
     [_buttonTimer invalidate];
     
     NSTimeInterval interval = -[_buttonDownDate timeIntervalSinceNow];
-    Friend * afriend = [_homeDataSource getFriendByName:_homeDataSource.currentChat];
+    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] currentChat]];
     
     if (interval < voiceRecordDelay) {
         
@@ -2308,7 +2316,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 -(void) buttonTimerFire:(NSTimer *) timer {
     
-    Friend * afriend = [_homeDataSource getFriendByName:_homeDataSource.currentChat];
+    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] currentChat]];
     
     if (afriend) {
         if (afriend.isDeleted) {
@@ -2578,6 +2586,20 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     [defaults removeObjectForKey:@"notificationType"];
     [defaults removeObjectForKey:@"notificationTo"];
     [defaults removeObjectForKey:@"notificationFrom"];
+}
+
+-(void) userSwitch {
+    DDLogInfo(@"userSwitch");
+    @synchronized (_chats) {
+        [_chats removeAllObjects];
+        // [_swipeView reloadData];
+    }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [_swipeView removeFromSuperview];
+    _swipeView = nil;
+
 }
 
 @end

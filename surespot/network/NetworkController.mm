@@ -6,9 +6,13 @@
 //  Copyright (c) 2013 2fours. All rights reserved.
 //
 
+#import "IdentityController.h"
 #import "NetworkController.h"
 #import "ChatUtils.h"
 #import "DDLog.h"
+#import "NSData+Base64.h"
+#import "NSString+SBJSON.h"
+#import "EncryptionController.h"
 
 #ifdef DEBUG
 static const int ddLogLevel = LOG_LEVEL_INFO;
@@ -138,6 +142,62 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
 }
 
+-(BOOL) reloginWithUsername:(NSString*) username successBlock:(JSONCookieSuccessBlock) successBlock failureBlock: (JSONFailureBlock) failureBlock
+{
+    DDLogInfo(@"relogin: %@", username);
+    //if we have password login again
+    NSString * password = nil;
+    
+    if (username) {
+        password = [[IdentityController sharedInstance] getStoredPasswordForIdentity:username];
+    }
+
+    if (username && password) {
+        dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+        
+        dispatch_async(q, ^{
+            DDLogVerbose(@"getting identity");
+            SurespotIdentity * identity = [[IdentityController sharedInstance] getIdentityWithUsername:username andPassword:password];
+            DDLogVerbose(@"got identity");
+            
+            if (!identity) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failureBlock(nil,nil,nil,nil);
+                });
+                return;
+            }
+            
+            DDLogVerbose(@"creating signature");
+            
+            NSData * decodedSalt = [NSData dataFromBase64String: [identity salt]];
+            NSData * derivedPassword = [EncryptionController deriveKeyUsingPassword:password andSalt: decodedSalt];
+            NSData * encodedPassword = [derivedPassword SR_dataByBase64Encoding];
+            
+            NSData * signature = [EncryptionController signUsername:identity.username andPassword: encodedPassword withPrivateKey:[identity getDsaPrivateKey]];
+            NSString * passwordString = [derivedPassword SR_stringByBase64Encoding];
+            NSString * signatureString = [signature SR_stringByBase64Encoding];
+            
+            DDLogInfo(@"logging in to server");
+            [[NetworkController sharedInstance]
+             loginWithUsername:identity.username
+             andPassword:passwordString
+             andSignature: signatureString
+             successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSHTTPCookie * cookie) {
+                 DDLogVerbose(@"login response: %d",  [response statusCode]);
+                 [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie];
+                 successBlock(request, response, JSON, cookie);
+             }
+             failureBlock: failureBlock];
+        });
+        
+        return YES;
+
+    
+    }
+    else {
+        return NO;
+    }
+}
 
 -(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
    

@@ -139,6 +139,9 @@ static const int MAX_RETRY_DELAY = 30;
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
             self.socketIO.cookies = @[cookie];
         }
+        else {
+            self.socketIO.cookies = nil;
+        }
         
         self.socketIO.useSecure = serverSecure;
         [self.socketIO connectToHost:serverBaseIPAddress onPort:serverPort];
@@ -168,11 +171,23 @@ static const int MAX_RETRY_DELAY = 30;
 
 - (void) socketIO:(SocketIO *)socket onError:(NSError *)error {
     DDLogInfo(@"error %@", error);
+    BOOL reAuthing = NO;
     if ([error code] == SocketIOUnauthorized) {
-        DDLogInfo(@"socket unauthorized");
-        [[NetworkController sharedInstance] setUnauthorized];
+        DDLogInfo(@"socket 403 unauthorized");
+        reAuthing = [[NetworkController sharedInstance] reloginWithUsername:[[IdentityController sharedInstance] getLoggedInUser] successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSHTTPCookie *cookie) {
+            [self connect];
+        } failureBlock:^(NSURLRequest *operation, NSHTTPURLResponse *responseObject, NSError *Error, id JSON) {
+            [[NetworkController sharedInstance] setUnauthorized];
+        }];
+        
+        if (!reAuthing) {
+            [[NetworkController sharedInstance] setUnauthorized];
+        }
+        
         return;
     }
+    
+    if (reAuthing) return;
     [self reconnect];
     
 }
@@ -206,7 +221,7 @@ static const int MAX_RETRY_DELAY = 30;
 
 -(double) generateIntervalK: (NSInteger) k {
     NSInteger timerInterval = pow(2,k);
-
+    
     if (timerInterval > MAX_RETRY_DELAY) {
         timerInterval = MAX_RETRY_DELAY;
     }

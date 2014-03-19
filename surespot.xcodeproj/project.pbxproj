@@ -210,7 +210,7 @@
 		66EBE0D21855C97100F2452D /* RestoreIdentityDriveViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF371855C96F00F2452D /* RestoreIdentityDriveViewController.mm */; };
 		66EBE0D31855C97100F2452D /* ImageDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF3A1855C96F00F2452D /* ImageDelegate.mm */; };
 		66EBE0D41855C97100F2452D /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF3C1855C96F00F2452D /* UIImage+Scale.m */; };
-		66EBE0D51855C97100F2452D /* NetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF3F1855C96F00F2452D /* NetworkController.m */; };
+		66EBE0D51855C97100F2452D /* NetworkController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF3F1855C96F00F2452D /* NetworkController.mm */; };
 		66EBE0D61855C97100F2452D /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66EBDF411855C96F00F2452D /* MainStoryboard.storyboard */; };
 		66EBE0D91855C97100F2452D /* EncryptionController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF4A1855C96F00F2452D /* EncryptionController.mm */; };
 		66EBE0DA1855C97100F2452D /* IdentityKeys.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF4C1855C96F00F2452D /* IdentityKeys.mm */; };
@@ -902,7 +902,7 @@
 		66EBDF3B1855C96F00F2452D /* UIImage+Scale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Scale.h"; sourceTree = "<group>"; };
 		66EBDF3C1855C96F00F2452D /* UIImage+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Scale.m"; sourceTree = "<group>"; };
 		66EBDF3E1855C96F00F2452D /* NetworkController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkController.h; sourceTree = "<group>"; };
-		66EBDF3F1855C96F00F2452D /* NetworkController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NetworkController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		66EBDF3F1855C96F00F2452D /* NetworkController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = NetworkController.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		66EBDF421855C96F00F2452D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
 		66EBDF491855C96F00F2452D /* EncryptionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncryptionController.h; sourceTree = "<group>"; };
 		66EBDF4A1855C96F00F2452D /* EncryptionController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = EncryptionController.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -1863,7 +1863,7 @@
 			isa = PBXGroup;
 			children = (
 				66EBDF3E1855C96F00F2452D /* NetworkController.h */,
-				66EBDF3F1855C96F00F2452D /* NetworkController.m */,
+				66EBDF3F1855C96F00F2452D /* NetworkController.mm */,
 			);
 			path = network;
 			sourceTree = "<group>";
@@ -2350,7 +2350,7 @@
 				66866266185B6A2E001491B1 /* SDWebImageDecoder.m in Sources */,
 				66866264185B6A2E001491B1 /* SDImageCache.mm in Sources */,
 				666D337C188476B100B73F69 /* CAXException.cpp in Sources */,
-				66EBE0D51855C97100F2452D /* NetworkController.m in Sources */,
+				66EBE0D51855C97100F2452D /* NetworkController.mm in Sources */,
 				66E21DEC1847D7F90005D91E /* IASKAppSettingsViewController.m in Sources */,
 				66EC610B176E494900937467 /* AFHTTPClient.m in Sources */,
 				66EC610C176E494900937467 /* AFHTTPRequestOperation.m in Sources */,
