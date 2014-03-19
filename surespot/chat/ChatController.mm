@@ -31,9 +31,10 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
 
-static const int MAX_CONNECTION_RETRIES = 16;
+static const int MAX_CONNECTION_RETRIES = 60;
+static const int MAX_RETRY_DELAY = 30;
 
-
+#define ARC4RANDOM_MAX      0x100000000
 
 @interface ChatController() {
     
@@ -193,14 +194,26 @@ static const int MAX_CONNECTION_RETRIES = 16;
             [_reconnectTimer invalidate];
         }
         
-        //exponential backoff
-        NSInteger timerInterval = pow(2,_connectionRetries++);
-        DDLogVerbose(@ "attempting reconnect in: %d" , timerInterval);
+        //exponential random backoff
+        double timerInterval = [self generateIntervalK: _connectionRetries++];
+        DDLogVerbose(@ "attempting reconnect in: %f" , timerInterval);
         _reconnectTimer = [NSTimer scheduledTimerWithTimeInterval:timerInterval target:self selector:@selector(reconnectTimerFired:) userInfo:nil repeats:NO];
     }
     else {
         DDLogVerbose(@"reconnect retries exhausted, giving up");
     }
+}
+
+-(double) generateIntervalK: (NSInteger) k {
+    NSInteger timerInterval = pow(2,k);
+
+    if (timerInterval > MAX_RETRY_DELAY) {
+        timerInterval = MAX_RETRY_DELAY;
+    }
+    
+    double mult = ((double)arc4random() / ARC4RANDOM_MAX);
+    double reconnectTime = mult * timerInterval;
+    return reconnectTime;
 }
 
 -(void) reconnectTimerFired: (NSTimer *) timer {
