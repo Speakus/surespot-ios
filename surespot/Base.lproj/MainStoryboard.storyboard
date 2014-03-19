@@ -72,6 +72,9 @@
                                         <rect key="frame" x="216" y="0.0" width="51" height="31"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <inset key="insetFor6xAndEarlier" minX="0.0" minY="-10" maxX="0.0" maxY="10"/>
+                                        <connections>
+                                            <action selector="storeKeychainValueChanged:" destination="2" eventType="valueChanged" id="sTi-CK-gVn"/>
+                                        </connections>
                                     </switch>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

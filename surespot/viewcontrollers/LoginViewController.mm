@@ -185,9 +185,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              if (_storePassword.isOn) {
                  [[IdentityController sharedInstance] storePasswordForIdentity:username password:password];
              }
-             else {
-                 [[IdentityController sharedInstance] clearStoredPasswordForIdentity:username];
-             }
+
              
              [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie reglogin:NO];
              
@@ -391,6 +389,12 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
 }
 
+- (IBAction)storeKeychainValueChanged:(id)sender {
+    if (![_storePassword isOn]) {
+        NSString * username = [_identityNames objectAtIndex:[_userPicker selectedRowInComponent:0]];
+        [[IdentityController sharedInstance] clearStoredPasswordForIdentity:username];
+    }    
+}
 
 
 @end

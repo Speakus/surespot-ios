@@ -334,7 +334,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
 }
 
-+(void) deleteSecretDataForUsername: (NSString *) username; {
++(void) deleteDataForUsername: (NSString *) username; {
     NSString * filePath = [self getFilename:SECRETS_FILENAME forUser:username];
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     filePath = [self getFilename:LATEST_VERSIONS_FILENAME forUser:username];
