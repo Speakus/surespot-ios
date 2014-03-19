@@ -151,7 +151,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     if (username) {
         password = [[IdentityController sharedInstance] getStoredPasswordForIdentity:username];
     }
-
+    
     if (username && password) {
         dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         
@@ -191,8 +191,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         });
         
         return YES;
-
-    
+        
+        
     }
     else {
         return NO;
@@ -200,7 +200,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
-   
+    
     [self clearCookies];
     
     NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -319,7 +319,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSURLRequest *request = [self requestWithMethod:@"POST" path:path  parameters:nil];
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
     [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
-    [operation start];}
+    [operation start];
+}
 
 -(void) getLatestDataSinceUserControlId: (NSInteger) latestUserControlId spotIds: (NSArray *) spotIds successBlock:(JSONSuccessBlock)successBlock failureBlock: (JSONFailureBlock) failureBlock {
     NSMutableDictionary *params = nil;
@@ -717,12 +718,47 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     NSMutableDictionary * params = [NSMutableDictionary new];
     [self addPurchaseReceiptToParams: params];
-                                   
+    
     NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"updatePurchaseTokens" parameters: params];
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
     [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
     [operation start];
 }
 
+-(void) assignFriendAlias:(NSString *) data friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   data, @"data",
+                                   iv,@"iv",
+                                   version,@"version",
+                                   nil];
+    
+    NSString * path = [[NSString stringWithFormat:@"users/%@/alias", friendname] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURLRequest *request = [self requestWithMethod:@"PUT" path:path  parameters:params];
+    
+    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
+    [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
+    [operation start];
+}
+
+-(void) deleteFriendAlias:(NSString *) friendname successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
+    
+    NSString * path = [[NSString stringWithFormat:@"users/%@/alias", friendname] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path  parameters:nil];
+    
+    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
+    [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
+    [operation start];
+}
+
+-(void) deleteFriendImage:(NSString *) friendname successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
+    
+    NSString * path = [[NSString stringWithFormat:@"users/%@/image", friendname] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURLRequest *request = [self requestWithMethod:@"DELETE" path:path  parameters:nil];
+    
+    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
+    [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
+    [operation start];
+}
 
 @end

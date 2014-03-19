@@ -263,10 +263,57 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         [afriend setImageIv:iv];
         
         [self writeToDisk];
-        
         [self postRefresh];
     }
 }
 
+-(void) setFriendAlias: (NSString *) alias data: (NSString *) data  friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv {
+    Friend * afriend = [self getFriendByName:friendname];
+    if (afriend) {
+        [afriend setAliasData:data];
+        [afriend setAliasVersion:version];
+        [afriend setAliasIv:iv];
+        
+        //if we were passed plain, assign it
+        if (alias) {
+            [afriend setAliasPlain: alias];
+        }
+        
+        [self writeToDisk];
+        [self postRefresh];
+    }
+}
+
+-(void) removeFriendAlias: (NSString *) friendname {
+    Friend * afriend = [self getFriendByName:friendname];
+    if (afriend) {
+        [afriend setAliasData:nil];
+        [afriend setAliasVersion:nil];
+        [afriend setAliasIv:nil];
+        
+        [afriend setAliasPlain: nil];
+        
+        
+        [self writeToDisk];
+        [self postRefresh];
+    }
+}
+
+-(void) removeFriendImage: (NSString *) friendname {
+    Friend * afriend = [self getFriendByName:friendname];
+    if (afriend) {
+        NSString * oldUrl = [afriend imageUrl];
+        if (oldUrl) {
+            [[[SDWebImageManager sharedManager] imageCache] removeImageForKey:oldUrl fromDisk:YES];
+        }
+        
+        [afriend setImageUrl:nil];
+        [afriend setImageVersion:nil];
+        [afriend setImageIv:nil];
+        
+        [self writeToDisk];
+        [self postRefresh];
+    }
+}
 
 @end

@@ -132,7 +132,7 @@ static const int MAX_RETRY_DELAY = 30;
     NSString * loggedInUser = [[IdentityController sharedInstance] getLoggedInUser];
     if (_socketIO && loggedInUser) {
         DDLogVerbose(@"connecting socket");
-
+        
         self.socketIO.cookies = nil;
         [[NetworkController sharedInstance] clearCookies];
         NSHTTPCookie * cookie = [[CredentialCachingController sharedInstance] getCookieForUsername: loggedInUser];
@@ -815,6 +815,12 @@ static const int MAX_RETRY_DELAY = 30;
                                 [self handleFriendImage: message ];
                                 
                             }
+                            else {
+                                if ([message.action isEqualToString:@"friendAlias"]) {
+                                    [self handleFriendAlias: message ];
+                                    
+                                }
+                            }
                         }
                         
                     }
@@ -1024,8 +1030,6 @@ static const int MAX_RETRY_DELAY = 30;
     if (theFriend) {
         [self setFriendImageUrl:[message.moreData objectForKey:@"url"] forFriendname: message.data version:[message.moreData objectForKey:@"version"] iv:[message.moreData objectForKey:@"iv"]];
     }
-    
-    
 }
 
 - (void) setCurrentChat: (NSString *) username {
@@ -1253,5 +1257,74 @@ static const int MAX_RETRY_DELAY = 30;
 -(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: version iv: iv {
     [_homeDataSource setFriendImageUrl:url forFriendname:name version:version iv:iv];
 }
+
+-(void) assignFriendAlias: (NSString *) alias toFriendName: (NSString *) friendname  callbackBlock: (CallbackBlock) callbackBlock {
+    [self startProgress];
+    NSString * version = [[IdentityController sharedInstance] getOurLatestVersion];
+    NSString * username = [[IdentityController sharedInstance] getLoggedInUser];
+    NSData * iv = [EncryptionController getIv];
+    //encrypt
+    [EncryptionController symmetricEncryptData:[alias dataUsingEncoding:NSUTF8StringEncoding]
+                                    ourVersion:version
+                                 theirUsername:username
+                                  theirVersion:version
+                                            iv:iv
+                                      callback:^(NSData * encryptedAliasData) {
+                                          if (encryptedAliasData) {
+                                              NSString * b64data = [encryptedAliasData base64EncodedStringWithSeparateLines:NO];
+                                              NSString * b64iv = [iv base64EncodedStringWithSeparateLines:NO];
+                                              //upload friend image to server
+                                              DDLogInfo(@"assigning friend alias");
+                                              [[NetworkController sharedInstance]
+                                               assignFriendAlias:b64data
+                                               friendname:friendname
+                                               version:version
+                                               iv:b64iv
+                                               successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                   [self setFriendAlias: alias  data: b64data friendname: friendname version: version iv: b64iv];
+                                                   callbackBlock([NSNumber numberWithBool:YES]);
+                                                   [self stopProgress];
+                                               } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                   callbackBlock([NSNumber numberWithBool:NO]);
+                                                   [self stopProgress];
+                                               }];
+                                          }
+                                          else {
+                                              callbackBlock([NSNumber numberWithBool:NO]);
+                                              [self stopProgress];                                              
+                                          }
+                                      }];
+    
+    
+    
+    
+}
+
+-(void) setFriendAlias: (NSString *) alias data: (NSString *) data friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv {
+    [_homeDataSource setFriendAlias: alias data: data friendname: friendname version: version iv: iv];
+}
+
+- (void)handleFriendAlias: (SurespotControlMessage *) message  {
+    Friend * theFriend = [_homeDataSource getFriendByName:message.data];
+    if (theFriend) {
+        
+        
+        if (message.moreData) {
+            [self setFriendAlias:nil data:[message.moreData objectForKey:@"data"] friendname:message.data version:[message.moreData objectForKey:@"version"] iv:[message.moreData objectForKey:@"iv"]];
+        }
+        else {
+            [_homeDataSource removeFriendAlias: message.data];
+        }
+    }
+}
+
+-(void) removeFriendAlias: (NSString *) friendname callbackBlock: (CallbackBlock) callbackBlock {
+    
+}
+-(void) removeFriendImage: (NSString *) friendname callbackBlock: (CallbackBlock) callbackBlock {
+    
+}
+
+
 
 @end

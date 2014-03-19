@@ -15,6 +15,10 @@
 @property (atomic, strong) NSString * imageUrl;
 @property (atomic, strong) NSString * imageVersion;
 @property (atomic, strong) NSString * imageIv;
+@property (atomic, strong) NSString * aliasPlain;
+@property (atomic, strong) NSString * aliasData;
+@property (atomic, strong) NSString * aliasVersion;
+@property (atomic, strong) NSString * aliasIv;
 @property (atomic, assign) NSInteger lastReceivedMessageId;
 @property (atomic, assign) NSInteger availableMessageId;
 @property (atomic, assign) NSInteger availableMessageControlId;

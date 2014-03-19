@@ -76,7 +76,7 @@ typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *e
                  failureBlock:(HTTPFailureBlock) failureBlock;
 
 -(void) getDeleteTokenForUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature
-                  successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
+                     successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
 
 -(void) deleteUsername:(NSString *) username
               password:(NSString *) password
@@ -87,11 +87,11 @@ typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *e
           failureBlock:(HTTPFailureBlock) failureBlock;
 
 -(void) getPasswordTokenForUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature
-                    successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
+                       successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
 
 -(void) changePasswordForUsername:(NSString *) username
-                         oldPassword:(NSString *) password
-                         newPassword:(NSString *) newPassword
+                      oldPassword:(NSString *) password
+                      newPassword:(NSString *) newPassword
                           authSig:(NSString *) authSig
                          tokenSig:(NSString *) tokenSig
                        keyVersion:(NSString *) keyversion
@@ -104,11 +104,15 @@ typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *e
 -(void) getShortUrl:(NSString*) longUrl callback: (CallbackBlock) callback;
 
 -(void) uploadReceipt: (NSString *) receipt
-                successBlock:(HTTPSuccessBlock) successBlock
-                failureBlock: (HTTPFailureBlock) failureBlock;
+         successBlock:(HTTPSuccessBlock) successBlock
+         failureBlock: (HTTPFailureBlock) failureBlock;
 
 -(void) clearCookies;
 
 -(BOOL) reloginWithUsername:(NSString*) username successBlock:(JSONCookieSuccessBlock) successBlock failureBlock: (JSONFailureBlock) failureBlock;
+
+-(void) assignFriendAlias:(NSString *) cipherAlias friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
+-(void) deleteFriendAlias:(NSString *) friendname successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
+-(void) deleteFriendImage:(NSString *) friendname successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
 
 @end

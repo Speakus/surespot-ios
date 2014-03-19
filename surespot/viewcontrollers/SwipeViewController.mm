@@ -1888,6 +1888,47 @@ const Float32 voiceRecordDelay = 0.3;
                                                 
                                             }];
             [menuItems addObject:selectImageItem];
+            
+            REMenuItem * assignAliasItem = [[REMenuItem alloc]
+                                            initWithTitle:NSLocalizedString(@"menu_assign_alias", nil)
+                                            image:[UIImage imageNamed:@"ic_menu_gallery"]
+                                            highlightedImage:nil
+                                            action:^(REMenuItem * item){
+                                                
+                                                //show alert view to get password
+                                                UIAlertView * av = [[UIAlertView alloc]
+                                                                    initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"enter_alias", nil), [thefriend name]]
+                                                                    message:[NSString stringWithFormat:NSLocalizedString(@"enter_alias_for", nil), [thefriend name]]
+                                                                    delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                                                                    otherButtonTitles:NSLocalizedString(@"ok", nil), nil];
+                                                av.alertViewStyle = UIAlertViewStylePlainTextInput;
+                                                av.shouldEnableFirstOtherButtonBlock = ^BOOL(UIAlertView * alertView) {
+                                                    return ([[[alertView textFieldAtIndex:0] text] length] <= 20);
+                                                };
+                                                av.tapBlock =^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                                    if (buttonIndex == alertView.firstOtherButtonIndex) {
+                                                        NSString * alias = [[alertView textFieldAtIndex:0] text];
+                                                        DDLogInfo(@"entered alias: %@", alias);
+                                                        [[ChatController sharedInstance] assignFriendAlias:alias toFriendName:[thefriend name] callbackBlock:^(id result) {
+                                                            BOOL success = [result boolValue];
+                                                            if (!success) {
+                                                                [UIUtils showToastKey:@"could_not_assign_friend_alias" duration:1];
+                                                            }
+                                                        }];
+
+                                                    }
+                                                };
+                                                [av show];
+                                                
+                                                
+                                            }];
+            [menuItems addObject:assignAliasItem];
+            
+            
+            
+            
+            
+            
         }
     }
     
@@ -2599,7 +2640,8 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     
     [_swipeView removeFromSuperview];
     _swipeView = nil;
-
+    
 }
+
 
 @end

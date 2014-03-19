@@ -53,6 +53,9 @@
         _imageUrl = [coder decodeObjectForKey:@"imageUrl"];
         _imageIv = [coder decodeObjectForKey:@"imageIv"];
         _imageVersion = [coder decodeObjectForKey:@"imageVersion"];
+        _aliasData = [coder decodeObjectForKey:@"aliasData"];
+        _aliasIv = [coder decodeObjectForKey:@"aliasIv"];
+        _aliasVersion = [coder decodeObjectForKey:@"aliasVersion"];
     }
     return self;
 }
@@ -64,6 +67,9 @@
     _imageVersion = [dictionary objectForKey:@"imageVersion"];
     _imageUrl = [dictionary objectForKey:@"imageUrl"];
     _imageIv = [dictionary objectForKey:@"imageIv"];
+    _aliasData = [dictionary objectForKey:@"aliasData"];
+    _aliasIv = [dictionary objectForKey:@"aliasIv"];
+    _aliasVersion = [dictionary objectForKey:@"aliasVersion"];
 }
 
 -(void) encodeWithCoder:(NSCoder *)encoder {
@@ -76,7 +82,11 @@
     [encoder encodeObject:_imageVersion forKey:@"imageVersion"];
     [encoder encodeObject:_imageUrl forKey:@"imageUrl"];
     [encoder encodeObject:_imageIv forKey:@"imageIv"];
-}
+    [encoder encodeObject:_aliasVersion forKey:@"aliasVersion"];
+    [encoder encodeObject:_aliasData forKey:@"aliasUrl"];
+    [encoder encodeObject:_aliasIv forKey:@"aliasIv"];
+
+   }
 
 -(void) setFriend {
     //   if (set) {
