@@ -266,6 +266,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     [SHKFacebook handleDidBecomeActive];
+    
+    BOOL clearNotifications = [[NSUserDefaults standardUserDefaults] boolForKey:@"pref_clear_notifications"];
+    
+    if (clearNotifications) {
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
