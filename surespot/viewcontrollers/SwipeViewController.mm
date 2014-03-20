@@ -2702,7 +2702,9 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     _swipeView = nil;
     
 }
-/=-z    [_swipeView reloadData];
+
+-(void) reloadSwipeViewData {
+    [_swipeView reloadData];
 }
 
 

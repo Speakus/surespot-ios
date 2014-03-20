@@ -90,13 +90,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSArray * dirfiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:identityDir error:NULL];
     
     NSMutableArray * identityFiles = [NSMutableArray new];
-    NSMutableDictionary * identityFile = [NSMutableDictionary new];
+
     
     NSString * file;
     for (file in dirfiles) {
         NSString * name = [[IdentityController sharedInstance] identityNameFromFile: file] ;
         
         if (name) {
+            NSMutableDictionary * identityFile = [NSMutableDictionary new];
             [identityFile  setObject: name forKey:@"name"];
             
             NSString * path =[identityDir stringByAppendingPathComponent:file];
@@ -105,8 +106,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             [identityFile setObject:[filePathsArray1 objectForKey:NSFileModificationDate] forKey:@"date"];
             [identityFile setObject:path forKey:@"filename"];
             [identityFiles addObject:identityFile];
-        }
-        
+        }        
     }
     
     return identityFiles;
