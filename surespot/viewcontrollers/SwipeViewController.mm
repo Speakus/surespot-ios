@@ -39,6 +39,7 @@
 #import "HelpViewController.h"
 #import "UIAlertView+Blocks.h"
 #import "LoadingView.h"
+#import "UsernameAliasMap.h"
 
 
 #ifdef DEBUG
@@ -572,7 +573,7 @@ const Float32 voiceRecordDelay = 0.3;
     else {
         @synchronized (_chats) {
             if ([_chats count] > 0) {
-                return [[self sortedChats] objectAtIndex:page-1];
+                return [[[self sortedAliasedChats] objectAtIndex:page-1] alias];
             }
         }
     }
@@ -616,11 +617,11 @@ const Float32 voiceRecordDelay = 0.3;
     else {
         DDLogVerbose(@"returning chat view");
         @synchronized (_chats) {
-            NSArray *keys = [self sortedChats];
+            NSArray *keys = [self sortedAliasedChats];
             if ([keys count] > index - 1) {
                 
                 id aKey = [keys objectAtIndex:index -1];
-                id anObject = [_chats objectForKey:aKey];
+                id anObject = [_chats objectForKey:[aKey username]];
                 
                 return anObject;
             }
@@ -676,7 +677,8 @@ const Float32 voiceRecordDelay = 0.3;
             if (_scrollingTo == currPage || _scrollingTo == -1) {
                 tableview = [self sortedValues][swipeView.currentPage-1];
                 
-                [[ChatController sharedInstance] setCurrentChat: [self sortedChats][currPage-1]];
+                UsernameAliasMap * map = [self sortedAliasedChats][currPage-1];
+                [[ChatController sharedInstance] setCurrentChat: map.username];
                 _scrollingTo = -1;
                 
                 if (![[[ChatController sharedInstance] getHomeDataSource] hasAnyNewMessages]) {
@@ -741,9 +743,9 @@ const Float32 voiceRecordDelay = 0.3;
         return 0;
     }
     @synchronized (_chats) {
-        NSArray * sortedChats = [self sortedChats];
+        NSArray * sortedChats = [self sortedAliasedChats];
         for (int i=0; i<[_chats count]; i++) {
-            if ([_chats objectForKey:[sortedChats objectAtIndex:i]] == tableView) {
+            if ([_chats objectForKey:[[sortedChats objectAtIndex:i] username]] == tableView) {
                 return i+1;
                 
             }
@@ -778,19 +780,18 @@ const Float32 voiceRecordDelay = 0.3;
     }
     else {
         NSInteger chatIndex = index-1;
-        NSString * username;
+        UsernameAliasMap * aliasMap;
         @synchronized (_chats) {
             
-            NSArray *keys = [self sortedChats];
+            NSArray *keys = [self sortedAliasedChats];
             if(chatIndex >= 0 && chatIndex < keys.count ) {
-                id aKey = [keys objectAtIndex:chatIndex];
-                username = aKey;
+                aliasMap = [keys objectAtIndex:chatIndex];
             }
         }
-        if (username) {
-            NSInteger count = [[ChatController sharedInstance] getDataSourceForFriendname: username].messages.count;
-            return count == 0 ? 1 : count;
-        }
+        
+        NSInteger count = [[ChatController sharedInstance] getDataSourceForFriendname: aliasMap.username].messages.count;
+        return count == 0 ? 1 : count;
+        
     }
     
     return 1;
@@ -834,10 +835,10 @@ const Float32 voiceRecordDelay = 0.3;
     else {
         @synchronized (_chats) {
             
-            NSArray *keys = [self sortedChats];
-            id aKey = [keys objectAtIndex:index -1];
+            NSArray *keys = [self sortedAliasedChats];
+            UsernameAliasMap  * map = [keys objectAtIndex:index -1];
             
-            NSString * username = aKey;
+            NSString * username = map.username;
             NSArray * messages =[[ChatController sharedInstance] getDataSourceForFriendname: username].messages;
             
             
@@ -996,12 +997,12 @@ const Float32 voiceRecordDelay = 0.3;
         return cell;
     }
     else {
-        id aKey;
+        UsernameAliasMap * aliasMap;
         @synchronized (_chats) {
-            NSArray *keys = [self sortedChats];
+            NSArray *keys = [self sortedAliasedChats];
             
             if ([keys count] > index - 1) {
-                aKey = [keys objectAtIndex:index -1];
+                aliasMap = [keys objectAtIndex:index -1];
             }
             else {
                 static NSString *CellIdentifier = @"Cell";
@@ -1011,8 +1012,9 @@ const Float32 voiceRecordDelay = 0.3;
                 return cell;
             }
         }
-        NSString * username = aKey;
-        NSArray * messages =[[ChatController sharedInstance] getDataSourceForFriendname: username].messages;
+        
+        NSString * username =  aliasMap.username;
+        NSArray * messages = [[ChatController sharedInstance] getDataSourceForFriendname: username].messages;
         
         
         if (messages.count == 0) {
@@ -1309,17 +1311,29 @@ const Float32 voiceRecordDelay = 0.3;
     }
 }
 
--(NSArray *) sortedChats {
-    return [[_chats allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
+-(NSArray *) sortedAliasedChats {
+    //account for aliases
+    NSArray * allKeys = [_chats allKeys];
+    
+    NSMutableArray * aliasedChats = [NSMutableArray new];
+    for (NSString * username in allKeys) {
+        NSString * aliasedName = [[[[ChatController sharedInstance] getHomeDataSource] getFriendByName:username] nameOrAlias];
+        UsernameAliasMap * t = [UsernameAliasMap new];
+        t.username = username;
+        t.alias = aliasedName;
+        [aliasedChats addObject:t];
+    }
+    
+    return [aliasedChats sortedArrayUsingComparator:^NSComparisonResult(UsernameAliasMap * obj1, UsernameAliasMap * obj2) {
+        return [obj1.alias compare:obj2.alias options:NSCaseInsensitiveSearch];
     }];
 }
 
 -(NSArray *) sortedValues {
-    NSArray * sortedKeys = [self sortedChats];
+    NSArray * sortedMaps = [self sortedAliasedChats];
     NSMutableArray * sortedValues = [NSMutableArray new];
-    for (NSString * key in sortedKeys) {
-        [sortedValues addObject:[_chats objectForKey:key]];
+    for (UsernameAliasMap * map in sortedMaps) {
+        [sortedValues addObject:[_chats objectForKey:map.username]];
     }
     return sortedValues;
 }
@@ -1376,8 +1390,15 @@ const Float32 voiceRecordDelay = 0.3;
         @synchronized (_chats) {
             
             [_chats setObject:chatView forKey:username];
-            index = [[self sortedChats] indexOfObject:username] + 1          ;
             
+            
+            NSArray * sortedChats = [self sortedAliasedChats];
+            for (int i=0;i<[sortedChats count];i++) {
+                if ([[sortedChats[i] username] isEqualToString:username])  {
+                    index = i+1;
+                    break;
+                }
+            }
         }
         
         DDLogVerbose(@"creatingindex: %d", index);
@@ -1401,9 +1422,16 @@ const Float32 voiceRecordDelay = 0.3;
     else {
         if (show) {
             [[ChatController sharedInstance] setCurrentChat: username];
-            NSInteger index;
+            NSInteger index=0;
             @synchronized (_chats) {
-                index = [[self sortedChats] indexOfObject:username] + 1;
+                
+                NSArray * sortedChats = [self sortedAliasedChats];
+                for (int i=0;i<[sortedChats count];i++) {
+                    if ([[sortedChats[i] username] isEqualToString:username])  {
+                        index = i+1;
+                        break;
+                    }
+                }
             }
             
             DDLogVerbose(@"scrolling to index: %d", index);
@@ -1480,20 +1508,18 @@ const Float32 voiceRecordDelay = 0.3;
     NSString* message = _messageTextView.text;
     
     if ([UIUtils stringIsNilOrEmpty:message]) return;
-    id friendname;
+    UsernameAliasMap * aliasMap;
     @synchronized (_chats) {
-        NSArray *keys = [self sortedChats];
-        friendname = [keys objectAtIndex:[_swipeView currentItemIndex] -1];
+        NSArray *keys = [self sortedAliasedChats];
+        aliasMap = [keys objectAtIndex:[_swipeView currentItemIndex] -1];
     }
     
-    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:friendname];
+    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:aliasMap.username];
     if ([afriend isDeleted]) {
         return;
     }
     
-    
-    [[ChatController sharedInstance] sendMessage: message toFriendname:friendname];
-    
+    [[ChatController sharedInstance] sendMessage: message toFriendname:aliasMap.username];
     [_messageTextView setText:nil];
     
     [self updateTabChangeUI];
@@ -1942,7 +1968,7 @@ const Float32 voiceRecordDelay = 0.3;
                                                         }
                                                     };
                                                     
-                                                    [[av textFieldAtIndex:0] setText:[thefriend name]];                                                    
+                                                    [[av textFieldAtIndex:0] setText:[thefriend name]];
                                                     [av show];
                                                 }];
                 [menuItems addObject:assignAliasItem];

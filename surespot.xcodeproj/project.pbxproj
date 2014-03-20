@@ -151,6 +151,7 @@
 		66DAB647186F289A006C262F /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DAB646186F289A006C262F /* Accelerate.framework */; };
 		66DAB649186F2911006C262F /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DAB648186F2911006C262F /* CoreAudio.framework */; };
 		66DAB64E186F2B2F006C262F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DAB64D186F2B2F006C262F /* AudioToolbox.framework */; };
+		66DEA49318DA6E5A00AAF24C /* UsernameAliasMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DEA49218DA6E5A00AAF24C /* UsernameAliasMap.m */; };
 		66E21DEC1847D7F90005D91E /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E21DCE1847D7F90005D91E /* IASKAppSettingsViewController.m */; };
 		66E21DED1847D7F90005D91E /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E21DD01847D7F90005D91E /* IASKAppSettingsWebViewController.m */; };
 		66E21DEE1847D7F90005D91E /* IASKSpecifierValuesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E21DD21847D7F90005D91E /* IASKSpecifierValuesViewController.m */; };
@@ -654,6 +655,8 @@
 		66DAB646186F289A006C262F /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		66DAB648186F2911006C262F /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		66DAB64D186F2B2F006C262F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		66DEA49118DA6E5A00AAF24C /* UsernameAliasMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UsernameAliasMap.h; sourceTree = "<group>"; };
+		66DEA49218DA6E5A00AAF24C /* UsernameAliasMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsernameAliasMap.m; sourceTree = "<group>"; };
 		66E21DCD1847D7F90005D91E /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
 		66E21DCE1847D7F90005D91E /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
 		66E21DCF1847D7F90005D91E /* IASKAppSettingsWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsWebViewController.h; sourceTree = "<group>"; };
@@ -1902,6 +1905,8 @@
 				66EBE0A11855C97100F2452D /* UIUtils.m */,
 				66BB5A38187B7EE9007B5C47 /* SurespotSettingsStore.h */,
 				66BB5A39187B7EE9007B5C47 /* SurespotSettingsStore.m */,
+				66DEA49118DA6E5A00AAF24C /* UsernameAliasMap.h */,
+				66DEA49218DA6E5A00AAF24C /* UsernameAliasMap.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -2306,6 +2311,7 @@
 				66EBE0B21855C97100F2452D /* GenerateSharedSecretOperation.mm in Sources */,
 				66A2D940183C25E800785270 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				66EBE0B51855C97100F2452D /* GetSharedSecretOperation.mm in Sources */,
+				66DEA49318DA6E5A00AAF24C /* UsernameAliasMap.m in Sources */,
 				66EBE0BE1855C97100F2452D /* FilledRectView.m in Sources */,
 				662CA5A31873496F00684790 /* PurchaseDelegate.m in Sources */,
 				66E4F5BA176298CB00596E6B /* SocketIOTransportWebsocket.m in Sources */,

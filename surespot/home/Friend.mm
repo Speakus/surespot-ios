@@ -215,7 +215,7 @@
     
     if ((theirflags == myflags) || (theirflags < CHAT_ACTIVE && myflags < CHAT_ACTIVE)) {
         //sort by name
-        return [self.name compare:other.name options:NSCaseInsensitiveSearch ];
+        return [self.nameOrAlias compare:other.nameOrAlias options:NSCaseInsensitiveSearch ];
     }
     else {
         //sort by flag value
