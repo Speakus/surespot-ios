@@ -2496,7 +2496,7 @@ const Float32 voiceRecordDelay = 0.3;
     NSString * currentChat =[[ChatController sharedInstance] getCurrentChat];
     //show toast if we're not on the tab or home page, and pulse if we're logged in as the user
     if (currentChat) {
-        [UIUtils showToastMessage:[NSString stringWithFormat:NSLocalizedString(@"notification_invite", nil), [[IdentityController sharedInstance] getLoggedInUser], thefriend.name] duration:1];
+        [UIUtils showToastMessage:[NSString stringWithFormat:NSLocalizedString(@"notification_invite", nil), [[IdentityController sharedInstance] getLoggedInUser], thefriend.nameOrAlias] duration:1];
         
         [UIUtils startPulseAnimation:_backImageView];
     }

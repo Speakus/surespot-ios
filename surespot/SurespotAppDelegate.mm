@@ -179,11 +179,11 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                     [[[IdentityController sharedInstance] getIdentityNames] containsObject:to]) {
                     
                     
-                    [UIUtils showToastMessage:[NSString stringWithFormat:NSLocalizedString(notificationType, nil), to, from] duration:1];
+                    [UIUtils showToastMessage:[NSString stringWithFormat:NSLocalizedString(notificationType, nil), to] duration:1];
                     
                     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
                     localNotification.fireDate = nil;
-                    localNotification.alertBody = [NSString stringWithFormat: NSLocalizedString(notificationType, nil), to, from];
+                    localNotification.alertBody = [NSString stringWithFormat: NSLocalizedString(notificationType, nil), to];
                     localNotification.alertAction = NSLocalizedString(@"notification_title", nil);
                     localNotification.userInfo = userInfo;
                     //this doesn't seem to play anything when app is foregrounded so play it manually
