@@ -2214,9 +2214,7 @@ const Float32 voiceRecordDelay = 0.3;
     }
     else {
         [_menu close];
-        
     }
-    
 }
 
 -(void) showMenuForPage: (NSInteger) page indexPath: (NSIndexPath *) indexPath {
@@ -2240,12 +2238,12 @@ const Float32 voiceRecordDelay = 0.3;
         }
         
         if (_menu) {
+            [self resignAllResponders];
             _swipeView.userInteractionEnabled = NO;
             [_menu showSensiblyInView:self.view];
         }
     }
     else {
-        
         [_menu close];
     }
     
