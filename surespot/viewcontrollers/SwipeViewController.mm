@@ -1940,7 +1940,7 @@ const Float32 voiceRecordDelay = 0.3;
             if (![thefriend hasFriendAliasAssigned]) {
                 REMenuItem * assignAliasItem = [[REMenuItem alloc]
                                                 initWithTitle:NSLocalizedString(@"menu_assign_alias", nil)
-                                                image:[UIImage imageNamed:@"ic_menu_gallery"]
+                                                image:[UIImage imageNamed:@"ic_menu_friendslist"]
                                                 highlightedImage:nil
                                                 action:^(REMenuItem * item){
                                                     
@@ -1977,7 +1977,7 @@ const Float32 voiceRecordDelay = 0.3;
             else {
                 REMenuItem * removeAliasItem = [[REMenuItem alloc]
                                                 initWithTitle:NSLocalizedString(@"menu_remove_friend_alias", nil)
-                                                image:[UIImage imageNamed:@"ic_menu_gallery"]
+                                                image:[UIImage imageNamed:@"ic_menu_friendslist"]
                                                 highlightedImage:nil
                                                 action:^(REMenuItem * item){
                                                     [[ChatController sharedInstance] removeFriendAlias:[thefriend name] callbackBlock:^(id result) {
@@ -1994,7 +1994,7 @@ const Float32 voiceRecordDelay = 0.3;
     
     if (![thefriend isInviter]) {
         
-        REMenuItem * deleteFriendItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_delete_friend", nil) image:[UIImage imageNamed:@"ic_menu_delete"] highlightedImage:nil action:^(REMenuItem * item){
+        REMenuItem * deleteFriendItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_delete_friend", nil) image:[UIImage imageNamed:@"ic_menu_blocked_user"] highlightedImage:nil action:^(REMenuItem * item){
             
             NSString * okString = NSLocalizedString(@"ok", nil);
             [UIAlertView showWithTitle:NSLocalizedString(@"menu_delete_friend", nil)
