@@ -155,6 +155,7 @@ const Float32 voiceRecordDelay = 0.3;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundImageChanged:) name:@"backgroundImageChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification) name:@"openedFromNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSwitch) name:@"userSwitch" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadSwipeViewData) name:@"reloadSwipeView" object:nil];
     
     
     _viewPager = [[UIViewPager alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30)];
@@ -2700,6 +2701,8 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     [_swipeView removeFromSuperview];
     _swipeView = nil;
     
+}
+/=-z    [_swipeView reloadData];
 }
 
 

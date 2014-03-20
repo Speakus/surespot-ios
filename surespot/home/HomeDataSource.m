@@ -284,6 +284,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         
         [self writeToDisk];
         [self postRefresh];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadSwipeView" object: nil];
     }
 }
 
@@ -294,10 +295,11 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         [afriend setAliasVersion:nil];
         [afriend setAliasIv:nil];
         
-        [afriend setAliasPlain: nil];        
+        [afriend setAliasPlain: nil];
         
         [self writeToDisk];
         [self postRefresh];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadSwipeView" object: nil];
     }
 }
 
