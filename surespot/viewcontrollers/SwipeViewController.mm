@@ -1803,18 +1803,18 @@ const Float32 voiceRecordDelay = 0.3;
         [menuItems addObject:purchaseVoiceItem];
     }
     
-    REMenuItem * logoutItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"logout", nil) image:[UIImage imageNamed:@"ic_lock_power_off"] highlightedImage:nil action:^(REMenuItem * item){
-        [self logout];
-        
-    }];
-    [menuItems addObject:logoutItem];
-    
     REMenuItem * settingsItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"settings", nil) image:[UIImage imageNamed:@"ic_menu_preferences"] highlightedImage:nil action:^(REMenuItem * item){
         [self showSettings];
         
     }];
     
     [menuItems addObject:settingsItem];
+    
+    REMenuItem * logoutItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"logout", nil) image:[UIImage imageNamed:@"ic_lock_power_off"] highlightedImage:nil action:^(REMenuItem * item){
+        [self logout];
+        
+    }];
+    [menuItems addObject:logoutItem];
     
     return [self createMenu: menuItems];
 }
