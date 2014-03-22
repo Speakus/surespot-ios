@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface BackupIdentityViewController : UIViewController<UIPickerViewDataSource, UIPickerViewDelegate, UIPopoverControllerDelegate>
-
+@property (strong, nonatomic) NSString * selectUsername;
 @end

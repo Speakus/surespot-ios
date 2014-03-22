@@ -171,7 +171,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                                                                            
                                                                                                            
                                                                                                            BackupIdentityViewController * bvc = [[BackupIdentityViewController alloc] initWithNibName:@"BackupIdentityView" bundle:nil];
-                                                                                                           
+                                                                                                           bvc.selectUsername = username;
                                                                                                            UINavigationController * nav = self.navigationController;
                                                                                                            [nav popViewControllerAnimated:NO];
                                                                                                            [nav pushViewController:bvc animated:YES];

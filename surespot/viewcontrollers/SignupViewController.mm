@@ -158,6 +158,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
              SwipeViewController * svc = [storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"];
              BackupIdentityViewController * bvc = [[BackupIdentityViewController alloc] initWithNibName:@"BackupIdentityView" bundle:nil];
+             bvc.selectUsername = username;
              
              NSMutableArray *  controllers = [NSMutableArray new];
              [controllers addObject:svc];

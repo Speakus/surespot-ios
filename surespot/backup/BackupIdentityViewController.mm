@@ -75,7 +75,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     UIBarButtonItem *anotherButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"help",nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHelp)];
     self.navigationItem.rightBarButtonItem = anotherButton;
     
-    [_userPicker selectRow:[_identityNames indexOfObject:[[IdentityController sharedInstance] getLoggedInUser]] inComponent:0 animated:YES];
+    [_userPicker selectRow:[_identityNames indexOfObject:(_selectUsername ? _selectUsername : [[IdentityController sharedInstance] getLoggedInUser])] inComponent:0 animated:YES];
     
     [_lDocuments setText:NSLocalizedString(@"documents", nil)];
     [_bDocuments setTitle:NSLocalizedString(@"backup_to_documents", nil) forState:UIControlStateNormal];
