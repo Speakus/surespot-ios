@@ -49,7 +49,7 @@
 "crash_dialog_comment_prompt"="You can add your comments about the problem below if you like:";
 "crash_dialog_ok_toast"="Thank you!";
 "external_invite_message"="I'd like to chat with you privately via surespot. Click %@ to invite me as a friend / install the app.";
-"help_backupIdentities1"="Because surespot uses encryption keys that are never uploaded to our servers, if you lose your phone, or uninstall then re-install the app, or wipe the app's data, you will not be able to login unless you have backed up your identity.";
+"help_backupIdentities1"="Because surespot uses encryption keys that are never uploaded to our servers, if you lose your phone, or uninstall then re-install the app, or restore an old iOS backup, you will not be able to login unless you have backed up your identity.";
 "help_backupIdentities2"="Surespot can backup your identities to the Documents folder where they can be downloaded via iTunes File Sharing, or use Google Drive, available in settings.";
 "help_backup_drive2"="Your identities will be stored on Google Drive in the folder 'surespot identity backups'. Identities can be restored from the create user screen or in identity management settings.";
 "help_messageHistory"="Surespot has a 1000 message history. Once you reach 1000 messages your oldest message will be deleted so you will only ever have 1000 (encrypted) messages stored on the server. Of course you can delete any and all of your messages at any time.";

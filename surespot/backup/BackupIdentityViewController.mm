@@ -84,7 +84,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     
     [_lBackup setText:NSLocalizedString(@"help_backupIdentities1", nil)];
     
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 780);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 765);
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
