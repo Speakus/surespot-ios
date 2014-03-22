@@ -1841,8 +1841,13 @@ const Float32 voiceRecordDelay = 0.3;
 -(REMenu *) createHomeMenuFriend: (Friend *) thefriend {
     //home menu
     NSMutableArray * menuItems = [NSMutableArray new];
+    UsernameAliasMap * map = [UsernameAliasMap new];
+    map.username = thefriend.name;
+    map.alias = thefriend.aliasPlain;
     
     if ([thefriend isFriend]) {
+
+        
         if ([thefriend isChatActive]) {
             REMenuItem * closeTabHomeItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_close_tab", nil) image:[UIImage imageNamed:@"ic_menu_end_conversation"] highlightedImage:nil action:^(REMenuItem * item){
                 [self closeTabName: thefriend.name];
@@ -1881,7 +1886,7 @@ const Float32 voiceRecordDelay = 0.3;
             REMenuItem * fingerprintsItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"verify_key_fingerprints", nil) image:[UIImage imageNamed:@"fingerprint_zoom"] highlightedImage:nil action:^(REMenuItem * item){
                 //cameraUI
                 if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                    _popover = [[UIPopoverController alloc] initWithContentViewController:[[KeyFingerprintViewController alloc]                                                                                                            initWithNibName:@"KeyFingerprintView" username:thefriend.name]];
+                    _popover = [[UIPopoverController alloc] initWithContentViewController:[[KeyFingerprintViewController alloc]                                                                                                            initWithNibName:@"KeyFingerprintView" username:map]];
                     _popover.delegate = self;
                     CGFloat x = self.view.bounds.size.width;
                     CGFloat y =self.view.bounds.size.height;
@@ -1892,7 +1897,7 @@ const Float32 voiceRecordDelay = 0.3;
                 } else {
                     
                     
-                    [self.navigationController pushViewController:[[KeyFingerprintViewController alloc] initWithNibName:@"KeyFingerprintView" username:thefriend.name] animated:YES];
+                    [self.navigationController pushViewController:[[KeyFingerprintViewController alloc] initWithNibName:@"KeyFingerprintView" username:map] animated:YES];
                 }
                 
             }];

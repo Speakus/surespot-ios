@@ -20,6 +20,7 @@
 #import "KeyFingerprintLoadingCell.h"
 #import "NetworkController.h"
 #import "UIUtils.h"
+#import "UsernameAliasMap.h"
 
 #ifdef DEBUG
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;
@@ -28,7 +29,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
 
 @interface KeyFingerprintViewController()
-@property (strong, nonatomic) NSString * username;
+@property (strong, nonatomic) UsernameAliasMap * username;
 @property (strong, nonatomic) NSMutableDictionary * myFingerprints;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSMutableDictionary * theirFingerprints;
@@ -41,7 +42,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 @implementation KeyFingerprintViewController
 
--(id) initWithNibName:(NSString *)nibNameOrNil username: (NSString *) username {
+-(id) initWithNibName:(NSString *)nibNameOrNil username: (UsernameAliasMap *) username {
     self = [super initWithNibName:nibNameOrNil bundle:nil];
     if (self) {
         _username = username;
@@ -75,8 +76,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     SurespotIdentity * identity = [[CredentialCachingController sharedInstance] getLoggedInIdentity];
     
     //sort by name
- 
-    _meFirst = [_username compare:identity.username options:NSCaseInsensitiveSearch] > 0 ? YES : NO;
+    
+    _meFirst = [[_username username] compare:identity.username options:NSCaseInsensitiveSearch] > 0 ? YES : NO;
     
     
     //todo handle no identity
@@ -112,7 +113,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     });
     
     _theirFingerprints = [NSMutableDictionary new];
-    [self addAllPublicKeysForUsername:_username toDictionary:_theirFingerprints];
+    [self addAllPublicKeysForUsername:[_username username] toDictionary:_theirFingerprints];
     
     
 }
@@ -248,7 +249,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                         
                                                     } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                         [UIUtils showToastKey:@"could_not_load_public_keys"];
-                                                    }          
+                                                    }
      ];
 }
 
@@ -273,7 +274,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     BOOL useMyData = (_meFirst && section == 0) || (!_meFirst && section == 1);
-    return useMyData ? [[IdentityController sharedInstance] getLoggedInUser] : _username;
+    return useMyData ?
+        [[IdentityController sharedInstance] getLoggedInUser] :
+        [UIUtils buildAliasStringForUsername:[_username username] alias:[_username alias]];
 }
 
 

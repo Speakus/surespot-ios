@@ -45,5 +45,6 @@
 +(void) clearLocalCache;
 +(NSInteger) getDefaultImageMessageHeight;
 +(CGSize)imageSizeAfterAspectFit:(UIImageView*)imgview;
++ (NSString *) buildAliasStringForUsername: (NSString *) username alias: (NSString *) alias;
 @end
 

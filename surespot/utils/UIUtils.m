@@ -391,4 +391,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [[[SDWebImageManager sharedManager] imageCache] clearDisk];
 }
 
++ (NSString *) buildAliasStringForUsername: (NSString *) username alias: (NSString *) alias {
+    return (alias ? [NSString stringWithFormat:@"%@ (%@)", alias, username] : username);
+}
+
 @end

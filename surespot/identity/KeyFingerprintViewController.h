@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UsernameAliasMap.h"
 
 @interface KeyFingerprintViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
--(id) initWithNibName:(NSString *)nibNameOrNil username: (NSString *) username;
+-(id) initWithNibName:(NSString *)nibNameOrNil username: (UsernameAliasMap *) username;
 @end
