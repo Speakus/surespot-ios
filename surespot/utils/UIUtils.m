@@ -361,13 +361,13 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     for (NSInteger i = 0;i<linkMatchTexts.count;i++) {
         NSString * linkMatchText = linkMatchTexts[i];
-        NSString * urlString = urlStrings[i];
+        NSString * urlString = [urlStrings[i] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
         NSRange range = [label.text rangeOfString:linkMatchText];
         
         label.linkAttributes = [[NSDictionary alloc] initWithObjectsAndKeys:[UIUtils surespotBlue], kCTForegroundColorAttributeName, [NSNumber numberWithInt:kCTUnderlineStyleSingle], kCTUnderlineStyleAttributeName, nil];
         
-        
+    
         [label addLinkToURL:[NSURL URLWithString:urlString] withRange:range];
     }
     
