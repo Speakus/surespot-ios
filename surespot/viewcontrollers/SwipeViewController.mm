@@ -1845,8 +1845,17 @@ const Float32 voiceRecordDelay = 0.3;
     map.username = thefriend.name;
     map.alias = thefriend.aliasPlain;
     
+    
+    NSString * aliasName =[UIUtils buildAliasStringForUsername:[thefriend name] alias:[thefriend aliasPlain]];
+    REMenuItem * titleItem = [[REMenuItem alloc] initWithTitle: nil image:nil highlightedImage:nil action:nil];
+    
+    [titleItem setSubtitle:aliasName];
+    [titleItem setTitleEnabled:NO];
+  
+    [menuItems addObject:titleItem];        
+    
     if ([thefriend isFriend]) {
-
+        
         
         if ([thefriend isChatActive]) {
             REMenuItem * closeTabHomeItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_close_tab", nil) image:[UIImage imageNamed:@"ic_menu_end_conversation"] highlightedImage:nil action:^(REMenuItem * item){

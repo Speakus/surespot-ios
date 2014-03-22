@@ -26,6 +26,7 @@
 #import "REMenu.h"
 #import "REMenuItem.h"
 #import "REMenuItemView.h"
+#import "UIUtils.h"
 
 
 @interface REMenuItem ()
@@ -61,7 +62,7 @@
         self.textOffset = CGSizeMake(0, 0);
         self.subtitleTextOffset = CGSizeMake(0, 0);
         self.font = [UIFont boldSystemFontOfSize:21.0];
-        self.subtitleFont = [UIFont systemFontOfSize:14.0];
+        self.subtitleFont = [UIFont systemFontOfSize:18.0];
         
         self.backgroundColor = [UIColor colorWithRed:53/255.0 green:53/255.0 blue:52/255.0 alpha:1.0];
         self.separatorColor = [UIColor colorWithPatternImage:self.separatorImage];
@@ -76,12 +77,12 @@
         self.highlightedTextShadowColor = [UIColor blackColor];
         self.highlightedTextShadowOffset = CGSizeMake(0, -1.0);
         
-        self.subtitleTextColor = [UIColor colorWithWhite:0.425 alpha:1.000];
+        self.subtitleTextColor = [UIUtils surespotBlue];//[UIColor colorWithWhite:0.425 alpha:1.000];
         self.subtitleTextShadowColor = [UIColor blackColor];
-        self.subtitleTextShadowOffset = CGSizeMake(0, -1.0);
-        self.subtitleHighlightedTextColor = [UIColor colorWithRed:0.389 green:0.384 blue:0.379 alpha:1.000];
-        self.subtitleHighlightedTextShadowColor = [UIColor blackColor];
-        self.subtitleHighlightedTextShadowOffset = CGSizeMake(0, -1.0);
+//        self.subtitleTextShadowOffset = CGSizeMake(0, -1.0);
+        self.subtitleHighlightedTextColor =  [UIUtils surespotBlue];
+  //      self.subtitleHighlightedTextShadowColor = [UIColor blackColor];
+//        self.subtitleHighlightedTextShadowOffset = CGSizeMake(0, -1.0);
         self.subtitleTextAlignment = NSTextAlignmentCenter;
         
         self.borderWidth = 1.0;

@@ -59,7 +59,7 @@
             //
             titleFrame = CGRectMake(self.menu.textOffset.width, self.menu.textOffset.height, 0, floorf(frame.size.height / 1.725));
 
-            CGRect subtitleFrame = CGRectMake(self.menu.subtitleTextOffset.width, self.menu.subtitleTextOffset.height + titleFrame.size.height, 0, floorf(frame.size.height * (1.0 - 1.0 / 1.725)));
+            CGRect subtitleFrame = CGRectMake(self.menu.subtitleTextOffset.width, 0, 0, frame.size.height);
             self.subtitleLabel = ({
                 UILabel *label =[[UILabel alloc] initWithFrame:subtitleFrame];
                 label.contentMode = UIViewContentModeCenter;
