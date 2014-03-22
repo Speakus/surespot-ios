@@ -72,7 +72,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     
     //generate fingerprints
-    SurespotIdentity * identity = [[IdentityController sharedInstance] getIdentityWithUsername:_username andPassword:nil];
+    SurespotIdentity * identity = [[CredentialCachingController sharedInstance] getLoggedInIdentity];
     
     //sort by name
  
@@ -124,10 +124,10 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return _meFirst ? [[[[IdentityController sharedInstance] getIdentityWithUsername:_username andPassword:nil] latestVersion] integerValue] : [self theirCount];
+            return _meFirst ? [[[[CredentialCachingController sharedInstance] getLoggedInIdentity] latestVersion] integerValue] : [self theirCount];
             break;
         case 1:
-            return _meFirst ? [self theirCount] :  [[[[IdentityController sharedInstance] getIdentityWithUsername:_username andPassword:nil] latestVersion] integerValue];
+            return _meFirst ? [self theirCount] :  [[[[CredentialCachingController sharedInstance] getLoggedInIdentity] latestVersion] integerValue];
             break;
         default:
             return 0;
