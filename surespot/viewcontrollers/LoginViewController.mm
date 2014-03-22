@@ -55,6 +55,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     if (lastUser) {
         index = [_identityNames indexOfObject:lastUser];
+        if (index == NSNotFound) {
+            index = 0;
+        }
     }
     
     [_userPicker selectRow:index inComponent:0 animated:YES];
@@ -384,7 +387,13 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     if ([notificationType isEqualToString:@"message"] || [notificationType isEqualToString:@"invite"]) {
         NSString * to = [defaults objectForKey:@"notificationTo"];
-        [_userPicker selectRow:[_identityNames indexOfObject:to] inComponent:0 animated:YES];
+        NSInteger index = 0;
+        index = [_identityNames indexOfObject:to];
+        if (index == NSNotFound) {
+            index = 0;
+        }
+        
+        [_userPicker selectRow:index inComponent:0 animated:YES];
         [self updatePassword:to];
     }
 }
