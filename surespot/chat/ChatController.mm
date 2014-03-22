@@ -673,15 +673,20 @@ static const int MAX_RETRY_DELAY = 30;
         NSString * currentChat = [self getCurrentChat];
         if (![message.from isEqualToString: currentChat] &&
             [[[IdentityController sharedInstance] getIdentityNames] containsObject:message.to]) {
-            [UIUtils showToastMessage:[NSString stringWithFormat:NSLocalizedString(@"notification_message", nil), message.to, message.from] duration:1];
             
-            //play notification sound
-            [[SoundController sharedInstance] playNewMessageSoundForUser: message.to];
+            //get alias
+            Friend * thefriend = [_homeDataSource getFriendByName:message.from];
+            
+            if (thefriend) {
+                
+                [UIUtils showToastMessage:[NSString stringWithFormat:NSLocalizedString(@"notification_message_from", nil), message.to,thefriend.nameOrAlias] duration:1];
+                
+                //play notification sound
+                [[SoundController sharedInstance] playNewMessageSoundForUser: message.to];
+            }
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessage" object: message];
-        
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessage" object: message];                
     }
 }
 
