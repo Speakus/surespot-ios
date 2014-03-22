@@ -41,6 +41,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 @property (atomic, strong) NSString * url;
 @property (strong, nonatomic) IBOutlet UIButton *bDocuments;
 @property (nonatomic, strong) UIPopoverController * popover;
+@property (strong, nonatomic) IBOutlet UILabel *lBackup;
 @property (nonatomic, strong) UIAlertView * driveAlertView;
 @property (strong, nonatomic) IBOutlet UILabel *lDocuments;
 @property (strong, nonatomic) IBOutlet UILabel *lSelect;
@@ -69,7 +70,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     [self setAccountFromKeychain];
     
     _labelGoogleDriveBackup.text = NSLocalizedString(@"google_drive", nil);
-    _scrollView.contentSize = self.view.frame.size;
+
     
     UIBarButtonItem *anotherButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"help",nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHelp)];
     self.navigationItem.rightBarButtonItem = anotherButton;
@@ -80,6 +81,10 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     [_bDocuments setTitle:NSLocalizedString(@"backup_to_documents", nil) forState:UIControlStateNormal];
     
     [_lSelect setText:NSLocalizedString(@"select_identity", nil)];
+    
+    [_lBackup setText:NSLocalizedString(@"help_backupIdentities1", nil)];
+    
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 780);
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {

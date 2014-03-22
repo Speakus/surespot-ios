@@ -11,6 +11,7 @@
                 <outlet property="bDocuments" destination="7N9-pS-TYc" id="xgC-WM-LpE"/>
                 <outlet property="bExecute" destination="g0J-uV-40L" id="1SB-aq-ZbO"/>
                 <outlet property="bSelect" destination="n2q-ME-YFS" id="n70-Rd-Osf"/>
+                <outlet property="lBackup" destination="fEw-2v-jgO" id="QyS-jU-EWO"/>
                 <outlet property="lDocuments" destination="1EV-zi-98z" id="vRM-Uq-5jE"/>
                 <outlet property="lSelect" destination="e7c-sU-S8e" id="Kk8-ME-iV2"/>
                 <outlet property="labelGoogleDriveBackup" destination="8P0-a8-Dgd" id="7x4-lU-d1Q"/>
@@ -25,11 +26,11 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="iBq-MB-Ze2">
-                    <rect key="frame" x="0.0" y="-2" width="320" height="420"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="593"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <pickerView contentMode="scaleToFill" id="cQt-Gd-JwU">
-                            <rect key="frame" x="3" y="34" width="314" height="171"/>
+                            <rect key="frame" x="3" y="204" width="314" height="171"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                             <inset key="insetFor6xAndEarlier" minX="0.0" minY="-11" maxX="0.0" maxY="11"/>
                             <connections>
@@ -38,7 +39,7 @@
                             </connections>
                         </pickerView>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="backup to google drive" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" id="8P0-a8-Dgd">
-                            <rect key="frame" x="0.0" y="295" width="320" height="30"/>
+                            <rect key="frame" x="0.0" y="465" width="320" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -46,7 +47,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="g0J-uV-40L">
-                            <rect key="frame" x="20" y="373" width="280" height="30"/>
+                            <rect key="frame" x="20" y="543" width="280" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                             <inset key="insetFor6xAndEarlier" minX="0.0" minY="10" maxX="0.0" maxY="-10"/>
                             <state key="normal" title="Button">
@@ -57,7 +58,7 @@
                             </connections>
                         </button>
                         <view contentMode="scaleToFill" id="kzx-ew-E8Z">
-                            <rect key="frame" x="3" y="333" width="314" height="29"/>
+                            <rect key="frame" x="3" y="503" width="314" height="29"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                             <subviews>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="no google account selected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6Pi-vp-XqG">
@@ -83,7 +84,7 @@
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="7N9-pS-TYc">
-                            <rect key="frame" x="20" y="252" width="280" height="30"/>
+                            <rect key="frame" x="20" y="422" width="280" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                             <state key="normal" title="backup to documents in iTunes">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -93,7 +94,7 @@
                             </connections>
                         </button>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1EV-zi-98z">
-                            <rect key="frame" x="0.0" y="208" width="320" height="30"/>
+                            <rect key="frame" x="0.0" y="378" width="320" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -101,11 +102,18 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="e7c-sU-S8e">
-                            <rect key="frame" x="0.0" y="2" width="320" height="30"/>
+                            <rect key="frame" x="0.0" y="172" width="320" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                             <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" id="fEw-2v-jgO">
+                            <rect key="frame" x="20" y="9" width="280" height="155"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
