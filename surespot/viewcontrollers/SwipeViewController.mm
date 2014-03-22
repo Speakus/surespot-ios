@@ -561,12 +561,28 @@ const Float32 voiceRecordDelay = 0.3;
         return @"home";
     }
     else {
-        return [self nameForPage:page];    }
+        return [self aliasForPage:page];    }
     
     return nil;
 }
 
 -(NSString * ) nameForPage:(NSInteger)page {
+    
+    if (page == 0) {
+        return nil;
+    }
+    else {
+        @synchronized (_chats) {
+            if ([_chats count] > 0) {
+                return [[[self sortedAliasedChats] objectAtIndex:page-1] username];
+            }
+        }
+    }
+    
+    return nil;
+}
+
+-(NSString * ) aliasForPage:(NSInteger)page {
     
     if (page == 0) {
         return nil;
@@ -690,16 +706,15 @@ const Float32 voiceRecordDelay = 0.3;
                 [tableview reloadData];
                 
                 //scroll if we need to
-                NSString * name =[self nameForPage:currPage];
                 BOOL scrolledUsingIndexPath = NO;
                 
                 //if we've got saved scroll positions
                 if (_bottomIndexPaths) {
-                    id path = [_bottomIndexPaths objectForKey:name];
+                    id path = [_bottomIndexPaths objectForKey:map.username];
                     if (path) {
-                        DDLogInfo(@"scrolling using saved index path for %@",name);
+                        DDLogInfo(@"scrolling using saved index path for %@",map.username);
                         [self scrollTableViewToCell:tableview indexPath:path];
-                        [_bottomIndexPaths removeObjectForKey:name];
+                        [_bottomIndexPaths removeObjectForKey:map.username];
                         scrolledUsingIndexPath = YES;
                     }
                 }
@@ -707,11 +722,11 @@ const Float32 voiceRecordDelay = 0.3;
                 
                 if (!scrolledUsingIndexPath) {
                     @synchronized (_needsScroll ) {
-                        id needsit = [_needsScroll  objectForKey:name];
+                        id needsit = [_needsScroll  objectForKey:map.username];
                         if (needsit) {
-                            DDLogInfo(@"scrolling %@ to bottom",name);
+                            DDLogInfo(@"scrolling %@ to bottom",map.username);
                             [self performSelector:@selector(scrollTableViewToBottom:) withObject:tableview afterDelay:0.5];
-                            [_needsScroll removeObjectForKey:name];
+                            [_needsScroll removeObjectForKey:map.username];
                         }
                     }
                 }

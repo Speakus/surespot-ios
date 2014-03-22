@@ -284,7 +284,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(void) postRefreshScroll: (BOOL) scroll {
-    DDLogInfo(@"postRefreshScroll %hhd", scroll);
+    DDLogInfo(@"postRefreshScroll username: %@, %hhd", _username, scroll);
     [self sort];
     dispatch_async(dispatch_get_main_queue(), ^{
         
