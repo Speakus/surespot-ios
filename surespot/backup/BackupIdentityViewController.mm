@@ -164,7 +164,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
         NSString * currentEmail = [[((GTMOAuth2Authentication *) _driveService.authorizer ) parameters] objectForKey:@"email"];
         if (currentEmail) {
             _accountLabel.text = currentEmail;
-            [_bSelect setTitle:@"remove" forState:UIControlStateNormal];
+            [_bSelect setTitle:NSLocalizedString(@"remove",nil) forState:UIControlStateNormal];
             return;
             
         }

@@ -354,3 +354,4 @@ If you elect to backup your identity on Google Drive you will be storing a copy 
 "menu_remove_friend_alias"="remove alias";
 "could_not_remove_friend_image"="could not remove friend image";
 "could_not_remove_friend_alias"="could not remove friend alias";
+"remove"="remove";

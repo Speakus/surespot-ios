@@ -87,14 +87,14 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
         NSString * currentEmail = [[((GTMOAuth2Authentication *) _driveService.authorizer ) parameters] objectForKey:@"email"];
         if (currentEmail) {
             _accountLabel.text = currentEmail;
-            [_bSelect setTitle:@"remove" forState:UIControlStateNormal];
+            [_bSelect setTitle:NSLocalizedString(@"remove", nil) forState:UIControlStateNormal];
             return;
             
         }
     }
     
     _accountLabel.text = NSLocalizedString(@"no_google_account_selected", nil);
-    [_bSelect setTitle:NSLocalizedString(@"select", nil) forState:UIControlStateNormal];
+    [_bSelect setTitle:NSLocalizedString(@"select_google_drive_account", nil) forState:UIControlStateNormal];
     
     [_driveIdentities removeAllObjects];
     [_tvDrive reloadData];
