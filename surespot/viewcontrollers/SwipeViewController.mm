@@ -2003,7 +2003,7 @@ const Float32 voiceRecordDelay = 0.3;
             
             NSString * okString = NSLocalizedString(@"ok", nil);
             [UIAlertView showWithTitle:NSLocalizedString(@"menu_delete_friend", nil)
-                               message:[NSString stringWithFormat: NSLocalizedString(@"delete_friend_confirmation", nil), thefriend.name]
+                               message:[NSString stringWithFormat: NSLocalizedString(@"delete_friend_confirmation", nil), [UIUtils buildAliasStringForUsername:thefriend.name alias:thefriend.aliasPlain]]
                      cancelButtonTitle:NSLocalizedString(@"cancel", nil)
                      otherButtonTitles:@[okString]
                               tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
