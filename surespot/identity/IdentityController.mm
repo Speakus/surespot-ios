@@ -166,7 +166,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     
     SurespotIdentity * identity = [[SurespotIdentity alloc] initWithUsername:username andSalt:salt keys:keys];
     
-    [self saveIdentity:identity  withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
+    [self saveIdentity:identity withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
     [self setLoggedInUserIdentity:identity password: password cookie:cookie relogin:NO];
 }
 
@@ -409,6 +409,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
                                                 //regenerate the identity with full validation for saving
                                                 SurespotIdentity * validatedIdentity = [self decodeIdentityData:decryptedIdentity password:password validate:YES];
                                                 if ([self saveIdentity:validatedIdentity withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]]) {
+                                                    [[CredentialCachingController sharedInstance] updateIdentity: identity onlyIfExists: YES];
                                                     callback(nil);
                                                 }
                                                 else {
@@ -441,9 +442,8 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
         NSData * identity = [EncryptionController decryptIdentity: unzipped withPassword:[password stringByAppendingString:EXPORT_IDENTITY_ID]];
         if (identity) {
             SurespotIdentity * si = [self decodeIdentityData:identity password:password validate: NO];
-            
+            [[CredentialCachingController sharedInstance] updateIdentity: si onlyIfExists: YES];
             return [self saveIdentity:si withPassword: [password stringByAppendingString:CACHE_IDENTITY_ID]] != nil;
-            
         }
     }
     
@@ -534,11 +534,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     SurespotIdentity * identity = [self getIdentityWithUsername:username andPassword:password];
     [identity addKeysWithVersion:keyVersion keys:keys];
     [self saveIdentity:identity withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
-    
-    if ([username isEqualToString:[self getLoggedInUser]]) {
-        //     _loggedInIdentity = identity;
-        [[CredentialCachingController sharedInstance] updateIdentity: identity onlyIfExists: YES];
-    }
+    [[CredentialCachingController sharedInstance] updateIdentity: identity onlyIfExists: YES];
     
     [self removeExpectedKeyVersionForUsername:username];
 }
@@ -547,6 +543,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     SurespotIdentity * identity = [self getIdentityWithUsername:username andPassword:currentPassword];
     identity.salt = newSalt;
     [self saveIdentity:identity withPassword:[newPassword stringByAppendingString:CACHE_IDENTITY_ID]];
+    [[CredentialCachingController sharedInstance] updateIdentity: identity onlyIfExists: YES];
     if ([self getStoredPasswordForIdentity:username]) {
         [self storePasswordForIdentity:username password:newPassword];
     }
