@@ -61,7 +61,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="store password in keychain" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" id="Rqw-SE-Rx5">
-                                        <rect key="frame" x="5" y="5" width="203" height="21"/>
+                                        <rect key="frame" x="0.0" y="5" width="203" height="21"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <inset key="insetFor6xAndEarlier" minX="0.0" minY="-10" maxX="0.0" maxY="10"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
@@ -69,8 +69,8 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="Ovg-Yc-56c">
-                                        <rect key="frame" x="216" y="0.0" width="51" height="31"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <rect key="frame" x="225" y="0.0" width="51" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                         <inset key="insetFor6xAndEarlier" minX="0.0" minY="-10" maxX="0.0" maxY="10"/>
                                         <connections>
                                             <action selector="storeKeychainValueChanged:" destination="2" eventType="valueChanged" id="sTi-CK-gVn"/>

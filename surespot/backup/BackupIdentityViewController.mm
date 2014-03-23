@@ -79,9 +79,9 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     
     [_lDocuments setText:NSLocalizedString(@"documents", nil)];
     [_bDocuments setTitle:NSLocalizedString(@"backup_to_documents", nil) forState:UIControlStateNormal];
+    [[_bDocuments titleLabel] setAdjustsFontSizeToFitWidth: YES];
     
-    [_lSelect setText:NSLocalizedString(@"select_identity", nil)];
-    
+    [_lSelect setText:NSLocalizedString(@"select_identity", nil)];    
     [_lBackup setText:NSLocalizedString(@"help_backupIdentities1", nil)];
     
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 765);
@@ -170,6 +170,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
         if (currentEmail) {
             _accountLabel.text = currentEmail;
             [_bSelect setTitle:NSLocalizedString(@"remove",nil) forState:UIControlStateNormal];
+            [_bSelect.titleLabel setAdjustsFontSizeToFitWidth:YES];
             return;
             
         }
