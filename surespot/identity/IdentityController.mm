@@ -233,13 +233,13 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
 }
 
 -(NSString *) getLastLoggedInUser {
-    return [[NSUserDefaults standardUserDefaults] stringForKey:@"last_user"];    
+    return [[NSUserDefaults standardUserDefaults] stringForKey:@"last_user"];
 }
 
 -(void) logout {
     @synchronized (self) {
         [[CredentialCachingController sharedInstance] logout];
-      //  [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"last_user"];
+        //  [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"last_user"];
     }
 }
 
@@ -408,8 +408,12 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
                                             successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                 //regenerate the identity with full validation for saving
                                                 SurespotIdentity * validatedIdentity = [self decodeIdentityData:decryptedIdentity password:password validate:YES];
-                                                [self saveIdentity:validatedIdentity withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]];
-                                                callback(nil);
+                                                if ([self saveIdentity:validatedIdentity withPassword:[password stringByAppendingString:CACHE_IDENTITY_ID]]) {
+                                                    callback(nil);
+                                                }
+                                                else {
+                                                    callback([NSString stringWithFormat:NSLocalizedString(@"could_not_restore_identity_name", nil), username]);
+                                                }
                                                 
                                             } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                 switch (operation.response.statusCode) {
