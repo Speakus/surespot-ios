@@ -73,6 +73,8 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
     
     _labelGoogleDriveBackup.text = NSLocalizedString(@"restore_drive", nil);
+    
+    [_bSelect.titleLabel setAdjustsFontSizeToFitWidth:YES];
 }
 
 -(void) setAccountFromKeychain {

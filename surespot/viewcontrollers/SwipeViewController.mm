@@ -129,7 +129,7 @@ const Float32 voiceRecordDelay = 0.3;
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.navigationItem.leftBarButtonItem = backButtonItem;
     
-    UIBarButtonItem *anotherButton = [[UIBarButtonItem alloc] initWithTitle:@"menu" style:UIBarButtonItemStylePlain target:self action:@selector(showMenuMenu)];
+    UIBarButtonItem *anotherButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"menu",nil) style:UIBarButtonItemStylePlain target:self action:@selector(showMenuMenu)];
     self.navigationItem.rightBarButtonItem = anotherButton;
     
     self.navigationItem.title = [[IdentityController sharedInstance] getLoggedInUser];
