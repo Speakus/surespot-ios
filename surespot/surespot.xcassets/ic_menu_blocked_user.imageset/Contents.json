@@ -3,12 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "ic_menu_blocked_user-1.png"
+      "filename" : "ic_menu_remove_alias32.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "ic_menu_blocked_user.png"
+      "filename" : "ic_menu_remove_alias.png"
     }
   ],
   "info" : {
