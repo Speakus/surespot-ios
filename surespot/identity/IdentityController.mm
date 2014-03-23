@@ -109,7 +109,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
         
         //if we have a concrete key encode and save that
         IdentityKeys *versionedKeys = [identityKeys objectForKey:version];
-        if (versionedKeys) {
+        if ([versionedKeys dhPrivKey] && [versionedKeys dhPubKey] && [versionedKeys dsaPrivKey] && [versionedKeys dsaPubKey]) {
             DDLogInfo(@"saving concrete key for version %@", version);
             NSDictionary *jsonKeys = [NSDictionary dictionaryWithObjectsAndKeys:
                                       [versionedKeys version] ,@"version",
