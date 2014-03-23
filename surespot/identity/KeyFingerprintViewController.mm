@@ -268,7 +268,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSString * md5dsa = [EncryptionController md5:dsaData];
     [dict setObject:[[KeyFingerprint alloc] initWithFingerprintData:md5dsa forTitle:@"DSA"] forKey:@"dsa"];
     
-    [dict setObject:[[self stringFromDate: keys.lastModified] stringByReplacingOccurrencesOfString:@"," withString:@""] forKey:@"lastVerified"];
+    if (keys.lastModified) {
+        [dict setObject:[[self stringFromDate: keys.lastModified] stringByReplacingOccurrencesOfString:@"," withString:@""] forKey:@"lastVerified"];
+    }
     return dict;
 }
 

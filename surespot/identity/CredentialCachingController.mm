@@ -102,13 +102,12 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             PublicKeys * publicKeys = [[PublicKeys alloc] init];
             
             //make new copy of public keys
-            
+            publicKeys.version = keys.version;
             publicKeys.dhPubKey = [EncryptionController createPublicDHFromPrivKey:keys.dhPrivKey];
             publicKeys.dsaPubKey = [EncryptionController createPublicDSAFromPrivKey:keys.dsaPrivKey];
             [_publicKeysDict setObject:publicKeys forKey:publicKeysKey];
         }
     }
-    
 }
 
 
