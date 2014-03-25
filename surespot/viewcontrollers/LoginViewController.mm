@@ -45,6 +45,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [_textPassword setPlaceholder:NSLocalizedString(@"password", nil)];
     [self.navigationItem setTitle:NSLocalizedString(@"login", nil)];
     [self loadIdentityNames];
     [self registerForKeyboardNotifications];
