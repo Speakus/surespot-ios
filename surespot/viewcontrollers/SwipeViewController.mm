@@ -2476,9 +2476,10 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 -(void) scrollHome {
-    _scrollingTo = 0;
-    [_swipeView scrollToPage:0 duration:0.5];
-    
+    if (_swipeView.currentPage != 0) {
+        _scrollingTo = 0;
+        [_swipeView scrollToPage:0 duration:0.5];
+    }    
 }
 
 - (void) startProgress: (NSNotification *) notification {
