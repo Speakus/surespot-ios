@@ -28,6 +28,7 @@
     _blurbTextView.text = NSLocalizedString(@"voice_messaging_purchase_1", nil);
     
     [_refreshButton setTitle:NSLocalizedString(@"restore", nil)forState:UIControlStateNormal ];
+    [[_refreshButton titleLabel] setAdjustsFontSizeToFitWidth:YES];
     
     _voiceTitle.text = NSLocalizedString(@"voice_messaging", nil);
     
