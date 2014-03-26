@@ -331,16 +331,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     DDLogVerbose(@"GetLatestData: params; %@", params);
     
+    [self addPurchaseReceiptToParams:params];
+    
     NSString * path = [NSString stringWithFormat:@"optdata/%d", latestUserControlId];
     NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters: params];
     
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:successBlock failure:failureBlock];
     
-    
-    
     [operation start];
-    
-    
 }
 
 
