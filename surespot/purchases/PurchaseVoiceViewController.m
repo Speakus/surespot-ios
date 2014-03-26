@@ -37,6 +37,7 @@
     _dontAskMeAgainLabel.text = NSLocalizedString(@"voice_message_suppress_purchase_ask", nil);
     [self.navigationItem setTitle:NSLocalizedString(@"menu_purchase_voice_messaging", nil)];
     self.navigationController.navigationBar.translucent = NO;
+    
     UIBarButtonItem *anotherButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"restore",nil) style:UIBarButtonItemStylePlain target:self action:@selector(refresh)];
     self.navigationItem.rightBarButtonItem = anotherButton;
     
@@ -53,7 +54,15 @@
     NSUserDefaults *storage = [NSUserDefaults standardUserDefaults];
     [_voiceSwitch setOn:[storage boolForKey:@"voice_messaging"]];
     [_dontAskSwitch setOn:[storage boolForKey:@"pref_dont_ask"] animated:NO];
+    
+    [self showHeader];
 }
+
+-(void) showHeader {
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];    
+}
+
 
 -(void) productsLoaded {
     [self updatePrices];
