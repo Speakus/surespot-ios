@@ -440,6 +440,12 @@ static const int MAX_RETRY_DELAY = 30;
                 [self handleMessages: messages forUsername:friendname];
             }
         }
+      
+        //clear notifications and badges
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+
         
         //handle autoinvites
         [self handleAutoinvites];
