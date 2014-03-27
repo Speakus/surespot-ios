@@ -74,11 +74,6 @@
     return _realImageView.image;
 }
 
--(CALayer*)layer
-{
-    return nil;
-}
-
 - (void)setImage:(UIImage *)image
 {
     [_realImageView setImage:image];
@@ -119,7 +114,8 @@
         realframe.origin.y = CGRectGetMaxY(self.bounds) - realframe.size.height;
     
     _realImageView.frame = realframe;
-
+    
+    self.layer.contents = nil;
 }
 
 - (CGSize)realContentSize
