@@ -74,6 +74,11 @@
     return _realImageView.image;
 }
 
+-(CALayer*)layer
+{
+    return nil;
+}
+
 - (void)setImage:(UIImage *)image
 {
     [_realImageView setImage:image];
