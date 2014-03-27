@@ -2735,5 +2735,10 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     [_swipeView reloadData];
 }
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self resignAllResponders];
+}
+
 
 @end
