@@ -488,6 +488,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         }];
     }
     
+    [self writeToDisk];
     [self postRefresh];
 }
 
@@ -502,8 +503,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         }];
     }
     
+    [self writeToDisk];
     [self postRefresh];
-    
 }
 
 -(void) userDeleted {
