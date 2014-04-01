@@ -59,7 +59,6 @@
 "notification_invite_accept_from"="%1$@: %2$@ has accepted your friend invite.";
 "about_version"="version: %@";
 "surespot"="surespot";
-"identity"="identity";
 "invite"="invite";
 "no_contact_data_selected_or_entered"="no contact data selected or entered";
 "invite_progress_text"="creating invitation";
