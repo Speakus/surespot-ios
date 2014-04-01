@@ -60,28 +60,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     UINavigationController *rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"navigationController"];
     self.window.rootViewController = rootViewController;
     
-    NSString * lastUser = [[IdentityController sharedInstance] getLastLoggedInUser];
-    
-    //see if we have a last user
-    BOOL setSession = NO;
-    
-    if (lastUser) {
-        setSession = [[CredentialCachingController sharedInstance] setSessionForUsername:lastUser];
-    }
-    
-    if (setSession) {
-        [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"]]];
-    }
-    
-    else {
-        //show create if we don't have any identities, otherwise login
-        if ([[[IdentityController sharedInstance] getIdentityNames ] count] == 0 ) {
-            [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"signupViewController"]]];
-        }
-        else {
-            [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"]]];
-        }
-    }
     
     NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     [[NSUserDefaults standardUserDefaults] setObject:appVersionString forKey:@"version_preference"];
@@ -91,7 +69,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [[NSUserDefaults standardUserDefaults] setObject:appBuildString forKey:@"build_preference"];
     
     
-    [self.window makeKeyAndVisible];
+    
     
     _overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [_overlayWindow setWindowLevel:UIWindowLevelAlert+1];
@@ -105,6 +83,37 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     //clean up old file locations
     [FileController deleteOldSecrets];
+    
+    
+    //if we were launched from a notification use that logic to set the view controller
+    NSDictionary* userInfo = [launchOptions valueForKey:@"UIApplicationLaunchOptionsRemoteNotificationKey"];
+    if (![self handleNotificationApplication:application userInfo:userInfo local:YES]) {
+        
+        NSString * lastUser = [[IdentityController sharedInstance] getLastLoggedInUser];
+        
+        //see if we have a last user
+        BOOL setSession = NO;
+        
+        if (lastUser) {
+            setSession = [[CredentialCachingController sharedInstance] setSessionForUsername:lastUser];
+        }
+        
+        if (setSession) {
+            [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"swipeViewController"]]];
+        }
+        
+        else {
+            //show create if we don't have any identities, otherwise login
+            if ([[[IdentityController sharedInstance] getIdentityNames ] count] == 0 ) {
+                [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"signupViewController"]]];
+            }
+            else {
+                [rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"]]];
+            }
+        }
+    }
+    
+    [self.window makeKeyAndVisible];
     return YES;
 }
 
@@ -155,7 +164,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [self handleNotificationApplication:application userInfo:notification.userInfo local:YES];
 }
 
--(void) handleNotificationApplication: (UIApplication *) application userInfo: (NSDictionary *) userInfo local: (BOOL) local {
+-(BOOL) handleNotificationApplication: (UIApplication *) application userInfo: (NSDictionary *) userInfo local: (BOOL) local {
     NSString * notificationType =[userInfo valueForKeyPath:@"aps.alert.loc-key" ] ;
     if ([notificationType isEqualToString:@"notification_message"] ||
         [notificationType isEqualToString:@"notification_invite"]  ||
@@ -169,11 +178,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         //todo download and add the message or just move to tab and tell it to load
         switch ([application applicationState]) {
             case UIApplicationStateActive:
-            {
+                
                 //application was running when we received
-                //if we're not on the tap, show notification
-                
-                
+                //if we're not on the tab, show notification
                 if (!local &&
                     ![to isEqualToString:[[IdentityController sharedInstance] getLoggedInUser]] &&
                     [[[IdentityController sharedInstance] getIdentityNames] containsObject:to]) {
@@ -193,9 +200,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                     [application scheduleLocalNotification:localNotification];
                     
                 }
-            }
-                
-                
                 break;
                 
             case UIApplicationStateInactive:
@@ -238,9 +242,12 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                         [(UINavigationController *) self.window.rootViewController setViewControllers:@[[storyboard instantiateViewControllerWithIdentifier:@"loginViewController"]]];
                     }
                 }
+                
         }
+        return YES;
     }
     
+    return NO;    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -265,7 +272,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    [SHKFacebook handleDidBecomeActive];    
+    [SHKFacebook handleDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
