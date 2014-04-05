@@ -1,4 +1,4 @@
-surespot-ios  [![App Store](https://www.surespot.me/images/Available_AppStore.png)](https://itunes.apple.com/us/app/surespot/id790314865) 
+surespot-ios  [![App Store](https://www.surespot.me/images/BadgeAppStore.png)](https://itunes.apple.com/us/app/surespot/id790314865) 
 ============
 
 ios surespot client
