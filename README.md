@@ -85,7 +85,7 @@ terms of a separate license:
 Luc Vandal, Edovia Inc., http://www.edovia.com
 Ortwin Gentz, FutureTap GmbH, http://www.futuretap.com
 * [GrowingTextView](https://github.com/HansPinckaers/GrowingTextView) - Copyright (c) 2011 Hans Pinckaers
-* [ShareKit](https://github.com/K-Be/ShareKit) - MIT Copyright (c) Nate Weiner
+* [ShareKit](https://github.com/ShareKit/ShareKit) - MIT Copyright (c) Nate Weiner
 * [TTTAttributedLabel](https://github.com/mattt/TTTAttributedLabel) -  Copyright (c) 2011 Mattt Thompson (http://mattt.me/)
 * [UIAlertView-Blocks](https://github.com/ryanmaxwell/UIAlertView-Blocks) - Copyright (c) 2013 Ryan Maxwell
 * [cryptopp-5.6.2-ios](https://github.com/noloader/cryptopp-5.6.2-ios) - The Crypto++ Library (as a compilation) is currently licensed under the Boost Software License 1.0 - August 17th, 2003 <http://www.boost.org/users/license.html>
