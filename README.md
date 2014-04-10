@@ -81,7 +81,7 @@ terms of a separate license:
 * [CocoaLumberjack](https://github.com/CocoaLumberjack/CocoaLumberjack) - Copyright (c) 2010, Deusty, LLC
 * [SocketRocket](https://github.com/square/SocketRocket) - Licensed under the Apache License, v2.0 http://www.apache.org/licenses/LICENSE-2.0
 * [socket.io-objc](https://github.com/pkyeck/socket.IO-objc) - Copyright (c) 2011-12 Philipp Kyeck <http://beta-interactive.de>
-* [InAppSettingsKit](https://github.com/futuretap/InAppSettingsKit) - Copyright (c) 2009-2010:
+* [InAppSettingsKit](https://github.com/futuretap/InAppSettingsKit) - Copyright (c) 2009-2014:
 Luc Vandal, Edovia Inc., http://www.edovia.com
 Ortwin Gentz, FutureTap GmbH, http://www.futuretap.com
 * [GrowingTextView](https://github.com/HansPinckaers/GrowingTextView) - Copyright (c) 2011 Hans Pinckaers
