@@ -238,7 +238,7 @@ const Float32 voiceRecordDelay = 0.3;
     frame.size.height -= height;
     _swipeView.frame = frame;
     
-    UITableView * tableView = [_chats objectForKey: [[ChatController sharedInstance] getCurrentChat]];
+    UITableView * tableView = [_chats objectForKey: [self getCurrentTabName]];
     CGPoint newOffset = CGPointMake(0, tableView.contentOffset.y + height);
     [tableView setContentOffset:newOffset animated:NO];
 }
@@ -488,7 +488,7 @@ const Float32 voiceRecordDelay = 0.3;
         for (id key in [_bottomIndexPaths allKeys]) {
             if ([key isEqualToString:@""]) {
                 
-                if (![[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]) {
+                if (![self getCurrentTabName]) {
                     id indexPath =[_bottomIndexPaths objectForKey:key];
                     DDLogInfo(@"Scrolling home view to index %@", indexPath);
                     [self scrollTableViewToCell:_friendView indexPath: indexPath];
@@ -496,7 +496,7 @@ const Float32 voiceRecordDelay = 0.3;
                 }
             }
             else {
-                if ([[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat] isEqualToString:key]) {
+                if ([[self getCurrentTabName] isEqualToString:key]) {
                     id indexPath =[_bottomIndexPaths objectForKey:key];
                     DDLogInfo(@"Scrolling %@ view to index %@", key,indexPath);
                     
@@ -1242,7 +1242,7 @@ const Float32 voiceRecordDelay = 0.3;
                         cell.audioIcon.hidden = NO;
                         cell.audioSlider.hidden = NO;
                         
-                        if (message.playVoice && [username isEqualToString: [[ChatController sharedInstance] getCurrentChat]]) {
+                        if (message.playVoice && [username isEqualToString: [self getCurrentTabName]]) {
                             [self ensureVoiceDelegate];
                             [_voiceDelegate playVoiceMessage:message cell:cell];
                         }
@@ -1297,7 +1297,7 @@ const Float32 voiceRecordDelay = 0.3;
     }
     else {
         // if it's an image, open it in image viewer
-        ChatDataSource * cds = [[ChatController sharedInstance] getDataSourceForFriendname:[[ChatController sharedInstance] getCurrentChat]];
+        ChatDataSource * cds = [[ChatController sharedInstance] getDataSourceForFriendname:[self getCurrentTabName]];
         if (cds) {
             SurespotMessage * message = [cds.messages objectAtIndex:indexPath.row];
             if ([message.mimeType isEqualToString: MIME_TYPE_IMAGE]) {
@@ -1473,7 +1473,7 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 - (BOOL) handleTextActionResign: (BOOL) resign {
-    if (![[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]) {
+    if (![self getCurrentTabName]) {
         NSString * text = _inviteTextView.text;
         
         if ([text length] > 0) {
@@ -1524,18 +1524,15 @@ const Float32 voiceRecordDelay = 0.3;
     NSString* message = _messageTextView.text;
     
     if ([UIUtils stringIsNilOrEmpty:message]) return;
-    UsernameAliasMap * aliasMap;
-    @synchronized (_chats) {
-        NSArray *keys = [self sortedAliasedChats];
-        aliasMap = [keys objectAtIndex:[_swipeView currentItemIndex] -1];
-    }
     
-    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:aliasMap.username];
+    NSString * friendname = [self getCurrentTabName];
+    
+    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName: friendname];
     if ([afriend isDeleted]) {
         return;
     }
     
-    [[ChatController sharedInstance] sendMessage: message toFriendname:aliasMap.username];
+    [[ChatController sharedInstance] sendMessage: message toFriendname:friendname];
     [_messageTextView setText:nil];
     
     [self updateTabChangeUI];
@@ -1558,14 +1555,14 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 -(void) updateTabChangeUI {
-    if (![[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]) {
+    if (![self getCurrentTabName]) {
         [_theButton setImage:[UIImage imageNamed:@"ic_menu_invite"] forState:UIControlStateNormal];
         _messageTextView.hidden = YES;
         _inviteTextView.hidden = NO;
     }
     else {
         _inviteTextView.hidden = YES;
-        Friend *afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]];
+        Friend *afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[self getCurrentTabName]];
         if (afriend.isDeleted) {
             [_theButton setImage:[UIImage imageNamed:@"ic_menu_home"] forState:UIControlStateNormal];
             _messageTextView.hidden = YES;
@@ -1613,9 +1610,9 @@ const Float32 voiceRecordDelay = 0.3;
 - (void)refreshMessages:(NSNotification *)notification {
     NSString * username = [notification.object objectForKey:@"username"];
     BOOL scroll = [[notification.object objectForKey:@"scroll"] boolValue];
-    DDLogVerbose(@"username: %@, currentchat: %@, scroll: %hhd", username, [[[ChatController sharedInstance] getHomeDataSource] getCurrentChat], scroll);
+    DDLogVerbose(@"username: %@, currentchat: %@, scroll: %hhd", username, [self getCurrentTabName], scroll);
     
-    if ([username isEqualToString: [[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]]) {
+    if ([username isEqualToString: [self getCurrentTabName]]) {
         
         UITableView * tableView;
         @synchronized (_chats) {
@@ -1696,10 +1693,10 @@ const Float32 voiceRecordDelay = 0.3;
     
     NSMutableArray * menuItems = [NSMutableArray new];
     
-    if ([[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]) {
-        Friend * theFriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]];
+    if ([self getCurrentTabName]) {
+        Friend * theFriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[self getCurrentTabName]];
         if ([theFriend isFriend] && ![theFriend isDeleted]) {
-            NSString * theirUsername = [[[ChatController sharedInstance] getHomeDataSource] getCurrentChat];
+            NSString * theirUsername = [self getCurrentTabName];
             
             REMenuItem * selectImageItem = [[REMenuItem alloc]
                                             initWithTitle:NSLocalizedString(@"select_image", nil)
@@ -1760,14 +1757,14 @@ const Float32 voiceRecordDelay = 0.3;
                                       if (buttonIndex == [alertView cancelButtonIndex]) {
                                           DDLogVerbose(@"delete cancelled");
                                       } else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:okString]) {
-                                          [[ChatController sharedInstance] deleteMessagesForFriend: [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]]];
+                                          [[ChatController sharedInstance] deleteMessagesForFriend: [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[self getCurrentTabName]]];
                                       };
                                       
                                   }];
             }
             else {
                 
-                [[ChatController sharedInstance] deleteMessagesForFriend: [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]]];
+                [[ChatController sharedInstance] deleteMessagesForFriend: [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[self getCurrentTabName]]];
             }
             
         }];
@@ -1837,7 +1834,7 @@ const Float32 voiceRecordDelay = 0.3;
 -(REMenu *) createMenu: (NSArray *) menuItems {
     return [UIUtils createMenu:menuItems closeCompletionHandler:^{
         _menu = nil;
-        NSString * getCurrentChat =[[ChatController sharedInstance] getCurrentChat];
+        NSString * getCurrentChat = [self getCurrentTabName];
         if (getCurrentChat) {
             id currentTableView =[_chats objectForKey:getCurrentChat];
             if (currentTableView ) {
@@ -2290,7 +2287,7 @@ const Float32 voiceRecordDelay = 0.3;
     }
     else {
         [self updateTabChangeUI];
-        if ([name isEqualToString:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]]) {
+        if ([name isEqualToString:[self getCurrentTabName]]) {
             [_messageTextView resignFirstResponder];
         }
     }
@@ -2306,7 +2303,7 @@ const Float32 voiceRecordDelay = 0.3;
         [_swipeView reloadData];
         NSInteger page = [_swipeView currentPage];
         
-        if ([name isEqualToString:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat] ]) {
+        if ([name isEqualToString:[self getCurrentTabName] ]) {
             
             
             if (page >= _swipeView.numberOfPages) {
@@ -2324,7 +2321,7 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 -(void) closeTab {
-    [self closeTabName: [[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]];
+    [self closeTabName: [self getCurrentTabName]];
 }
 
 -(void) logout {
@@ -2387,7 +2384,7 @@ const Float32 voiceRecordDelay = 0.3;
     [_buttonTimer invalidate];
     
     NSTimeInterval interval = -[_buttonDownDate timeIntervalSinceNow];
-    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]];
+    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[self getCurrentTabName]];
     
     if (interval < voiceRecordDelay) {
         
@@ -2418,7 +2415,7 @@ const Float32 voiceRecordDelay = 0.3;
     
     //kick off timer
     [_buttonTimer invalidate];
-    _buttonTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(buttonTimerFire:) userInfo:[[ChatController sharedInstance] getCurrentChat] repeats:NO];
+    _buttonTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(buttonTimerFire:) userInfo:[self getCurrentTabName] repeats:NO];
     
 }
 
@@ -2444,7 +2441,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 -(void) buttonTimerFire:(NSTimer *) timer {
     
-    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[[[ChatController sharedInstance] getHomeDataSource] getCurrentChat]];
+    Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource] getFriendByName:[self getCurrentTabName]];
     
     if (afriend) {
         if (afriend.isDeleted) {
@@ -2509,7 +2506,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 -(void) newMessage: (NSNotification *) notification {
     SurespotMessage * message = notification.object;
-    NSString * currentChat =[[ChatController sharedInstance] getCurrentChat];
+    NSString * currentChat =[self getCurrentTabName];
     //pulse if we're logged in as the user
     if (currentChat &&
         ![message.from isEqualToString: currentChat] &&
@@ -2521,7 +2518,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 -(void) invite: (NSNotification *) notification {
     Friend * thefriend = notification.object;
-    NSString * currentChat =[[ChatController sharedInstance] getCurrentChat];
+    NSString * currentChat = [self getCurrentTabName];
     //show toast if we're not on the tab or home page, and pulse if we're logged in as the user
     if (currentChat) {
         [UIUtils showToastMessage:[NSString stringWithFormat:NSLocalizedString(@"notification_invite", nil), [[IdentityController sharedInstance] getLoggedInUser], thefriend.nameOrAlias] duration:1];
@@ -2533,7 +2530,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 -(void) inviteAccepted: (NSNotification *) notification {
     //NSString * acceptedBy = notification.object;
-    NSString * currentChat =[[ChatController sharedInstance] getCurrentChat];
+    NSString * currentChat = [self getCurrentTabName];
     // pulse if we're logged in as the user
     if (currentChat) {
         
@@ -2738,6 +2735,21 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     [self resignAllResponders];
+}
+
+- (NSString *) getCurrentTabName
+{
+    if ([_swipeView currentItemIndex] == 0) {
+        return nil;
+    }
+    
+    UsernameAliasMap * aliasMap;
+    @synchronized (_chats) {
+        NSArray *keys = [self sortedAliasedChats];
+        aliasMap = [keys objectAtIndex:[_swipeView currentItemIndex] -1];
+    }
+    
+    return [aliasMap username];
 }
 
 
