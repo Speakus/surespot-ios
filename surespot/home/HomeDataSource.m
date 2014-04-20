@@ -163,10 +163,13 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     return nil;
 }
 
--(void) setAvailableMessageId: (NSInteger) availableId forFriendname: (NSString *) friendname {
+-(void) setAvailableMessageId: (NSInteger) availableId forFriendname: (NSString *) friendname suppressNew: (BOOL) suppressNew {
     Friend * afriend = [self getFriendByName:friendname];
     if (afriend) {
         afriend.availableMessageId = availableId;
+        if (suppressNew) {
+            afriend.lastReceivedMessageId = availableId;
+        }
         if (afriend.availableMessageId > afriend.lastReceivedMessageId) {
             afriend.hasNewMessages = YES;
         }

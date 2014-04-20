@@ -20,7 +20,7 @@
 - (void) removeFriend: (Friend *) afriend withRefresh: (BOOL) refresh;
 -(Friend *) getFriendByName: (NSString *) name;
 -(void) postRefresh;
--(void) setAvailableMessageId: (NSInteger) availableId forFriendname: (NSString *) friendname;
+-(void) setAvailableMessageId: (NSInteger) availableId forFriendname: (NSString *) friendname suppressNew: (BOOL) suppressNew;
 -(void) setAvailableMessageControlId: (NSInteger) availableId forFriendname: (NSString *) friendname;
 -(void) writeToDisk ;
 -(void) loadFriendsCallback: (void(^)(BOOL success)) callback;

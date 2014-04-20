@@ -327,7 +327,8 @@ static const int MAX_RETRY_DELAY = 30;
             if (success) {
                 //not gonna be much data if we don't have any friends
                 if ([_homeDataSource.friends count] > 0 || _homeDataSource.latestUserControlId > 0) {
-                    [self getLatestData];
+                    //in this case assume we don't have any new messages
+                    [self getLatestData: YES];
                 }
                 else {
                     [self handleAutoinvites];
@@ -341,7 +342,7 @@ static const int MAX_RETRY_DELAY = 30;
         }];
     }
     else {
-        [self getLatestData];
+        [self getLatestData: NO];
     }
     
 }
@@ -364,7 +365,7 @@ static const int MAX_RETRY_DELAY = 30;
     [_sendBuffer removeAllObjects];
 }
 
--(void) getLatestData {
+-(void) getLatestData: (BOOL) suppressNew {
     DDLogVerbose(@"getLatestData, chatDatasources count: %d", [_chatDataSources count]);
     
     NSMutableArray * messageIds = [[NSMutableArray alloc] init];
@@ -401,8 +402,7 @@ static const int MAX_RETRY_DELAY = 30;
                 
                 NSInteger availableId = [[conversationIds objectForKey:spot] integerValue];
                 NSString * user = [ChatUtils getOtherUserFromSpot:spot andUser:[[IdentityController sharedInstance] getLoggedInUser]];
-                
-                [_homeDataSource setAvailableMessageId:availableId forFriendname: user];
+                [_homeDataSource setAvailableMessageId:availableId forFriendname: user suppressNew: suppressNew];                
             }
         }
         
