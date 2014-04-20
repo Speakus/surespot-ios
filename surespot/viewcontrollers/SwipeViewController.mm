@@ -1863,8 +1863,8 @@ const Float32 voiceRecordDelay = 0.3;
     
     [titleItem setSubtitle:aliasName];
     [titleItem setTitleEnabled:NO];
-  
-    [menuItems addObject:titleItem];        
+    
+    [menuItems addObject:titleItem];
     
     if ([thefriend isFriend]) {
         
@@ -2295,25 +2295,25 @@ const Float32 voiceRecordDelay = 0.3;
 
 -(void) closeTabName: (NSString *) name {
     if (name) {
+        NSInteger page = [_swipeView currentPage];
+        DDLogInfo(@"page before close: %d", page);
+        
         [[ChatController sharedInstance] destroyDataSourceForFriendname: name];
         [[[[ChatController sharedInstance] getHomeDataSource] getFriendByName:name] setChatActive:NO];
         @synchronized (_chats) {
             [_chats removeObjectForKey:name];
         }
         [_swipeView reloadData];
-        NSInteger page = [_swipeView currentPage];
+        page = [_swipeView currentPage];
         
-        if ([name isEqualToString:[self getCurrentTabName] ]) {
-            
-            
-            if (page >= _swipeView.numberOfPages) {
-                page = _swipeView.numberOfPages - 1;
-            }
-            [_swipeView scrollToPage:page duration:0.2];
+        if (page >= _swipeView.numberOfPages) {
+            page = _swipeView.numberOfPages - 1;
         }
-        DDLogVerbose(@"page after close: %d", page);
+        [_swipeView scrollToPage:page duration:0.2];
+        
+        DDLogInfo(@"page after close: %d", page);
         NSString * name = [self nameForPage:page];
-        DDLogVerbose(@"name after close: %@", name);
+        DDLogInfo(@"name after close: %@", name);
         [[[ChatController sharedInstance] getHomeDataSource] setCurrentChat:name];
         [[[ChatController sharedInstance] getHomeDataSource] postRefresh];
         
@@ -2476,7 +2476,7 @@ const Float32 voiceRecordDelay = 0.3;
     if (_swipeView.currentPage != 0) {
         _scrollingTo = 0;
         [_swipeView scrollToPage:0 duration:0.5];
-    }    
+    }
 }
 
 - (void) startProgress: (NSNotification *) notification {
@@ -2743,10 +2743,22 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
         return nil;
     }
     
+    if ([_chats count] == 0) {
+        return nil;
+    }
+    
+    
     UsernameAliasMap * aliasMap;
     @synchronized (_chats) {
         NSArray *keys = [self sortedAliasedChats];
-        aliasMap = [keys objectAtIndex:[_swipeView currentItemIndex] -1];
+        NSInteger index = [_swipeView currentItemIndex];
+        if (index > [keys count]) {
+            index = [keys count];
+        }
+        
+        index -= 1;
+        
+        aliasMap = [keys objectAtIndex: index];
     }
     
     return [aliasMap username];
