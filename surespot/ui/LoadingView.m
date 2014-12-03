@@ -39,23 +39,25 @@
 + (id) showViewKey: (NSString *) textKey
 {
     
-    UIView * aSuperview = ((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayView;
-    CGRect frame =CGRectMake(0, 0, aSuperview.bounds.size.width, aSuperview.bounds.size.height);
+    AGWindowView * aSuperview = [[AGWindowView alloc] initAndAddToKeyWindow];
+    aSuperview.supportedInterfaceOrientations = AGInterfaceOrientationMaskAll;
+    CGRect frame =CGRectMake(0, 0, aSuperview.frame.size.width, aSuperview.frame.size.height);
 	LoadingView *backgroundView =    [[LoadingView alloc] initWithFrame:frame];
 	if (!backgroundView)
 	{
 		return nil;
 	}
     
-    UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
-    aWindow.userInteractionEnabled = YES;
+    
+  //  UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
+   // aWindow.userInteractionEnabled = YES;
 
 	
     backgroundView.backgroundColor = [UIUtils surespotTransparentGrey];
 	backgroundView.opaque = NO;
 	backgroundView.autoresizingMask =
     UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	[aSuperview addSubview:backgroundView];
+	[aSuperview addSubviewAndFillBounds:backgroundView];
     
 	const CGFloat DEFAULT_LABEL_WIDTH = [UIUtils screenSizeAdjustedForOrientation].width;
 	const CGFloat sheight = [UIUtils screenSizeAdjustedForOrientation].height;
@@ -126,6 +128,7 @@
 	[animation setType:kCATransitionFade];
 	[[aSuperview layer] addAnimation:animation forKey:@"layerAnimation"];
 	
+    [backgroundView layoutIfNeeded];
 	return backgroundView;
 }
 
@@ -139,11 +142,11 @@
 {
 
 
-	UIView *aSuperview = [self superview];
-	[super removeFromSuperview];
+	AGWindowView *aSuperview = [AGWindowView activeWindowViewContainingView:self];
+    [aSuperview removeFromSuperview];
     
-    UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
-    aWindow.userInteractionEnabled = NO;
+  //  UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
+  //  aWindow.userInteractionEnabled = NO;
     
 	// Set up the animation
 	CATransition *animation = [CATransition animation];

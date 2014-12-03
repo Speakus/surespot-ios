@@ -37,6 +37,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 @property (strong, nonatomic) NSString * iv;
 @property (strong, nonatomic) NSString * mimeType;
 
+
 #if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
 @property (assign, nonatomic) UIBackgroundTaskIdentifier backgroundTaskId;
 #endif
@@ -50,6 +51,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     size_t width, height;
     BOOL responseFromCached;
 }
+
+@synthesize executing = _executing;
+@synthesize finished = _finished;
 
 - (id)initWithRequest:(NSURLRequest *)request
              mimeType: (NSString *) mimeType

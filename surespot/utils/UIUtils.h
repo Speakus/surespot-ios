@@ -46,5 +46,6 @@
 +(NSInteger) getDefaultImageMessageHeight;
 +(CGSize)imageSizeAfterAspectFit:(UIImageView*)imgview;
 + (NSString *) buildAliasStringForUsername: (NSString *) username alias: (NSString *) alias;
++ (BOOL) isIOS8Plus;
 @end
 

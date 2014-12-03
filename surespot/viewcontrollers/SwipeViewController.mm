@@ -43,7 +43,7 @@
 
 
 #ifdef DEBUG
-static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+static const int ddLogLevel = LOG_LEVEL_INFO;
 #else
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
@@ -88,7 +88,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 - (void)viewDidLoad
 {
-    DDLogInfo(@"swipeviewdidload %@", self);
+    DDLogVerbose(@"swipeviewdidload %@", self);
     [super viewDidLoad];
     
     _assetLibrary = [ALAssetsLibrary new];
@@ -288,7 +288,7 @@ const Float32 voiceRecordDelay = 0.3;
         _popover.delegate = self;
         CGFloat x = self.view.bounds.size.width;
         CGFloat y =self.view.bounds.size.height;
-        DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+        DDLogVerbose(@"setting popover x, y to: %f, %f", x/2,y/2);
         hvc.poController = _popover;
         [_popover setPopoverContentSize:CGSizeMake(320, 480) animated:YES];
         [_popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:self.view permittedArrowDirections:0 animated:YES];
@@ -301,7 +301,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 
 -(void) dealloc {
-    DDLogInfo(@"dealloc");
+    DDLogVerbose(@"dealloc");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -323,14 +323,94 @@ const Float32 voiceRecordDelay = 0.3;
 
 - (void)registerForKeyboardNotifications
 {
+    
+    //use old positioning pre ios 8
+    
+    if ([UIUtils isIOS8Plus]) {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardFrameDidChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+
+    }
+    else {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification object:nil];
+                                            selector:@selector(keyboardWasShown:)
+                                                name:UIKeyboardDidShowNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
+                                            selector:@selector(keyboardWillBeHidden:)
                                                  name:UIKeyboardWillHideNotification object:nil];
     
+    }
+    
+
+}
+
+
+- (void)keyboardFrameDidChange:(NSNotification *)notification
+{
+    DDLogInfo(@"keyboardFrameDidChange");
+    CGRect keyboardEndFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect keyboardBeginFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+  //  UIViewAnimationCurve animationCurve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+  //  NSTimeInterval animationDuration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] integerValue];
+    
+  //  [UIView beginAnimations:nil context:nil];
+  //  [UIView setAnimationDuration:animationDuration];
+  //  [UIView setAnimationCurve:animationCurve];
+    
+
+
+    
+    CGRect newFrame = _textFieldContainer.frame;
+    CGRect keyboardFrameEnd = [self.view convertRect:keyboardEndFrame toView:nil];
+    
+
+    CGRect keyboardFrameBegin = [self.view convertRect:keyboardBeginFrame toView:nil];
+    DDLogInfo(@"keyboard frame begin origin y: %f, height: %f", keyboardFrameBegin.origin.y, keyboardFrameBegin.size.height);
+        DDLogInfo(@"keyboard frame end origin y: %f, height: %f", keyboardFrameEnd.origin.y, keyboardFrameEnd.size.height);
+    int height = keyboardFrameBegin.origin.y-keyboardFrameEnd.origin.y;
+    DDLogInfo(@"keyboard height: %d",height);
+    DDLogInfo(@"origin y before: %f",newFrame.origin.y);
+    
+    newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
+        DDLogInfo(@"origin y after: %f",newFrame.origin.y);
+    _textFieldContainer.frame = newFrame;
+    
+    
+    
+            CGRect frame = _swipeView.frame;
+            DDLogInfo(@"swipeview frame: origin x: %f, origin y: %f, height: %f",_swipeView.frame.origin.x, _swipeView.frame.origin.y, _swipeView.frame.size.height);
+            frame.size.height -= height;
+            _swipeView.frame = frame;
+    
+            CGRect buttonFrame = _theButton.frame;
+            buttonFrame.origin.y -= height;
+            _theButton.frame = buttonFrame;
+    
+            @synchronized (_chats) {
+                for (NSString * key in [_chats allKeys]) {
+                    UITableView * tableView = [_chats objectForKey:key];
+    
+                    UITableViewCell * bottomCell = nil;
+                    NSArray * visibleCells = [tableView visibleCells];
+                    if ([visibleCells count ] > 0) {
+                        bottomCell = [visibleCells objectAtIndex:[visibleCells count]-1];
+                    }
+    
+                    if (bottomCell) {
+                        CGRect aRect = self.view.frame;
+                        aRect.size.height -= height;
+                        if (!CGRectContainsPoint(aRect, bottomCell.frame.origin) ) {
+                            CGPoint newOffset = CGPointMake(0, tableView.contentOffset.y + height);
+                            [tableView setContentOffset:newOffset animated:NO];
+                        }
+                    }
+                }
+            }
+
+    
+    [self.view layoutIfNeeded];
+   // [UIView commitAnimations];
 }
 
 
@@ -420,6 +500,10 @@ const Float32 voiceRecordDelay = 0.3;
                                 duration:(NSTimeInterval)duration
 {
     DDLogInfo(@"will rotate");
+    if ([UIUtils isIOS8Plus]) {
+        [self resignAllResponders];
+    }
+    
     _swipeView.suppressScrollEvent = YES;
     
     
@@ -429,7 +513,7 @@ const Float32 voiceRecordDelay = 0.3;
     if ([visibleCells count ] > 0) {
         
         id indexPath =[visibleCells objectAtIndex:[visibleCells count]-1];
-        DDLogInfo(@"saving index path %@ for home", indexPath );
+        DDLogVerbose(@"saving index path %@ for home", indexPath );
         [_bottomIndexPaths setObject: indexPath forKey: @"" ];
         
     }
@@ -447,7 +531,7 @@ const Float32 voiceRecordDelay = 0.3;
                 
                 id indexPath =[visibleCells objectAtIndex:[visibleCells count]-1];
                 
-                DDLogInfo(@"saving index path %@ for key %@", indexPath , key);
+                DDLogVerbose(@"saving index path %@ for key %@", indexPath , key);
                 
                 [_bottomIndexPaths setObject: indexPath forKey: key ];
                 
@@ -459,7 +543,7 @@ const Float32 voiceRecordDelay = 0.3;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromOrientation
 {
     DDLogInfo(@"did rotate");
-    
+
     _swipeView.suppressScrollEvent= NO;
     
     //restore scroll indices
@@ -471,7 +555,7 @@ const Float32 voiceRecordDelay = 0.3;
     {
         CGFloat x =self.view.bounds.size.width;
         CGFloat y =self.view.bounds.size.height;
-        DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+        DDLogVerbose(@"setting popover x, y to: %f, %f", x/2,y/2);
         
         [self.popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:self.view permittedArrowDirections:0 animated:YES];
     }
@@ -490,7 +574,7 @@ const Float32 voiceRecordDelay = 0.3;
                 
                 if (![self getCurrentTabName]) {
                     id indexPath =[_bottomIndexPaths objectForKey:key];
-                    DDLogInfo(@"Scrolling home view to index %@", indexPath);
+                    DDLogVerbose(@"Scrolling home view to index %@", indexPath);
                     [self scrollTableViewToCell:_friendView indexPath: indexPath];
                     [_bottomIndexPaths removeObjectForKey:key ];
                 }
@@ -498,7 +582,7 @@ const Float32 voiceRecordDelay = 0.3;
             else {
                 if ([[self getCurrentTabName] isEqualToString:key]) {
                     id indexPath =[_bottomIndexPaths objectForKey:key];
-                    DDLogInfo(@"Scrolling %@ view to index %@", key,indexPath);
+                    DDLogVerbose(@"Scrolling %@ view to index %@", key,indexPath);
                     
                     UITableView * tableView = [_chats objectForKey:key];
                     [self scrollTableViewToCell:tableView indexPath:indexPath];
@@ -663,7 +747,7 @@ const Float32 voiceRecordDelay = 0.3;
 - (void)swipeViewCurrentItemIndexDidChange:(SwipeView *)swipeView
 {
     NSInteger currPage = swipeView.currentPage;
-    DDLogInfo(@"swipeview index changed to %d scrolling to: %d", currPage, _scrollingTo);
+    DDLogVerbose(@"swipeview index changed to %d scrolling to: %d", currPage, _scrollingTo);
     
     UITableView * tableview;
     if (currPage == 0) {
@@ -712,7 +796,7 @@ const Float32 voiceRecordDelay = 0.3;
                 if (_bottomIndexPaths) {
                     id path = [_bottomIndexPaths objectForKey:map.username];
                     if (path) {
-                        DDLogInfo(@"scrolling using saved index path for %@",map.username);
+                        DDLogVerbose(@"scrolling using saved index path for %@",map.username);
                         [self scrollTableViewToCell:tableview indexPath:path];
                         [_bottomIndexPaths removeObjectForKey:map.username];
                         scrolledUsingIndexPath = YES;
@@ -724,7 +808,7 @@ const Float32 voiceRecordDelay = 0.3;
                     @synchronized (_needsScroll ) {
                         id needsit = [_needsScroll  objectForKey:map.username];
                         if (needsit) {
-                            DDLogInfo(@"scrolling %@ to bottom",map.username);
+                            DDLogVerbose(@"scrolling %@ to bottom",map.username);
                             [self performSelector:@selector(scrollTableViewToBottom:) withObject:tableview afterDelay:0.5];
                             [_needsScroll removeObjectForKey:map.username];
                         }
@@ -997,7 +1081,7 @@ const Float32 voiceRecordDelay = 0.3;
                                                                      theirVersion:afriend.imageVersion
                                                                                iv:afriend.imageIv];
             
-            DDLogInfo(@"setting friend image for %@ to %@", afriend.name, afriend.imageUrl);
+            DDLogVerbose(@"setting friend image for %@ to %@", afriend.name, afriend.imageUrl);
             [cell setImageForFriend:afriend withEncryptionParams: ep placeholderImage:  [UIImage imageNamed:@"surespot_logo"] progress:^(NSUInteger receivedSize, long long expectedSize) {
                 
             } completed:^(id image, NSString * mimeType, NSError *error, SDImageCacheType cacheType) {
@@ -1005,7 +1089,7 @@ const Float32 voiceRecordDelay = 0.3;
             } retryAttempt:0];
         }
         else {
-            DDLogInfo(@"no friend image for %@", afriend.name);
+            DDLogVerbose(@"no friend image for %@", afriend.name);
             cell.friendImage.image = [UIImage imageNamed:@"surespot_logo"];
             [cell.friendImage setAlpha:.5];
         }
@@ -1034,7 +1118,7 @@ const Float32 voiceRecordDelay = 0.3;
         
         
         if (messages.count == 0) {
-            DDLogInfo(@"no chat messages");
+            DDLogVerbose(@"no chat messages");
             static NSString *CellIdentifier = @"Cell";
             UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
             cell.textLabel.text = NSLocalizedString(@"no_messages", nil);
@@ -1099,14 +1183,14 @@ const Float32 voiceRecordDelay = 0.3;
             if (message.errorStatus > 0) {
                 
                 NSString * errorText = [UIUtils getMessageErrorText: message.errorStatus mimeType:message.mimeType];
-                DDLogInfo(@"setting error status %@", errorText);
+                DDLogVerbose(@"setting error status %@", errorText);
                 [cell.messageStatusLabel setText: errorText];
                 cell.messageSentView.foregroundColor = [UIColor blackColor];
             }
             else {
                 
                 if (message.serverid <= 0) {
-                    DDLogInfo(@"setting message sending");
+                    DDLogVerbose(@"setting message sending");
                     cell.messageStatusLabel.text = NSLocalizedString(@"message_sending",nil);
                     
                     if (ours) {
@@ -1208,7 +1292,7 @@ const Float32 voiceRecordDelay = 0.3;
                      
                      ];
                     
-                    DDLogInfo(@"imageView: %@", cell.uiImageView);
+                    DDLogVerbose(@"imageView: %@", cell.uiImageView);
                 }
                 else {
                     if ([message.mimeType isEqualToString:MIME_TYPE_M4A]) {
@@ -1386,7 +1470,7 @@ const Float32 voiceRecordDelay = 0.3;
                         [UIUtils showToastKey:@"all_messages_loaded"];
                     }
                     else {
-                        DDLogInfo(@"loaded %@ earlier messages for user: %@", result, username);
+                        DDLogVerbose(@"loaded %@ earlier messages for user: %@", result, username);
                         [self updateTableView:weakView withNewRowCount:[result integerValue]];
                     }
                 }
@@ -1543,21 +1627,26 @@ const Float32 voiceRecordDelay = 0.3;
 //become the first esponder so we're not typing in the invite field
 //thinking we're typing in the text field
 -(void) updateKeyboardState: (BOOL) goingHome {
+    DDLogInfo(@"updateKeyboardState, goingHome: %hhd", goingHome);
     if (goingHome) {
         [self resignAllResponders];
     }
     else {
         if ([_inviteTextView isFirstResponder]) {
-            [_inviteTextView resignFirstResponder];
+            if (![UIUtils isIOS8Plus]) {
+                [_inviteTextView resignFirstResponder];
+            }
             [_messageTextView becomeFirstResponder];
         }
     }
 }
 
 -(void) updateTabChangeUI {
+    DDLogInfo(@"updateTabChangeUI");
     if (![self getCurrentTabName]) {
         [_theButton setImage:[UIImage imageNamed:@"ic_menu_invite"] forState:UIControlStateNormal];
         _messageTextView.hidden = YES;
+
         _inviteTextView.hidden = NO;
     }
     else {
@@ -1655,7 +1744,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 
 - (void) scrollTableViewToCell: (UITableView *) tableView  indexPath: (NSIndexPath *) indexPath {
-    DDLogInfo(@"scrolling to cell: %@", indexPath);
+    DDLogVerbose(@"scrolling to cell: %@", indexPath);
     if ( [tableView numberOfSections] > indexPath.section && [tableView numberOfRowsInSection:0] > indexPath.row ) {
         [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
     }
@@ -1911,7 +2000,7 @@ const Float32 voiceRecordDelay = 0.3;
                     _popover.delegate = self;
                     CGFloat x = self.view.bounds.size.width;
                     CGFloat y =self.view.bounds.size.height;
-                    DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+                    DDLogVerbose(@"setting popover x, y to: %f, %f", x/2,y/2);
                     [_popover setPopoverContentSize:CGSizeMake(320, 480) animated:YES];
                     [_popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:self.view permittedArrowDirections:0 animated:YES];
                     
@@ -1984,7 +2073,7 @@ const Float32 voiceRecordDelay = 0.3;
                                                         if (buttonIndex == alertView.firstOtherButtonIndex) {
                                                             NSString * alias = [[alertView textFieldAtIndex:0] text];
                                                             if (![UIUtils stringIsNilOrEmpty:alias]) {
-                                                                DDLogInfo(@"entered alias: %@", alias);
+                                                                DDLogVerbose(@"entered alias: %@", alias);
                                                                 [[ChatController sharedInstance] assignFriendAlias:alias toFriendName:[thefriend name] callbackBlock:^(id result) {
                                                                     BOOL success = [result boolValue];
                                                                     if (!success) {
@@ -2217,7 +2306,7 @@ const Float32 voiceRecordDelay = 0.3;
             
             [currentView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
             [self showMenuForPage: _menuPage indexPath: indexPath];
-            DDLogInfo(@"long press on table view at page %d, row %d", _menuPage, indexPath.row);
+            DDLogVerbose(@"long press on table view at page %d, row %d", _menuPage, indexPath.row);
         }
     }
 }
@@ -2296,7 +2385,7 @@ const Float32 voiceRecordDelay = 0.3;
 -(void) closeTabName: (NSString *) name {
     if (name) {
         NSInteger page = [_swipeView currentPage];
-        DDLogInfo(@"page before close: %d", page);
+        DDLogVerbose(@"page before close: %d", page);
         
         [[ChatController sharedInstance] destroyDataSourceForFriendname: name];
         [[[[ChatController sharedInstance] getHomeDataSource] getFriendByName:name] setChatActive:NO];
@@ -2311,9 +2400,9 @@ const Float32 voiceRecordDelay = 0.3;
         }
         [_swipeView scrollToPage:page duration:0.2];
         
-        DDLogInfo(@"page after close: %d", page);
+        DDLogVerbose(@"page after close: %d", page);
         NSString * name = [self nameForPage:page];
-        DDLogInfo(@"name after close: %@", name);
+        DDLogVerbose(@"name after close: %@", name);
         [[[ChatController sharedInstance] getHomeDataSource] setCurrentChat:name];
         [[[ChatController sharedInstance] getHomeDataSource] postRefresh];
         
@@ -2325,7 +2414,7 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 -(void) logout {
-    DDLogInfo(@"logout");
+    DDLogVerbose(@"logout");
     
     //blow the views away
     
@@ -2380,7 +2469,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 
 - (IBAction)buttonTouchUpInside:(id)sender {
-    DDLogInfo(@"touch up inside");
+    DDLogVerbose(@"touch up inside");
     [_buttonTimer invalidate];
     
     NSTimeInterval interval = -[_buttonDownDate timeIntervalSinceNow];
@@ -2411,7 +2500,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 - (IBAction)buttonTouchDown:(id)sender {
     _buttonDownDate = [NSDate date];
-    DDLogInfo(@"touch down at %@", _buttonDownDate);
+    DDLogVerbose(@"touch down at %@", _buttonDownDate);
     
     //kick off timer
     [_buttonTimer invalidate];
@@ -2420,7 +2509,7 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 - (IBAction)buttonTouchUpOutside:(id)sender {
-    DDLogInfo(@"touch up outside");
+    DDLogVerbose(@"touch up outside");
     
     [_buttonTimer invalidate];
     NSTimeInterval interval = -[_buttonDownDate timeIntervalSinceNow];
@@ -2485,21 +2574,21 @@ const Float32 voiceRecordDelay = 0.3;
         [UIUtils startSpinAnimation: _backImageView];
     }
     
-    DDLogInfo(@"progress count:%d", _progressCount);
+    DDLogVerbose(@"progress count:%d", _progressCount);
 }
 
 -(void) stopProgress: (NSNotification *) notification {
     if (--_progressCount == 0) {
         [UIUtils stopSpinAnimation:_backImageView];
     }
-    DDLogInfo(@"progress count:%d", _progressCount);
+    DDLogVerbose(@"progress count:%d", _progressCount);
 }
 
 
 
 
 -(void) unauthorized: (NSNotification *) notification {
-    DDLogInfo(@"unauthorized");
+    DDLogVerbose(@"unauthorized");
     // [UIUtils showToastKey:@"unauthorized" duration:2];
     [self logout];
 }
@@ -2549,7 +2638,7 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 - (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForSpecifier:(IASKSpecifier*)specifier {
-    DDLogInfo(@"setting tapped %@", specifier.key);
+    DDLogVerbose(@"setting tapped %@", specifier.key);
     
     if ([specifier.key isEqualToString:@"_user_assign_background_image_key"]) {
         NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
@@ -2619,7 +2708,7 @@ const Float32 voiceRecordDelay = 0.3;
         _popover.delegate = self;
         CGFloat x = self.view.bounds.size.width;
         CGFloat y =self.view.bounds.size.height;
-        DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+        DDLogVerbose(@"setting popover x, y to: %f, %f", x/2,y/2);
         [_popover setPopoverContentSize:CGSizeMake(320, 370) animated:NO];
         [_popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:self.view permittedArrowDirections:0 animated:YES];
         
@@ -2691,7 +2780,7 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
 -(void) handleNotification {
     
     NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-    DDLogInfo(@"handleNotification, defaults: %@", defaults);
+    DDLogVerbose(@"handleNotification, defaults: %@", defaults);
     //if we entered app via notification defaults will be set
     NSString * notificationType = [defaults objectForKey:@"notificationType"];
     NSString * to = [defaults objectForKey:@"notificationTo"];
@@ -2715,7 +2804,7 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
 }
 
 -(void) userSwitch {
-    DDLogInfo(@"userSwitch");
+    DDLogVerbose(@"userSwitch");
     @synchronized (_chats) {
         [_chats removeAllObjects];
         // [_swipeView reloadData];

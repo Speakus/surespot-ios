@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 #import "DDLog.h"
+#import "AGWindowView.h"
 
 static const int ddLogLevel = LOG_LEVEL_OFF;
 
@@ -109,6 +110,7 @@ static const NSString * CSToastActivityViewKey  = @"CSToastActivityViewKey";
                                               toast.alpha = 0.0;
                                           } completion:^(BOOL finished) {
                                               [toast removeFromSuperview];
+                                              [[AGWindowView activeWindowViewContainingView:self] removeFromSuperview];
                                           }];
                      }];
 }

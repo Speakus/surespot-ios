@@ -274,10 +274,10 @@ const NSInteger SEND_THRESHOLD = 25;
         
         
         
-        UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
-        aWindow.userInteractionEnabled = YES;
+      //  UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
+     //   aWindow.userInteractionEnabled = YES;
         
-        UIView * overlayView = ((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayView;
+        AGWindowView * overlayView = [[AGWindowView alloc] initAndAddToKeyWindow];
         CGRect frame = overlayView.frame;
         frame.size =  [UIUtils sizeAdjustedForOrientation:frame.size];
         
@@ -285,11 +285,11 @@ const NSInteger SEND_THRESHOLD = 25;
         _backgroundView.backgroundColor = [UIUtils surespotTransparentGrey];
         _backgroundView.opaque = NO;
         
-        [((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayView addSubview:_backgroundView];
+        [overlayView addSubview:_backgroundView];
         
         
-        [((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayView addSubview:view];
-        [((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayView addSubview:_countdownView];
+        [overlayView addSubview:view];
+        [overlayView addSubview:_countdownView];
         [_countdownTextField setFrame:CGRectMake(0, 0, 44, 44)];
         
         
@@ -351,8 +351,8 @@ const NSInteger SEND_THRESHOLD = 25;
         [audioSession setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
         
         
-        UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
-        aWindow.userInteractionEnabled = NO;
+    //    UIWindow * aWindow =((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayWindow;
+    //    aWindow.userInteractionEnabled = NO;
         
         
         

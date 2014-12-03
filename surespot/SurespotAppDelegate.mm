@@ -58,6 +58,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     UIStoryboard *storyboard = self.window.rootViewController.storyboard;
     UINavigationController *rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"navigationController"];
+    
+        [self.window makeKeyAndVisible];
+    
     self.window.rootViewController = rootViewController;
     
     
@@ -71,13 +74,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     
     
-    _overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    [_overlayWindow setWindowLevel:UIWindowLevelAlert+1];
-    _overlayWindow.hidden = NO;
-    _overlayWindow.userInteractionEnabled = NO;
+  //  _overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  //  [_overlayWindow setWindowLevel:UIWindowLevelAlert+1];
+  //  _overlayWindow.hidden = NO;
+  //  _overlayWindow.userInteractionEnabled = NO;
     
-    _overlayView = [[AGWindowView alloc] initAndAddToWindow:_overlayWindow];
-    _overlayView.supportedInterfaceOrientations = AGInterfaceOrientationMaskAll;
+   // _overlayView = [[AGWindowView alloc] initAndAddToKeyWindow];
+   // _overlayView.supportedInterfaceOrientations = AGInterfaceOrientationMaskAll;
+//    _overlayView.transform = CGAffineTransformIdentity;
     
     [[SKPaymentQueue defaultQueue] addTransactionObserver:[PurchaseDelegate sharedInstance]];
     
@@ -113,7 +117,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         }
     }
     
-    [self.window makeKeyAndVisible];
+
     return YES;
 }
 

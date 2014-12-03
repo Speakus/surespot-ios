@@ -57,7 +57,7 @@ static NSMutableArray *_activeWindowViews;
 # define AGWV_AUTORELEASE(xx)       [xx autorelease]
 #endif
 
-#pragma mark - Construct, destruct and setup
+#pragma mark - Lifecycle
 
 + (void)initialize
 {
@@ -118,6 +118,17 @@ static NSMutableArray *_activeWindowViews;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameOrOrientationChanged:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+#if ! __has_feature(objc_arc)
+    [super dealloc];
+#endif
+}
+
+#pragma mark - Handling
+
 - (void)setSupportedInterfaceOrientations:(AGInterfaceOrientationMask)supportedInterfaceOrientations
 {
     _supportedInterfaceOrientations = supportedInterfaceOrientations;
@@ -140,10 +151,26 @@ static NSMutableArray *_activeWindowViews;
 - (void)rotateAccordingToStatusBarOrientationAndSupportedOrientations
 {
     UIInterfaceOrientation orientation = [self desiredOrientation];
-    CGFloat angle = UIInterfaceOrientationAngleOfOrientation(orientation);
     CGFloat statusBarHeight = [[self class] getStatusBarHeight];
     UIInterfaceOrientation statusBarOrientation = [UIApplication sharedApplication].statusBarOrientation;
-    
+
+    CGFloat angle = 0.0;
+
+#ifdef __IPHONE_8_0
+    BOOL relativeRotation = IS_IOS_8_OR_HIGHER();
+#else
+    BOOL relativeRotation = NO;
+#endif
+
+    if (relativeRotation)
+    {
+        angle = UIInterfaceOrientationAngleBetween(orientation, statusBarOrientation);
+    }
+    else
+    {
+        angle = UIInterfaceOrientationAngleOfOrientation(orientation);
+    }
+
     CGAffineTransform transform = CGAffineTransformMakeRotation(angle);
     CGRect frame = [[self class] rectInWindowBounds:self.window.bounds statusBarOrientation:statusBarOrientation statusBarHeight:statusBarHeight];
     
@@ -156,7 +183,7 @@ static NSMutableArray *_activeWindowViews;
     {
         self.transform = transform;
     }
-    if(!CGRectEqualToRect(self.frame, frame))
+   if(!CGRectEqualToRect(self.frame, frame))
     {
         self.frame = frame;
     }
@@ -181,6 +208,16 @@ static BOOL IS_BELOW_IOS_7()
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         answer = [[[UIDevice currentDevice] systemVersion] floatValue] < 7.0;
+    });
+    return answer;
+}
+
+static BOOL IS_IOS_8_OR_HIGHER()
+{
+    static BOOL answer;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        answer = floor([[[UIDevice currentDevice] systemVersion] floatValue]) >= 8.0;
     });
     return answer;
 }
@@ -257,20 +294,23 @@ static BOOL IS_BELOW_IOS_7()
         {
             [NSException raise:NSInternalInconsistencyException format:@"AGWindowView should only be added directly on UIWindow"];
         }
-//        if([self.window.subviews indexOfObject:self] == 0)
-//        {
-//            [NSException raise:NSInternalInconsistencyException format:@"AGWindowView is not meant to be first subview on window since UIWindow automatically rotates the first view for you."];
-        //}
+       // if([self.window.subviews indexOfObject:self] == 0)
+     //   {
+     //       [NSException raise:NSInternalInconsistencyException format:@"AGWindowView is not meant to be first subview on window since UIWindow automatically rotates the first view for you."];
+    //    }
     }
 }
 
-- (void)dealloc
+#pragma mark - Hit test
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    #if ! __has_feature(objc_arc)
-        [super dealloc];
-    #endif
+    id hitView = [super hitTest:point withEvent:event];
+    if (hitView == self && self.onlySubviewsCapturesTouch)
+    {
+        return nil;
+    }
+    return hitView;
 }
 
 #pragma mark - Presentation
@@ -433,7 +473,6 @@ CGFloat UIInterfaceOrientationAngleBetween(UIInterfaceOrientation o1, UIInterfac
 CGFloat UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orientation)
 {
     CGFloat angle;
-    
     switch (orientation)
     {
         case UIInterfaceOrientationPortraitUpsideDown:
@@ -449,7 +488,6 @@ CGFloat UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orientat
             angle = 0.0;
             break;
     }
-    
     return angle;
 }
 

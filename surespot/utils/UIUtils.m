@@ -52,8 +52,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 
 +(void) showToastMessage: (NSString *) message duration: (CGFloat) duration {
-    
-    [((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayView  makeToast:message
+    AGWindowView * overlayView = [[AGWindowView alloc] initAndAddToKeyWindow];
+    [overlayView  makeToast:message
                                                                                          duration: duration
                                                                                          position:@"center"
      ];
@@ -63,8 +63,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [self showToastKey:key duration:2.0];
 }
 +(void) showToastKey: (NSString *) key duration: (CGFloat) duration {
-    
-    [((SurespotAppDelegate *)[[UIApplication sharedApplication] delegate]).overlayView  makeToast:NSLocalizedString(key, nil)
+    AGWindowView * overlayView = [[AGWindowView alloc] initAndAddToKeyWindow];
+    [overlayView  makeToast:NSLocalizedString(key, nil)
                                                                                          duration: duration
                                                                                          position:@"center"
      ];
@@ -127,6 +127,10 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 +(CGSize) screenSizeAdjustedForOrientation {
     CGSize size = [UIScreen mainScreen].bounds.size;
+    if ([UIUtils isIOS8Plus]) {
+        return CGSizeMake(size.width, size.height);
+    }
+    
     UIInterfaceOrientation  orientation = [[UIApplication sharedApplication] statusBarOrientation];
     
     if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
@@ -140,6 +144,10 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 
 +(CGSize) sizeAdjustedForOrientation: (CGSize) size {
+    if ([UIUtils isIOS8Plus]) {
+        return CGSizeMake(size.width, size.height);
+    }
+    
     UIInterfaceOrientation  orientation = [[UIApplication sharedApplication] statusBarOrientation];
     
     if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
@@ -393,6 +401,10 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 + (NSString *) buildAliasStringForUsername: (NSString *) username alias: (NSString *) alias {
     return (alias ? [NSString stringWithFormat:@"%@ (%@)", alias, username] : username);
+}
+
++ (BOOL) isIOS8Plus {
+    return [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0;
 }
 
 @end
