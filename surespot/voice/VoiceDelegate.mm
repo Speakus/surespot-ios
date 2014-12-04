@@ -336,6 +336,8 @@ const NSInteger SEND_THRESHOLD = 25;
         [_recorder stop];
         
         [view stopAnimation];
+        
+        [[AGWindowView activeWindowViewContainingView:view] removeFromSuperview];
         [view removeFromSuperview];
         [_countdownView removeFromSuperview];
         [_backgroundView removeFromSuperview];
