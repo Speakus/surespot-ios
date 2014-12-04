@@ -87,7 +87,7 @@
     [self setNeedsLayout];
 }
 
-- (void)setAlignment:(UIImageViewAignmentMask)alignment
+- (void)setAlignment:(UIImageViewAlignmentMask)alignment
 {
     if (_alignment == alignment)
         return ;
@@ -114,7 +114,8 @@
         realframe.origin.y = CGRectGetMaxY(self.bounds) - realframe.size.height;
     
     _realImageView.frame = realframe;
-    
+
+    // Make sure we clear the contents of this container layer, since it refreshes from the image property once in a while.
     self.layer.contents = nil;
 }
 
@@ -177,6 +178,14 @@
 
     return size;
 }
+
+
+#pragma mark - UIImageView overloads
+
+//- (void)setHighlighted:(BOOL)highlighted {
+//    [super setHighlighted:highlighted];
+//    self.layer.contents = nil;
+//}
 
 
 #pragma mark - Properties needed for Interface Builder
