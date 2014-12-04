@@ -1027,6 +1027,7 @@ const Float32 voiceRecordDelay = 0.3;
         Friend * afriend = [[[ChatController sharedInstance] getHomeDataSource].friends objectAtIndex:indexPath.row];
         cell.friendLabel.text = afriend.nameOrAlias;
         cell.friendLabel.textColor = [self getTextColor];
+        cell.backgroundColor = [UIColor clearColor];
         cell.friendName = afriend.name;
         cell.friendDelegate = [ChatController sharedInstance];
         
@@ -1154,7 +1155,7 @@ const Float32 voiceRecordDelay = 0.3;
                 
                 cell.messageSentView.foregroundColor = [UIUtils surespotBlue];
             }
-            
+            cell.backgroundColor = [UIColor clearColor];
             cell.message = message;
             cell.messageLabel.text = plainData;
             cell.messageLabel.textColor = [self getTextColor];
