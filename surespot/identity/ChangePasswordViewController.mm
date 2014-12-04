@@ -94,15 +94,64 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 // Call this method somewhere in your view controller setup code.
 - (void)registerForKeyboardNotifications
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
-                                                 name:UIKeyboardWillHideNotification object:nil];
-    
+    if ([UIUtils isIOS8Plus]) {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardFrameDidChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+        
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWasShown:)
+                                                     name:UIKeyboardDidShowNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWillBeHidden:)
+                                                     name:UIKeyboardWillHideNotification object:nil];
+        
+    }
 }
+
+- (void)keyboardFrameDidChange:(NSNotification *)notification
+{
+    DDLogInfo(@"keyboardFrameDidChange");
+    CGRect keyboardEndFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect keyboardBeginFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    //  UIViewAnimationCurve animationCurve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    //  NSTimeInterval animationDuration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] integerValue];
+    
+    //  [UIView beginAnimations:nil context:nil];
+    //  [UIView setAnimationDuration:animationDuration];
+    //  [UIView setAnimationCurve:animationCurve];
+    
+    
+    
+    
+    //    CGRect newFrame = _textFieldContainer.frame;
+    CGRect keyboardFrameEnd = [self.view convertRect:keyboardEndFrame toView:nil];
+    
+    
+    CGRect keyboardFrameBegin = [self.view convertRect:keyboardBeginFrame toView:nil];
+    DDLogInfo(@"keyboard frame begin origin y: %f, height: %f", keyboardFrameBegin.origin.y, keyboardFrameBegin.size.height);
+    DDLogInfo(@"keyboard frame end origin y: %f, height: %f", keyboardFrameEnd.origin.y, keyboardFrameEnd.size.height);
+    int kbHeight = keyboardFrameBegin.origin.y-keyboardFrameEnd.origin.y;
+    // DDLogInfo(@"keyboard height: %d",height);
+    // DDLogInfo(@"origin y before: %f",newFrame.origin.y);
+    
+    // newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
+    // DDLogInfo(@"origin y after: %f",newFrame.origin.y);
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbHeight, 0.0);
+    _scrollView.contentInset = contentInsets;
+    _scrollView.scrollIndicatorInsets = contentInsets;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    // Your app might not need or want this behavior.
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbHeight;
+    if (!CGRectContainsPoint(aRect, _bExecute.frame.origin) ) {
+        [_scrollView setContentOffset:CGPointMake(0.0, (_bExecute.frame.origin.y + _bExecute.frame.size.height + 5) -kbHeight) animated:YES];
+    }
+}
+
 
 // Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWasShown:(NSNotification*)aNotification
