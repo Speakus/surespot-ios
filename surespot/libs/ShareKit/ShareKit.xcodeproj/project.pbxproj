@@ -2395,10 +2395,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/ShareKitLibrary.dst;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ShareKitLibrary/ShareKitLibrary-Prefix.pch";
@@ -2415,6 +2416,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = "Google Plus";
+				PROVISIONING_PROFILE = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Submodules/google-api-objectivec\"/**";
 			};
@@ -2425,9 +2427,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iOS Distribution: surespot llc";
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/ShareKitLibrary.dst;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ShareKitLibrary/ShareKitLibrary-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
@@ -2438,6 +2442,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = "Google Plus";
+				PROVISIONING_PROFILE = "09985f84-bc1b-44df-b4b4-ae9e79401095";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Submodules/google-api-objectivec\"/**";
 			};
@@ -3068,7 +3073,9 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "";
+				CODE_SIGN_IDENTITY = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
 				FRAMEWORK_SEARCH_PATHS = "\"$SRCROOT/Frameworks\"";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_THUMB_SUPPORT = NO;
@@ -3076,6 +3083,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				ONLY_ACTIVE_ARCH = NO;
+				PROVISIONING_PROFILE = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3084,7 +3092,8 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iOS Distribution: surespot llc";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Distribution: surespot llc";
 				FRAMEWORK_SEARCH_PATHS = "\"$SRCROOT/Frameworks\"";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_THUMB_SUPPORT = NO;
@@ -3092,6 +3101,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "09985f84-bc1b-44df-b4b4-ae9e79401095";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
