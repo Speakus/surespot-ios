@@ -2814,6 +2814,7 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [_swipeView removeFromSuperview];
+    [self resignAllResponders];
     _swipeView = nil;
     
 }
