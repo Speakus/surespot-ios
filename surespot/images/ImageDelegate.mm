@@ -534,4 +534,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
+-(void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView *__autoreleasing *)view {
+    CGFloat x = [*view bounds].size.width;
+    CGFloat y = [*view bounds].size.height;
+    DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+    
+    CGRect newRect = CGRectMake(x/2,y/2, 1,1 );
+    *rect = newRect;
+}
+
+
 @end

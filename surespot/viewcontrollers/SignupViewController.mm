@@ -503,19 +503,15 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
 }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromOrientation
-{
+-(void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView *__autoreleasing *)view {
+    CGFloat x =self.view.bounds.size.width;
+    CGFloat y =self.view.bounds.size.height;
+    DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
     
-    // if the popover is showing, adjust its position after the re-orientation by presenting it again:
-    if (self.popover != nil)
-    {
-        CGFloat x =self.view.bounds.size.width;
-        CGFloat y =self.view.bounds.size.height;
-        DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
-        
-        [self.popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:self.view permittedArrowDirections:0 animated:YES];
-    }
+    CGRect newRect = CGRectMake(x/2,y/2, 1,1 );
+    *rect = newRect;
 }
+
 
 -(BOOL) shouldAutorotate {
     return _progressView == nil;

@@ -266,18 +266,15 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
     _viewController = nil;
 }
 
-- (void)orientationChanged
-{
-    // if the popover is showing, adjust its position after the re-orientation by presenting it again:
-    if (self.popover != nil)  // if the popover is showing (replace with your own test if you wish)
-    {
-        CGFloat x =_parentController.view.bounds.size.width;
-        CGFloat y =_parentController.view.bounds.size.height;
-        DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
-        
-        [self.popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:_parentController.view permittedArrowDirections:0 animated:YES];
-    }
+-(void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout                                                                                      UIView *__autoreleasing *)view {
+    CGFloat x = [*view bounds].size.width;
+    CGFloat y = [*view bounds].size.height;
+    DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+    
+    CGRect newRect = CGRectMake(x/2,y/2, 1,1 );
+    *rect = newRect;
 }
+
 
 -(SKProduct *) getProductForId: (NSString *) productId {
     for (SKProduct *product in _products) {

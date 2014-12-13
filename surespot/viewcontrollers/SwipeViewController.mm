@@ -232,7 +232,7 @@ const Float32 voiceRecordDelay = 0.3;
     [self adjustTableViewHeight:-diff];
 }
 
--(void) adjustTableViewHeight: (NSInteger) height {    
+-(void) adjustTableViewHeight: (NSInteger) height {
     CGRect frame = _swipeView.frame;
     frame.size.height -= height;
     _swipeView.frame = frame;
@@ -545,29 +545,22 @@ const Float32 voiceRecordDelay = 0.3;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromOrientation
 {
     DDLogInfo(@"did rotate");
-
+    
     _swipeView.suppressScrollEvent= NO;
     
-    //restore scroll indices
-    
-    [_imageDelegate orientationChanged];
-    [[PurchaseDelegate sharedInstance] orientationChanged];
-    // if the popover is showing, adjust its position after the re-orientation by presenting it again:
-    if (self.popover != nil)
-    {
-        CGFloat x =self.view.bounds.size.width;
-        CGFloat y =self.view.bounds.size.height;
-        DDLogVerbose(@"setting popover x, y to: %f, %f", x/2,y/2);
-        
-        [self.popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:self.view permittedArrowDirections:0 animated:YES];
-    }
-    
-    
     [self showHeader];
-    
     [self restoreScrollPositions];
-    
 }
+
+-(void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView *__autoreleasing *)view {
+    CGFloat x =self.view.bounds.size.width;
+    CGFloat y =self.view.bounds.size.height;
+    DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+    
+    CGRect newRect = CGRectMake(x/2,y/2, 1,1 );
+    *rect = newRect;
+}
+
 
 -(void) restoreScrollPositions {
     if (_bottomIndexPaths) {
@@ -2856,6 +2849,7 @@ didSelectLinkWithPhoneNumber:(NSString *)phoneNumber {
     
     return [aliasMap username];
 }
+
 
 
 @end

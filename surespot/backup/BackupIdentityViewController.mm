@@ -70,7 +70,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     [self setAccountFromKeychain];
     
     _labelGoogleDriveBackup.text = NSLocalizedString(@"google_drive", nil);
-
+    
     
     UIBarButtonItem *anotherButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"help",nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHelp)];
     self.navigationItem.rightBarButtonItem = anotherButton;
@@ -81,7 +81,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
     [_bDocuments setTitle:NSLocalizedString(@"backup_to_documents", nil) forState:UIControlStateNormal];
     [[_bDocuments titleLabel] setAdjustsFontSizeToFitWidth: YES];
     
-    [_lSelect setText:NSLocalizedString(@"select_identity", nil)];    
+    [_lSelect setText:NSLocalizedString(@"select_identity", nil)];
     [_lBackup setText:NSLocalizedString(@"help_backupIdentities1", nil)];
     
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 765);
@@ -110,18 +110,13 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
 }
 
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromOrientation
-{
+-(void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView *__autoreleasing *)view {
+    CGFloat x =self.view.bounds.size.width;
+    CGFloat y =self.view.bounds.size.height;
+    DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
     
-    // if the popover is showing, adjust its position after the re-orientation by presenting it again:
-    if (self.popover != nil)
-    {
-        CGFloat x =self.view.bounds.size.width;
-        CGFloat y =self.view.bounds.size.height;
-        DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
-        
-        [self.popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:self.view permittedArrowDirections:0 animated:YES];
-    }
+    CGRect newRect = CGRectMake(x/2,y/2, 1,1 );
+    *rect = newRect;
 }
 
 
@@ -514,7 +509,7 @@ static NSString* const DRIVE_IDENTITY_FOLDER = @"surespot identity backups";
             [UIUtils showToastKey:@"backed_up_identity_to_documents" duration:2];
             return;
         }
-    }];    
+    }];
 }
 
 
