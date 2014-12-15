@@ -9,6 +9,7 @@
 #import "SHKPocket.h"
 #import "PocketAPI.h"
 #import "SharersCommonHeaders.h"
+#import "NSHTTPCookieStorage+DeleteForURL.h"
 
 @interface SHKPocket ()
 
@@ -47,7 +48,7 @@
     return [[PocketAPI sharedAPI] isLoggedIn];
 }
 
-- (void)promptAuthorization {
+- (void)authorizationFormShow {
     
     [self saveItemForLater:SHKPendingShare];
     
@@ -78,6 +79,13 @@
     
     [SHKPocket clearSavedItem];
     [[PocketAPI sharedAPI] logout];
+    [NSHTTPCookieStorage deleteCookiesForURL:[NSURL URLWithString:@"https://getpocket.com/"]];
+    
+}
+
++ (NSString *)username {
+    
+    return [[PocketAPI sharedAPI] username];
 }
 
 #pragma mark -
@@ -118,7 +126,7 @@
     NSString *apiMethod = @"add";
     PocketAPIHTTPMethod httpMethod = PocketAPIHTTPMethodPOST; // usually PocketAPIHTTPMethodPOST
     NSDictionary *arguments = @{@"url": [self.item.URL absoluteString],
-                                @"title": self.item.title,
+                                @"title": self.item.title ?: @"",
                                 @"tags": tags};
     
     [[PocketAPI sharedAPI] callAPIMethod:apiMethod

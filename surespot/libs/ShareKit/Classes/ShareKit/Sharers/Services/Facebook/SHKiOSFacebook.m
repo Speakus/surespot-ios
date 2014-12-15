@@ -11,9 +11,14 @@
 
 #import "SharersCommonHeaders.h"
 #import "SHKFacebookCommon.h"
+#import "SHKSession.h"
+
 #import "NSMutableDictionary+NSNullsToEmptyStrings.h"
+#import "NSMutableURLRequest+Parameters.h"
 
 #import <Accounts/Accounts.h>
+
+typedef void (^SHKRequestHandler)(NSData *responseData, NSURLResponse *urlResponse, NSError *error);
 
 @implementation SHKiOSFacebook
 
@@ -47,6 +52,11 @@
     
     ACAccountStore *store = [[ACAccountStore alloc] init];
     ACAccountType *sharerAccountType = [store accountTypeWithAccountTypeIdentifier:[self accountTypeIdentifier]];
+    
+    if (![sharerAccountType.identifier isEqualToString:ACAccountTypeIdentifierFacebook]) {
+        NSLog(@"Wrong ACAccount type, is nil but should be Facebook type. If you can repeat this situation, please open an issue in ShareKit's Github");
+        return;
+    }
     NSDictionary *writePermissions = @{ACFacebookAppIdKey: SHKCONFIG(facebookAppId),
                               ACFacebookPermissionsKey: SHKCONFIG(facebookWritePermissions),
                               ACFacebookAudienceKey: ACFacebookAudienceEveryone};
@@ -88,8 +98,9 @@
                                                                                     
                                                                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                                                         
+                                                                                        [self authDidFinish:writeGranted];
+                                                                                        
                                                                                         if (writeGranted) {
-                                                                                            [self authDidFinish:writeGranted];
                                                                                             [self tryPendingAction];
                                                                                         } else {
                                                                                             [self iOSAuthorizationFailedWithError:error];
@@ -100,6 +111,7 @@
                                                     
                                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
                                                         [self iOSAuthorizationFailedWithError:error];
+                                                        [self authDidFinish:NO];
                                                     }];
                                                 }
                                         }];
@@ -116,6 +128,7 @@
 + (void)logout {
     
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSHKFacebookUserInfo];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSHKFacebookVideoUploadLimits];
 }
 
 #pragma mark - ShareKit UI
@@ -189,9 +202,17 @@
                                             requestMethod:SLRequestMethodPOST
                                                       URL:[NSURL URLWithString:kSHKFacebookAPIVideosURL]
                                                parameters:params];
-    [request addMultipartData:self.item.file.data withName:@"source" type:self.item.file.mimeType filename:self.item.file.filename];
     request.account = [self availableAccounts][0];
-    [request performRequestWithHandler:[self requestHandler]];
+    
+    BOOL canUseNSURLSession = NSClassFromString(@"NSURLSession") != nil;
+    if (canUseNSURLSession) {
+        NSURLRequest *preparedRequest = [request preparedURLRequest];
+        [(NSMutableURLRequest *)preparedRequest attachFile:self.item.file withParameterName:@"source"];
+        self.networkSession = [SHKSession startSessionWithRequest:preparedRequest delegate:self completion:[self requestHandler]];
+    } else {
+        [request addMultipartData:self.item.file.data withName:@"source" type:self.item.file.mimeType filename:self.item.file.filename];
+        [request performRequestWithHandler:[self requestHandler]];
+    }
     
     //update video limits
     [[self class] getUserInfo];
@@ -216,9 +237,9 @@
     [videoLimitsRequest performRequestWithHandler:[self requestHandler]];
 }
 
-- (SLRequestHandler)requestHandler {
+- (SHKRequestHandler)requestHandler {
     
-    SLRequestHandler result = ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+    SHKRequestHandler result = ^(NSData *responseData, NSURLResponse *urlResponse, NSError *error) {
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             
@@ -227,7 +248,7 @@
                 NSError *parseError;
                 NSMutableDictionary *parsedResponse = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&parseError];
                 
-                BOOL requestSucceeded = urlResponse.statusCode < 400;
+                BOOL requestSucceeded = [(NSHTTPURLResponse *)urlResponse statusCode] < 400;
                 if (requestSucceeded) {
                     
                     //if this is userinfo, save it
@@ -236,6 +257,7 @@
                         [parsedResponse convertNSNullsToEmptyStrings];
                         [[NSUserDefaults standardUserDefaults] setObject:parsedResponse forKey:kSHKFacebookUserInfo];
                         SHKLog(@"saved Facebook UserInfo");
+                        
                     } else if (!parseError && parsedResponse[@"video_upload_limits"]) {
                         
                         [parsedResponse convertNSNullsToEmptyStrings];
@@ -252,7 +274,7 @@
                     NSUInteger errorCode = [parsedResponse[@"error"][@"code"] integerValue];
                     
                     //even for 458 (user removed app on Facebook) we should refresh token - this way iOS settings app removes access too. Then we can reauthorize again, if user shares.
-                    if (errorSubCode == 458 || errorSubCode == 463 || errorSubCode == 467 || errorCode == 2500 || 200 <= errorCode || errorCode <= 299) {
+                    if (errorSubCode == 458 || errorSubCode == 463 || errorSubCode == 467 || errorCode == 2500 || 200 >= errorCode || errorCode <= 299 || errorCode == 102) {
                         [self shouldReloginWithPendingAction:SHKPendingRefreshToken];
                     } else {
                         [self sendShowSimpleErrorAlert];

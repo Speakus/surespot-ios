@@ -29,6 +29,7 @@
 #import "SHKVkontakteOAuthView.h"
 #import "SHKVKontakteRequest.h"
 #import "SharersCommonHeaders.h"
+#import "NSHTTPCookieStorage+DeleteForURL.h"
 
 @interface SHKVkontakte()
 
@@ -203,6 +204,7 @@
 
 - (void)getUserInfo
 {
+    self.quiet = YES;
     if ([self isAuthorized])
     {
         NSString *reqURl = [NSString stringWithFormat:@"https://api.vk.com/method/users.get?uids=%@&fields=uid,first_name,last_name,nickname,sex,bdate,city,country,timezone,photo,photo_medium,photo_big,photo_rec&access_token=%@", self.accessUserId,self.accessToken];
@@ -222,6 +224,7 @@
                               if (userInfo)
                               {
                                   [[NSUserDefaults standardUserDefaults] setObject:userInfo forKey:kSHKVkonakteUserInfo];
+                                  [[NSUserDefaults standardUserDefaults] synchronize];
                                   [self sendDidFinish];
                               } else
                               {
@@ -239,13 +242,6 @@
     }
 }
 
-- (void)userInfoReceived:(SHKRequest *)aRequest
-{
-	}
-
-
-
-
 #pragma mark -
 
 - (void) authComplete 
@@ -259,19 +255,29 @@
 
 + (void)logout
 {
-	/*
-    NSString *logout = @"http://api.vk.com/oauth/logout";
-	
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:logout] 
-																												 cachePolicy:NSURLRequestReloadIgnoringLocalCacheData 
-																										 timeoutInterval:60.0]; 
-		NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-	if(responseData)
-	{
-		NSDictionary *dict = [[JSONDecoder decoder] parseJSONData:responseData];
-	}*/
-	
-  [self flushAccessToken];
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray *cookies = [storage cookies];
+    for (NSHTTPCookie *each in cookies)
+    {
+        if ([each.domain rangeOfString:@"vk.com"].location != NSNotFound) {
+            [storage deleteCookie:each];
+        }
+    }
+    
+    [self flushAccessToken];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSHKVkonakteUserInfo];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)username {
+    
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kSHKVkonakteUserInfo];
+    if (userInfo) {
+        NSString *result = [[NSString alloc] initWithFormat:@"%@ %@", userInfo[@"first_name"], userInfo[@"last_name"]];
+        return result;
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark -
@@ -344,10 +350,11 @@
                                                                                  start:text
                                                                                   item:self.item];
     commentField.select = YES;
-    commentField.validationBlock = ^ (SHKFormFieldLargeTextSettings *formFieldSettings) {
+    commentField.validationBlock = ^(SHKFormFieldLargeTextSettings *formFieldSettings) {
         
-        BOOL result = formFieldSettings.valueToSave > 0;
-        return result;
+        BOOL isText = formFieldSettings && [formFieldSettings.valueToSave length] > 0;
+        BOOL resultReverted = !(!allowEmptyMessage && !isText);
+        return resultReverted;
     };
     
     return @[commentField];

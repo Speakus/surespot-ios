@@ -58,10 +58,10 @@ NSString *const kSHKFacebookAPIVideosURL = @"https://graph.facebook.com/me/video
 
 + (BOOL)socialFrameworkAvailable {
     
-    if ([SHKCONFIG(forcePreIOS6FacebookPosting) boolValue] || !NSClassFromString(@"SLComposeViewController")) {
-        return NO;
-    } else {
+    if (NSClassFromString(@"SLComposeViewController") && ![SHKCONFIG(forcePreIOS6FacebookPosting) boolValue]) {
         return YES;
+    } else {
+        return NO;
     }
 }
 
@@ -115,6 +115,8 @@ NSString *const kSHKFacebookAPIVideosURL = @"https://graph.facebook.com/me/video
 }
 
 + (NSMutableArray *)shareFormFieldsForItem:(SHKItem *)item {
+    
+    if (item.shareType == SHKShareTypeUserInfo) return nil;
     
     NSString *text;
     NSString *key;

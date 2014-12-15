@@ -30,6 +30,8 @@
 #import "SHKSharerDelegate.h"
 #import "SHKRequest.h"
 #import "SharersCommonHeaders.h"
+#import "SHKUploadInfo.h"
+#import "SHKSession.h"
 
 static NSString *const kSHKStoredItemKey=@"kSHKStoredItem";
 static NSString *const kSHKStoredActionKey=@"kSHKStoredAction";
@@ -42,6 +44,11 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
 @end
 
 @implementation SHKSharer
+
+- (void)dealloc {
+    
+    SHKLog(@"!!! %@ sharer deallocated!!!", [self sharerTitle]);
+}
 
 #pragma mark -
 #pragma mark Configuration : Service Defination
@@ -168,7 +175,7 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
 {
 	if (self = [super initWithNibName:nil bundle:nil])
 	{
-        self.shareDelegate = [[SHKSharerDelegate alloc] init];
+        _shareDelegate = [[SHKCONFIG(SHKSharerDelegateSubclass) alloc] init];
 				
 		if ([self respondsToSelector:@selector(modalPresentationStyle)])
 			self.modalPresentationStyle = [SHK modalPresentationStyleForController:self];
@@ -179,30 +186,42 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
 	return self;
 }
 
-
 #pragma mark -
 #pragma mark Share Item Loading Convenience Methods
 
 + (id)shareItem:(SHKItem *)i
 {
-	[SHK pushOnFavorites:[self sharerId] forItem:i];
-	
-	// Create controller and set share options
-	SHKSharer *controller = [[self alloc] init];
-	controller.item = i;
-	
-	// share and/or show UI
-	[controller share];
-	
-	return controller;
+	if ([self canShareItem:i]) {
+        
+        [SHK pushOnFavorites:[self sharerId] forItem:i];
+        
+        // Create controller and set share options
+        SHKSharer *controller = [[self alloc] init];
+        controller.item = i;
+        
+        // share and/or show UI
+        [controller share];
+        
+        return controller;
+        
+    } else {
+        
+        SHKLog(@"Warning!!! You are loading sharer with incompatible item");
+        return nil;
+    }
 }
 
 - (void)loadItem:(SHKItem *)i
 {
-	[SHK pushOnFavorites:[self sharerId] forItem:i];
-	
-	// Create controller set share options
-	self.item = i;
+    if ([[self class] canShareItem:i]) {
+        
+        [SHK pushOnFavorites:[self sharerId] forItem:i];
+        self.item = i;
+        
+    } else {
+        
+        SHKLog(@"Warning!!! You are loading sharer with incompatible item");
+    }
 }
 
 + (id)shareURL:(NSURL *)url
@@ -289,19 +308,26 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
     SHKItem *item = [[SHKItem alloc] init];
     item.shareType = SHKShareTypeUserInfo;
     
-    // Create controller and set share options
-	SHKSharer *controller = [[self alloc] init];
-	controller.item = item;
-    
-	// share and/or show UI
-	[controller share];
-    
-    return controller;
+    if ([self canShareItem:item]) {
+        
+        // Create controller and set share options
+        SHKSharer *controller = [[self alloc] init];
+        controller.item = item;
+        
+        // share and/or show UI
+        [controller share];
+        return controller;
+
+    } else {
+        
+        SHKLog(@"Warning!!! This sharer does not fetch user info.");
+        return nil;
+    }
 }
 
 #pragma mark - Share Item temporary save
 
-- (BOOL)restoreItem{
+- (BOOL)restoreItem {
     
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	NSDictionary *storedShareInfo = [defaults objectForKey:kSHKStoredShareInfoKey];
@@ -349,7 +375,7 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
         return;
     }
 	
-	if (!self.quiet) [[SHKActivityIndicator currentIndicator] displayActivity:SHKLocalizedString(@"Shortening URL...")];
+	[self displayActivity:SHKLocalizedString(@"Shortening URL...")];
     
 	[SHKRequest startWithURL:[NSURL URLWithString:[NSMutableString stringWithFormat:@"http://api.bit.ly/v3/shorten?login=%@&apikey=%@&longUrl=%@&format=txt",
                                                    bitLyLogin,
@@ -360,7 +386,7 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
                       method:@"GET"
                   completion:^(SHKRequest *request) {
                       
-                      [[SHKActivityIndicator currentIndicator] hide];
+                      [self hideActivityIndicator];
                       
                       NSString *result = [[request getResult] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                       
@@ -390,6 +416,9 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
 
 - (void)share
 {
+    if (![NSThread isMainThread]) {
+        SHKLog(@"You are calling share on a secondary thread. You should always call share on a main thread to make sure a sharer works properly.");
+    }
 	// isAuthorized - If service requires login and details have not been saved, present login dialog
 	if (![self authorize]) {
         
@@ -415,7 +444,7 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
     }
 }
 
-//insertion point for sharers, which must have fulfilled more conditions for sharing, e.g. available user account in settings.app for iOS sharers
+//insertion point for sharers, which must have fulfilled more conditions for sharing, e.g. available user account in settings.app for iOS sharers. Evaluated within share method, before actually sharing.
 - (BOOL)isSharerReady {
     
     return YES;
@@ -425,6 +454,13 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
     
     BOOL result = [SHKCONFIG(allowAutoShare) boolValue] == TRUE && [self shouldAutoShare];
     return result;
+}
+
+- (void)cancel {
+    
+    if (!self.networkSession) SHKLog(@"This sharer does not use SHKSession. Default implementation of cancel does nothing!!!");
+    
+    [self.networkSession cancel];
 }
 
 #pragma mark -
@@ -906,12 +942,22 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
 }
 
 - (void)sendDidFinish
-{	
-	[[NSNotificationCenter defaultCenter] postNotificationName:SHKSendDidFinishNotification object:self];
+{
+    [self sendDidFinishWithResponse:nil];
+}
 
+- (void)sendDidFinishWithResponse:(NSDictionary *)response {
+    
+    if (self.uploadInfo) {
+        self.uploadInfo.uploadFinishedSuccessfully = YES;
+        [[SHK currentHelper] uploadInfoChanged:self.uploadInfo];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SHKSendDidFinishNotification object:self userInfo:response];
+    
     if ([self.shareDelegate respondsToSelector:@selector(sharerFinishedSending:)])
 		[self.shareDelegate performSelector:@selector(sharerFinishedSending:) withObject:self];
-	}
+}
 
 - (void)shouldReloginWithPendingAction:(SHKSharerPendingAction)action
 {
@@ -937,15 +983,29 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
 {
 	self.lastError = error;
     
+    if (self.uploadInfo) {
+        [[SHK currentHelper] uploadInfoChanged:self.uploadInfo];//to save last progress into defaults
+    }
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:SHKSendDidFailWithErrorNotification object:self];
     
 	if ([self.shareDelegate respondsToSelector:@selector(sharer:failedWithError:shouldRelogin:)])
 		[self.shareDelegate sharer:self failedWithError:error shouldRelogin:shouldRelogin];
+    
+    if (shouldRelogin) {
+        [self promptAuthorization];
+	}
 }
 
 - (void)sendDidCancel
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:SHKSendDidCancelNotification object:self];
+    if (self.uploadInfo) {
+        
+        self.uploadInfo.uploadCancelled = YES;
+        [[SHK currentHelper] uploadInfoChanged:self.uploadInfo];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SHKSendDidCancelNotification object:self];
     
     if ([self.shareDelegate respondsToSelector:@selector(sharerCancelledSending:)])
 		[self.shareDelegate performSelector:@selector(sharerCancelledSending:) withObject:self];	
@@ -977,7 +1037,43 @@ static NSString *const kSHKStoredShareInfoKey=@"kSHKStoredShareInfo";
 
 - (void)sendShowSimpleErrorAlert {
     
-    [self sendDidFailWithError:[SHK error:SHKLocalizedString(@"There was a problem saving to %@", [[self class] sharerTitle])]];
+    [self sendDidFailWithError:[SHK error:SHKLocalizedString(@"There was a problem saving to %@.", [[self class] sharerTitle])]];
+}
+
+- (void)hideActivityIndicator {
+    
+    [self.shareDelegate hideActivityIndicatorForSharer:self];
+}
+
+- (void)displayActivity:(NSString *)activityDescription {
+    
+    [self.shareDelegate displayActivity:activityDescription forSharer:self];
+}
+
+- (void)displayCompleted:(NSString *)completionText {
+    
+    [self.shareDelegate displayCompleted:completionText forSharer:self];
+}
+
+#pragma mark - SHKSessionDelegate
+
+- (void)showUploadedBytes:(int64_t)uploadedBytes totalBytes:(int64_t)totalBytes {
+    
+    //SHKLog(@"totalSent:%lli, totalExpected:%lli", uploadedBytes, totalBytes);
+    
+    if (!self.uploadInfo) {
+        
+        self.uploadInfo = [[SHKUploadInfo alloc] initWithSharer:self];
+        if (totalBytes > 0) {
+            self.uploadInfo.bytesTotal = totalBytes;
+        }
+        [[SHK currentHelper] uploadInfoChanged:self.uploadInfo];
+    }
+    
+    self.uploadInfo.bytesUploaded = uploadedBytes;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SHKUploadProgressNotification object:self userInfo:@{SHKUploadProgressInfoKeyName: self.uploadInfo}];
+    [self.shareDelegate showProgress:[self.uploadInfo uploadProgress] forSharer:self];
 }
 
 @end

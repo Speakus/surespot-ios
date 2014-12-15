@@ -30,18 +30,7 @@
 #import "NSHTTPCookieStorage+DeleteForURL.h"
 #import "SharersCommonHeaders.h"
 
-
 @implementation SHKOAuthSharer
-
-@synthesize consumerKey, secretKey, authorizeCallbackURL;
-@synthesize authorizeURL, requestURL, accessURL;
-@synthesize consumer, requestToken, accessToken;
-@synthesize signatureProvider;
-@synthesize authorizeResponseQueryVars;
-
-
-
-
 
 #pragma mark -
 #pragma mark Authorization
@@ -61,13 +50,13 @@
 
 - (void)tokenRequest
 {
-	[[SHKActivityIndicator currentIndicator] displayActivity:SHKLocalizedString(@"Connecting...")];
+	[self displayActivity:SHKLocalizedString(@"Connecting...")];
 	
-    OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:requestURL
-                                                                   consumer:consumer
+    OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:self.requestURL
+                                                                   consumer:self.consumer
                                                                       token:nil   // we don't have a Token yet
                                                                       realm:nil   // our service provider doesn't specify a realm
-														   signatureProvider:signatureProvider];
+														   signatureProvider:self.signatureProvider];
 																
 	
 	[oRequest setHTTPMethod:@"POST"];
@@ -91,7 +80,7 @@
 	if (SHKDebugShowLogs) // check so we don't have to alloc the string with the data if we aren't logging
 		SHKLog(@"tokenRequestTicket Response Body: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 	
-	[[SHKActivityIndicator currentIndicator] hide];
+	[self hideActivityIndicator];
 	
 	if (ticket.didSucceed) 
 	{
@@ -110,7 +99,7 @@
 
 - (void)tokenRequestTicket:(OAServiceTicket *)ticket didFailWithError:(NSError*)error
 {
-	[[SHKActivityIndicator currentIndicator] hide];
+	[self hideActivityIndicator];
 	
 	[[[UIAlertView alloc] initWithTitle:SHKLocalizedString(@"Request Error")
 								 message:error!=nil?[error localizedDescription]:SHKLocalizedString(@"There was an error while sharing")
@@ -124,7 +113,7 @@
 
 - (void)tokenAuthorize
 {	
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?oauth_token=%@", authorizeURL.absoluteString, requestToken.key]];
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?oauth_token=%@", [self.authorizeURL absoluteString], self.requestToken.key]];
 	
 	SHKOAuthView *auth = [[SHKOAuthView alloc] initWithURL:url delegate:self];
 	[[SHK currentHelper] showViewController:auth];	
@@ -182,13 +171,13 @@
 - (void)tokenAccess:(BOOL)refresh
 {
 	if (!refresh)
-		[[SHKActivityIndicator currentIndicator] displayActivity:SHKLocalizedString(@"Authenticating...")];
+		[self displayActivity:SHKLocalizedString(@"Authenticating...")];
 	
-    OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:accessURL
-                                                                   consumer:consumer
-																	   token:(refresh ? accessToken : requestToken)
+    OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:self.accessURL
+                                                                   consumer:self.consumer
+																	   token:(refresh ? self.accessToken : self.requestToken)
                                                                       realm:nil   // our service provider doesn't specify a realm
-                                                          signatureProvider:signatureProvider]; // use the default method, HMAC-SHA1
+                                                          signatureProvider:self.signatureProvider]; // use the default method, HMAC-SHA1
 	
     [oRequest setHTTPMethod:@"POST"];
 	
@@ -211,7 +200,7 @@
 	if (SHKDebugShowLogs) // check so we don't have to alloc the string with the data if we aren't logging
 		SHKLog(@"tokenAccessTicket Response Body: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 	
-	[[SHKActivityIndicator currentIndicator] hide];
+	[self hideActivityIndicator];
 	
 	if (ticket.didSucceed) 
 	{
@@ -235,7 +224,7 @@
 
 - (void)tokenAccessTicket:(OAServiceTicket *)ticket didFailWithError:(NSError*)error
 {
-	[[SHKActivityIndicator currentIndicator] hide];
+	[self hideActivityIndicator];
 	
 	[[[UIAlertView alloc] initWithTitle:SHKLocalizedString(@"Access Error")
 								 message:error!=nil?[error localizedDescription]:SHKLocalizedString(@"There was an error while sharing")
@@ -246,15 +235,15 @@
 
 - (void)storeAccessToken
 {	
-	[SHK setAuthValue:accessToken.key
+	[SHK setAuthValue:self.accessToken.key
 					 forKey:@"accessKey"
 				  forSharer:[self sharerId]];
 	
-	[SHK setAuthValue:accessToken.secret
+	[SHK setAuthValue:self.accessToken.secret
 					 forKey:@"accessSecret"
 			forSharer:[self sharerId]];
 	
-	[SHK setAuthValue:accessToken.sessionHandle
+	[SHK setAuthValue:self.accessToken.sessionHandle
 			   forKey:@"sessionHandle"
 			forSharer:[self sharerId]];
 }
@@ -283,9 +272,9 @@
 
 - (BOOL)restoreAccessToken
 {
-	self.consumer = [[OAConsumer alloc] initWithKey:consumerKey secret:secretKey];
+	self.consumer = [[OAConsumer alloc] initWithKey:self.consumerKey secret:self.secretKey];
 	
-	if (accessToken != nil)
+	if (self.accessToken != nil)
 		return YES;
 		
 	NSString *key = [SHK getAuthValueForKey:@"accessKey"
@@ -302,9 +291,9 @@
 		self.accessToken = [[OAToken alloc] initWithKey:key secret:secret];
 		
 		if (sessionHandle != nil)
-			accessToken.sessionHandle = sessionHandle;
+			self.accessToken.sessionHandle = sessionHandle;
 		
-		return accessToken != nil;
+		return self.accessToken != nil;
 	}
 	
 	return NO;

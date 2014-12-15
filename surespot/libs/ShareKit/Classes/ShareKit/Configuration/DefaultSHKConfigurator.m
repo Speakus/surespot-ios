@@ -30,18 +30,22 @@
 
 @implementation DefaultSHKConfigurator
 
+#pragma mark - App Description
+
 /* 
  App Description 
  ---------------
  These values are used by any service that shows 'shared from XYZ'
  */
 - (NSString*)appName {
-	return @"My App Name";
+	return [[NSBundle mainBundle] infoDictionary][@"CFBundleDisplayName"];
 }
 
 - (NSString*)appURL {
 	return @"http://example.com";
 }
+
+#pragma mark - API Keys
 
 /*
  API Keys
@@ -60,15 +64,41 @@
  leaving that decision up to the user.
  */
 
+// OneNote - https://account.live.com/developers/applications
+- (NSString*)onenoteClientId {
+    return @"";
+}
 // Vkontakte
 // SHKVkontakteAppID is the Application ID provided by Vkontakte
 - (NSString*)vkontakteAppId {
 	return @"";
 }
 
+/*
+Forces using Facebook-ios-sdk instead of Apple's native Social.framework and Accounts.framework. Pre iOS6 posting means using SHKFacebook, instead of SHKiOSFacebook. Consequences of this are that user logs in via SSO trip to Safari/Facebook.app. (Instead of getting credentials from iOS settings). This way also share form is ShareKit's instead of iOS native SLComposeViewController.
+One of the troubles with the native share form is that it gives IOS6 props on facebook instead of your app.
+  If you wish to use iOS user credentials, and still use ShareKit's share form, set - (NSNumber *)useAppleShareUI to NO.
+*/
+- (NSNumber*)forcePreIOS6FacebookPosting {
+	return [NSNumber numberWithBool:false];
+    
+    /*
+     The default behavior (return NO from this function) causes user to be kind of locked in to use iOS settings.app credentials. If he has not Facebook credentials set in settings.app, the user is presented alert instructing him to add his credentials to settings.app if wants to share with Facebook. If you instead prefer your user to be automagically switched to legacy (Safari/Facebook app trip) authentication, use following implementation
+     */
+    
+    /*
+     BOOL result = NO;
+     //if they have an account on their device, then use it, but don't force a device level login
+     if (NSClassFromString(@"SLComposeViewController")) {
+     result = ![SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook];
+     }
+     return [NSNumber numberWithBool:result];
+     */
+}
+
 // Facebook - https://developers.facebook.com/apps
-// SHKFacebookAppID is the Application ID provided by Facebook
-// SHKFacebookLocalAppID is used if you need to differentiate between several iOS apps running against a single Facebook app. Useful, if you have full and lite versions of the same app,
+// facebookAppID is the Application ID provided by Facebook
+// facebookLocalAppID is used if you need to differentiate between several iOS apps running against a single Facebook app. Useful, if you have full and lite versions of the same app,
 // and wish sharing from both will appear on facebook as sharing from one main app. You have to add different suffix to each version. Do not forget to fill both suffixes on facebook developer ("URL Scheme Suffix"). Leave it blank unless you are sure of what you are doing. 
 // The CFBundleURLSchemes in your App-Info.plist should be "fb" + the concatenation of these two IDs.
 // Example: 
@@ -93,15 +123,6 @@
 }
 - (NSArray*)facebookReadPermissions {    
     return nil;	// this is the defaul value for the SDK and will afford basic read permissions
-}
-
-/*
- If you want to force use of old-style, posting path that does not use the native sheet. One of the troubles
- with the native sheet is that it gives IOS6 props on facebook instead of your app. This flag has no effect
- on the auth path. It will try to use native auth if availible.
- */
-- (NSNumber*)forcePreIOS6FacebookPosting {
-	return [NSNumber numberWithBool:false];
 }
 
 /*
@@ -336,14 +357,14 @@
 }
 /*
  This setting should correspond with permission type set during your app registration with Dropbox. You can choose from these two values:
- @"sandbox" (set if you chose permission type "App folder" == kDBRootAppFolder. You will have access only to the app folder you set in  https://www.dropbox.com/developers/apps)
- @"dropbox" (set if you chose permission type "Full dropbox" == kDBRootDropbox)
+ @"sandbox" (set if you chose permission type "App folder". You will have access only to the app folder you set in  https://www.dropbox.com/developers/apps)
+ @"dropbox" (set if you chose permission type "Full dropbox")
  */
 - (NSString *) dropboxRootFolder {
     return @"sandbox";
 }
 
-// if you set NO, a dialogue will appear where user can choose different filename, otherwise the file is silently overwritten.
+// if you set NO, a dialogue will appear to ask user if he really wants to overwrite. Otherwise the file is silently overwritten.
 - (NSNumber *)dropboxShouldOverwriteExistedFile {
     return [NSNumber numberWithBool:YES];
 }
@@ -368,6 +389,36 @@
 - (NSNumber *)bufferShouldShortenURLS {
     return [NSNumber numberWithBool:YES];
 }
+
+// Imgur
+/*
+ 1. Set up an app at https://api.imgur.com/oauth2/addclient
+ 2. 'Callback URL' should match whatever you enter in SHKImgurCallbackURL.  The callback url doesn't have to be an actual existing url.  The user will never get to it because ShareKit intercepts it before the user is redirected.  It just needs to match.
+ */
+
+- (NSString *)imgurClientID {
+    return @"";
+}
+
+- (NSString *)imgurClientSecret {
+    return @"";
+}
+
+- (NSString *)imgurCallbackURL {
+    return @"";
+}
+
+///This removes user authorization. It allows image to be uploaded anonymously, without being tied to an account. More info is here: http://www.cimgf.com/2013/03/18/anonymous-image-file-upload-in-ios-with-imgur/
+- (NSNumber *)imgurAnonymousUploads {
+    return @NO;
+}
+
+///You can get Pinterest client ID from https://developers.pinterest.com/manage/
+- (NSString *)pinterestClientId {
+    return @"";
+}
+
+#pragma mark - Basic UI Configuration
 
 /*
  UI Configuration : Basic
@@ -427,19 +478,21 @@
 	return [NSNumber numberWithBool:true];// Setting this to true will show More... button in SHKActionSheet, setting to false will leave the button out.
 }
 
+#pragma mark - Favorite Sharers
+
 /*
  Favorite Sharers
  ----------------
  These values are used to define the default favorite sharers appearing on ShareKit's action sheet.
  */
 - (NSArray*)defaultFavoriteURLSharers {
-    return [NSArray arrayWithObjects:@"SHKTwitter",@"SHKFacebook", @"SHKPocket", nil];
+    return [NSArray arrayWithObjects:@"SHKTwitter",@"SHKiOSTwitter", @"SHKFacebook", @"SHKiOSFacebook", @"SHKPocket", nil];
 }
 - (NSArray*)defaultFavoriteImageSharers {
-    return [NSArray arrayWithObjects:@"SHKMail",@"SHKFacebook", @"SHKCopy", nil];
+    return [NSArray arrayWithObjects:@"SHKMail",@"SHKFacebook", @"SHKiOSFacebook", @"SHKCopy", nil];
 }
 - (NSArray*)defaultFavoriteTextSharers {
-    return [NSArray arrayWithObjects:@"SHKMail",@"SHKTwitter",@"SHKFacebook", nil];
+    return [NSArray arrayWithObjects:@"SHKMail",@"SHKTwitter", @"SHKiOSTwitter", @"SHKFacebook", @"SHKiOSFacebook", nil];
 }
 
 //ShareKit will remember last used sharers for each particular mime type.
@@ -466,6 +519,8 @@
     return [NSNumber numberWithBool:true];
 }
 
+#pragma mark - Advanced UI Configuration
+
 /*
  UI Configuration : Advanced
  ---------------------------
@@ -486,10 +541,28 @@
     return NSClassFromString(@"SHKFormController");
 }
 
+- (Class)SHKUploadsViewControllerSubclass {
+    return NSClassFromString(@"SHKUploadsViewController");
+}
+
+- (Class)SHKAccountsViewControllerSubclass {
+    return NSClassFromString(@"SHKAccountsViewController");
+}
+
+- (Class)SHKActivityIndicatorSubclass {
+    return NSClassFromString(@"SHKActivityIndicator");
+}
+
+//You can supply your own way to react to various ShareKit events. The default shows HUD with progress, Saved! or error alert. Except changing this you can also listen for ShareKit's notifications, or simply subclass activityIndicator to whatever you need.
+- (Class)SHKSharerDelegateSubclass {
+    return NSClassFromString(@"SHKSharerDelegate");
+}
+#pragma mark - Advanced Configuration
+
 /*
  Advanced Configuration
  ----------------------
- These settings can be left as is.  This only need to be changed for uber custom installs.
+ These settings can be left as is.  This only needs to be changed for uber custom installs.
  */
 
 - (NSNumber*)maxFavCount {
@@ -512,12 +585,15 @@
 	return [NSNumber numberWithBool:true];
 }
 
+#pragma mark - Debugging Settings
+
 /* 
  Debugging settings
  ------------------
  see Debug.h
  */
 
+#pragma mark - SHKItem sharer specific extension properties defaults
 /*
  SHKItem sharer specific values defaults
  -------------------------------------
@@ -571,6 +647,12 @@
 -(NSString*) popOverSourceRect;
  {
   return NSStringFromCGRect(CGRectZero);
+}
+
+/* SHKDropbox */
+//if set, no UI for choosing the target directory is presented to the user.
+- (NSString *)dropboxDestinationDirectory {
+    return nil;
 }
 
 @end

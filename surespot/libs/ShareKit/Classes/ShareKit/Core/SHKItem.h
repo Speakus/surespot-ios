@@ -74,6 +74,8 @@ typedef enum
 
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *text;
+///Optional. Some services (Mail, Text Message) can present HTML content in an enhanced way
+@property (nonatomic) BOOL isHTMLText;
 @property (nonatomic, strong) NSArray *tags;
 
 @property (nonatomic, strong) NSURL *URL;
@@ -105,7 +107,7 @@ typedef enum
 + (id)file:(NSData *)data filename:(NSString *)filename mimeType:(NSString *)mimeType title:(NSString *)title __attribute__((deprecated ("use new filePath:title or in case you share in-memory data fileData:filename:title. Mimetype is derived from filename, regardless of what you set")));
 + (id)fileData:(NSData *)data filename:(NSString *)filename title:(NSString *)title;
 
-//some sharers need to share UIImage as data file, this makes the conversion
+///some sharers need to share UIImage as data file, this makes the conversion. Quality parameter is used only for jpg conversion type
 - (void)convertImageShareToFileShareOfType:(SHKImageConversionType)conversionType quality:(CGFloat)quality;
 
 /*** custom value methods ***/
@@ -129,20 +131,24 @@ typedef enum
 
 /* SHKMail */
 @property (nonatomic, strong) NSArray *mailToRecipients;
-@property BOOL isMailHTML;
+@property BOOL isMailHTML __attribute__((deprecated ("use isHTMLText property instead")));
 @property CGFloat mailJPGQuality; 
 @property BOOL mailShareWithAppSignature; //default NO. Appends "Sent from <appName>"
 
 /* SHKFacebook */
-@property (nonatomic, strong) NSString *facebookURLSharePictureURI __attribute__((deprecated ("use URLPictureURI instead")));;
+@property (nonatomic, strong) NSString *facebookURLSharePictureURI __attribute__((deprecated ("use URLPictureURI instead")));
 @property (nonatomic, strong) NSString *facebookURLShareDescription __attribute__((deprecated ("use URLDescription instead")));
 
 /* SHKTextMessage */
 @property (nonatomic, strong) NSArray *textMessageToRecipients;
-/* if you add new sharer specific properties, make sure to add them also to dictionaryRepresentation, itemWithDictionary and description methods in SHKItem.m */
 
 /* put in for SHKInstagram, but could be useful in some other place. This is the rect in the coordinates of the view of the viewcontroller set with
  setRootViewController: where a popover should eminate from. If this isn't provided the popover will be presented from the top left. */
 @property (nonatomic, assign) CGRect popOverSourceRect;
+
+/* SHKDropbox */
+@property (nonatomic, strong) NSString *dropboxDestinationDirectory;
+
+/* if you add new sharer specific properties, make sure to add them also to NSCoding and description methods in SHKItem.m + supply default configuration methods in DefaultSHKConfigurator */
 
 @end

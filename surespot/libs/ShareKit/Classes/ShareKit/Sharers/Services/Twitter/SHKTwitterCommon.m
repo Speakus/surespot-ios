@@ -34,6 +34,7 @@ NSString * const SHKTwitterAPIUpdateURL = @"https://api.twitter.com/1.1/statuses
 #define API_CONFIG_CHARACTERS_RESERVED_PER_URL @"short_url_length_https"
 
 #define REVOKED_ACCESS_ERROR_CODE 32
+#define INVALID_TOKEN_ERROR_CODE 89
 
 @implementation SHKTwitterCommon
 
@@ -122,16 +123,6 @@ NSString * const SHKTwitterAPIUpdateURL = @"https://api.twitter.com/1.1/statuses
     return result;
 }
 
-+ (BOOL)canTwitterAcceptImage:(UIImage *)image convertedData:(NSData **)data {
-    
-    CGFloat compression = 1;
-	NSData *imageData = UIImageJPEGRepresentation(image, compression);
-    *data = imageData;
-    
-    BOOL result = [imageData length] < [self maxTwitterFileSize];
-    return result;
-}
-
 #pragma mark - UI Configuration
 
 + (NSUInteger)maxTextLengthForItem:(SHKItem *)item {
@@ -196,7 +187,7 @@ NSString * const SHKTwitterAPIUpdateURL = @"https://api.twitter.com/1.1/statuses
 	NSMutableDictionary *parsedResponse = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
     NSDictionary *twitterError = parsedResponse[@"errors"][0];
 	
-	if ([twitterError[@"code"] integerValue] == REVOKED_ACCESS_ERROR_CODE) {
+	if ([twitterError[@"code"] integerValue] == REVOKED_ACCESS_ERROR_CODE || [twitterError[@"code"] integerValue] == INVALID_TOKEN_ERROR_CODE) {
 		
 		[sharer shouldReloginWithPendingAction:SHKPendingSend];
         return;

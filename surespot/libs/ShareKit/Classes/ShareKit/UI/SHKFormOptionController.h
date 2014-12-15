@@ -16,6 +16,11 @@
 
 @interface SHKFormOptionController : UITableViewController
 
+@property (nonatomic, readonly) SHKFormFieldOptionPickerSettings *settings;
+
+///used if pushContentOnSelection is true. Provider uses this value to fetch content for selection.
+@property (nonatomic, strong) NSString *selectionValue;
+
 - (id)initWithOptionPickerSettings:(SHKFormFieldOptionPickerSettings *)settingsItem client:(id <SHKFormOptionControllerClient>)optionClient;
 
 - (void)optionsEnumeratedDisplay:(NSArray *)displayOptions save:(NSArray *)saveOptions;
@@ -28,10 +33,8 @@
 @required
 // called when an item is taped or cancel is clicked, cancel passes nil pickedOption.
 - (void)SHKFormOptionControllerDidFinish:(SHKFormOptionController *)optionController;
-@end	
 
-
-
+@end
 
 @protocol SHKFormOptionControllerOptionProvider
 

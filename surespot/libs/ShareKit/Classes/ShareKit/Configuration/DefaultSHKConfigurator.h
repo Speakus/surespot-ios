@@ -39,6 +39,7 @@
 - (NSArray*)defaultFavoriteFileSharers __attribute__((deprecated("use defaultFavoriteSharersForFile: instead")));
 - (NSArray*)defaultFavoriteSharersForMimeType:(NSString *)mimeType __attribute__((deprecated("use defaultFavoriteSharersForFile: instead")));
 - (NSArray*)defaultFavoriteSharersForFile:(SHKFile *)file;
+- (NSString*)onenoteClientId;
 - (NSString*)vkontakteAppId;
 - (NSString*)facebookAppId;
 - (NSString*)facebookLocalAppId;
@@ -103,7 +104,23 @@
 - (Class)SHKShareMenuSubclass;
 - (Class)SHKShareMenuCellSubclass;
 - (Class)SHKFormControllerSubclass;
+- (Class)SHKUploadsViewControllerSubclass;
+- (Class)SHKAccountsViewControllerSubclass;
+- (Class)SHKActivityIndicatorSubclass;
+- (Class)SHKSharerDelegateSubclass;
+//SHKDropbox
+-(NSString *)dropboxAppKey;
+-(NSString *)dropboxAppSecret;
+-(NSString *)dropboxRootFolder;
+-(NSNumber *)dropboxShouldOverwriteExistedFile;
+//SHKBuffer
+- (NSNumber *)bufferShouldShortenURLS;
+//SHKImgur
+- (NSString *)imgurClientID;
+- (NSString *)imgurClientSecret;
+- (NSString *)imgurCallbackURL;
 
+#pragma mark - default values for sharer specific extension SHKItem properties
 //SHKPrint
 - (NSNumber*)printOutputType;
 //SHKMail
@@ -119,10 +136,6 @@
 //SHKInstagram and future others
 -(NSString*) popOverSourceRect;
 //SHKDropbox
--(NSString *)dropboxAppKey;
--(NSString *)dropboxAppSecret;
--(NSString *)dropboxRootFolder;
--(NSNumber *)dropboxShouldOverwriteExistedFile;
-//SHKBuffer
-- (NSNumber *)bufferShouldShortenURLS;
+- (NSString *)dropboxDestinationDirectory;
+
 @end

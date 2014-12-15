@@ -160,7 +160,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     else
         if ([url.scheme hasPrefix:[NSString stringWithFormat:@"fb%@", SHKCONFIG(facebookAppId)]]) {
-            return [SHKFacebook handleOpenURL:url];
+            return [SHKFacebook handleOpenURL:url sourceApplication:@"surespot"];
         } else if ([url.scheme isEqualToString:@"com.twofours.surespot"]) {
             return [SHKGooglePlus handleURL:url sourceApplication:sourceApplication annotation:annotation];
         }

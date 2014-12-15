@@ -70,6 +70,8 @@ NSString * const SHKAttachmentSaveDir = @"SHKAttachmentSaveDir";
     
     _textMessageToRecipients = SHKCONFIG(textMessageToRecipients);
 	_popOverSourceRect = CGRectFromString(SHKCONFIG(popOverSourceRect));
+    
+    _dropboxDestinationDirectory = SHKCONFIG(dropboxDestinationDirectory);
 }
 
 + (id)URL:(NSURL *)url
@@ -91,7 +93,6 @@ NSString * const SHKAttachmentSaveDir = @"SHKAttachmentSaveDir";
     item.URLContentType = type;
 	
 	return item;
-    
 }
 
 + (id)image:(UIImage *)image
@@ -209,9 +210,6 @@ NSString * const SHKAttachmentSaveDir = @"SHKAttachmentSaveDir";
 	return [[self.custom objectForKey:key] isEqualToString:SHKFormFieldSwitchOn];
 }
 
-#pragma mark -
-#pragma mark NSCoding
-
 #pragma mark ---
 #pragma mark NSCoding
 
@@ -222,6 +220,7 @@ static NSString *kSHKURLPictureURI = @"kSHKURLPictureURI";
 static NSString *kSHKURLDescription = @"kSHKURLDescription";
 static NSString *kSHKTitle = @"kSHKTitle";
 static NSString *kSHKText = @"kSHKText";
+static NSString *kSHKIsHTMLText = @"kSHKIsHTMLText";
 static NSString *kSHKTags = @"kSHKTags";
 static NSString *kSHKCustom = @"kSHKCustom";
 static NSString *kSHKFile = @"kSHKFile";
@@ -235,6 +234,7 @@ static NSString *kSHKFacebookURLShareDescription = @"kSHKFacebookURLShareDescrip
 static NSString *kSHKFacebookURLSharePictureURI = @"kSHKFacebookURLSharePictureURI";
 static NSString *kSHKTextMessageToRecipients = @"kSHKTextMessageToRecipients";
 static NSString *kSHKPopOverSourceRect = @"kSHKPopOverSourceRect";
+static NSString *kSHKDropboxDestinationDir = @"kSHKDropboxDestinationDir";
 
 - (id)initWithCoder:(NSCoder *)decoder {
     
@@ -249,6 +249,7 @@ static NSString *kSHKPopOverSourceRect = @"kSHKPopOverSourceRect";
         _URLDescription = [decoder decodeObjectForKey:kSHKURLDescription];
         _title = [decoder decodeObjectForKey:kSHKTitle];
         _text = [decoder decodeObjectForKey:kSHKText];
+        _isHTMLText = [decoder decodeObjectForKey:kSHKIsHTMLText];
         _tags = [decoder decodeObjectForKey:kSHKTags];
         _custom = [decoder decodeObjectForKey:kSHKCustom];
         _file = [decoder decodeObjectForKey:kSHKFile];
@@ -262,6 +263,7 @@ static NSString *kSHKPopOverSourceRect = @"kSHKPopOverSourceRect";
         _facebookURLSharePictureURI = [decoder decodeObjectForKey:kSHKFacebookURLSharePictureURI];
         _textMessageToRecipients = [decoder decodeObjectForKey:kSHKTextMessageToRecipients];
         _popOverSourceRect = CGRectFromString([decoder decodeObjectForKey:kSHKPopOverSourceRect]);
+        _dropboxDestinationDirectory = [decoder decodeObjectForKey:kSHKDropboxDestinationDir];
     }
     return self;
 }
@@ -275,13 +277,17 @@ static NSString *kSHKPopOverSourceRect = @"kSHKPopOverSourceRect";
     [encoder encodeObject:self.URLDescription forKey:kSHKURLDescription];
     [encoder encodeObject:self.title forKey:kSHKTitle];
     [encoder encodeObject:self.text forKey:kSHKText];
+    [encoder encodeBool:self.isHTMLText forKey:kSHKIsHTMLText];
     [encoder encodeObject:self.tags forKey:kSHKTags];
     [encoder encodeObject:self.custom forKey:kSHKCustom];
     [encoder encodeObject:self.file forKey:kSHKFile];
     [encoder encodeObject:self.image forKey:kSHKImage];
     [encoder encodeInt:self.printOutputType forKey:kSHKPrintOutputType];
     [encoder encodeObject:self.mailToRecipients forKey:kSHKMailToRecipients];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [encoder encodeBool:self.isMailHTML forKey:kSHKIsMailHTML];
+#pragma clang diagnostic pop
     [encoder encodeFloat:self.mailJPGQuality forKey:kSHKMailJPGQuality];
     [encoder encodeBool:self.mailShareWithAppSignature forKey:kSHKMailShareWithAppSignature];
 #pragma clang diagnostic push
@@ -291,6 +297,7 @@ static NSString *kSHKPopOverSourceRect = @"kSHKPopOverSourceRect";
 #pragma clang diagnostic pop
     [encoder encodeObject:self.textMessageToRecipients forKey:kSHKTextMessageToRecipients];
     [encoder encodeObject:NSStringFromCGRect(self.popOverSourceRect) forKey:kSHKPopOverSourceRect];
+    [encoder encodeObject:self.dropboxDestinationDirectory forKey:kSHKDropboxDestinationDir];
 }
 
 #pragma mark -
@@ -313,7 +320,9 @@ static NSString *kSHKPopOverSourceRect = @"kSHKPopOverSourceRect";
                                                     mailJPGQuality: %f\n\
                                                     mailShareWithAppSignature: %i\n\
                                                     textMessageToRecipients: %@\n\
-                                                    popOverSourceRect: %@",
+                                                    popOverSourceRect: %@\n\
+                                                    dropboxDestinationDir: %@",
+                        
 						
                                                     [self shareTypeToString:self.shareType],
                                                     [self.URL absoluteString],
@@ -326,11 +335,12 @@ static NSString *kSHKPopOverSourceRect = @"kSHKPopOverSourceRect";
                                                     [self.custom description],
                                                     (long)self.printOutputType,
 													self.mailToRecipients,
-                                                    self.isMailHTML,
+                                                    self.isHTMLText,
                                                     self.mailJPGQuality,
                                                     self.mailShareWithAppSignature,
                                                     self.textMessageToRecipients,
-													NSStringFromCGRect(self.popOverSourceRect)];    
+													NSStringFromCGRect(self.popOverSourceRect),
+                                                    self.dropboxDestinationDirectory];
     return result;
 }
 

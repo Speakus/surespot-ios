@@ -61,8 +61,7 @@
     FormControllerCallback result =  ^(SHKFormController *form) {
         
         // Display an activity indicator
-        if (!weakSelf.quiet)
-            [[SHKActivityIndicator currentIndicator] displayActivity:SHKLocalizedString(@"Logging In...")];
+        [weakSelf displayActivity:SHKLocalizedString(@"Logging In...")];
         
         weakSelf.pendingForm = form;
         
@@ -74,8 +73,7 @@
                           method:@"GET"
                       completion:^ (SHKRequest *request) {
                           
-                          // Hide the activity indicator
-                          [[SHKActivityIndicator currentIndicator] hide];
+                          [self hideActivityIndicator];
                           
                           if (request.success)
                           {

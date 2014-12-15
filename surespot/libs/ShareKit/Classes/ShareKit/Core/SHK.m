@@ -27,6 +27,7 @@
 
 #import "SHK.h"
 #import "Singleton.h"
+#import "Debug.h"
 
 #import "SHKActivityIndicator.h"
 #import "SHKConfiguration.h"
@@ -35,16 +36,25 @@
 #import "SSKeychain.h"
 #import "SHKReachability.h"
 #import "SHKMail.h"
+#import "SHKItem.h"
+#import "SHKUploadInfo.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <MessageUI/MessageUI.h>
 
+NSString * const SHKAuthDidFinishNotification = @"SHKAuthDidFinish";
+
 NSString * const SHKSendDidStartNotification = @"SHKSendDidStartNotification";
-NSString * const SHKSendDidFinishNotification = @"SHKSendDidFinish";
 NSString * const SHKSendDidFailWithErrorNotification = @"SHKSendDidFailWithError";
 NSString * const SHKSendDidCancelNotification = @"SHKSendDidCancel";
-NSString * const SHKAuthDidFinishNotification = @"SHKAuthDidFinish";
+
+NSString * const SHKSendDidFinishNotification = @"SHKSendDidFinish";
+NSString * const SHKShareResponseKeyName = @"SHKShareResponseKeyName";
+
+NSString * const SHKUploadProgressNotification = @"SHKUploadProgressNotification";
+NSString * const SHKUploadProgressInfoKeyName = @"SHKUploadProgressInfoKeyName";
+NSString * const SHKUploadInfosDefaultsKeyName = @"SHKUploadInfosDefaultsKeyName";
 
 NSString * SHKLocalizedStringFormat(NSString* key);
 
@@ -53,6 +63,7 @@ NSString * SHKLocalizedStringFormat(NSString* key);
 @property (nonatomic, weak) UIViewController *rootViewController;
 @property BOOL wrapViewController;
 @property (strong) NSMutableArray *sharerReferences;
+@property (strong, nonatomic) NSMutableOrderedSet *uploadProgressUserInfos;
 
 @end
 
@@ -72,8 +83,21 @@ BOOL SHKinit;
     self = [super init];
     if (self) {
         _sharerReferences = [@[] mutableCopy];
+        
+        NSData *data = [[NSUserDefaults standardUserDefaults] dataForKey:SHKUploadInfosDefaultsKeyName];
+      
+        if (data) {
+            NSArray *savedUploadUserInfosArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            _uploadProgressUserInfos = [[NSMutableOrderedSet alloc] initWithArray:savedUploadUserInfosArray];
+        } else {
+            _uploadProgressUserInfos = [[NSMutableOrderedSet alloc] initWithCapacity:10];
+        }
     }
     return self;
+}
+
+- (void)dealloc {
+    SHKLog(@"SHK base deallocated");
 }
 
 #pragma mark -
@@ -81,16 +105,37 @@ BOOL SHKinit;
 
 - (void)keepSharerReference:(SHKSharer *)sharer {
     
+    SHKLog(@"+++ %@ reference", [sharer sharerTitle]);
     [self.sharerReferences addObject:sharer];
 }
 
 - (void)removeSharerReference:(SHKSharer *)sharer {
     
+    SHKLog(@"--- %@ reference", [sharer sharerTitle]);
+    
     NSUInteger indexOfSharer = [self.sharerReferences indexOfObject:sharer];
     
     if (indexOfSharer != NSNotFound) {
         [self.sharerReferences removeObjectAtIndex:indexOfSharer];
+    } else {
+        SHKLog(@"Attempt to removeSharerReference NON Existing reference!!! Watch out, something is wrong with sharers implementation!!!");
     }
+}
+
+#pragma mark -
+#pragma mark - Uploads Progress Management
+
+- (void)uploadInfoChanged:(SHKUploadInfo *)uploadProgressUserInfo {
+    
+    if (uploadProgressUserInfo) {
+        [self.uploadProgressUserInfos insertObject:uploadProgressUserInfo atIndex:0];
+    }
+    
+    //save change to NSUserDefaults
+    NSArray *array = [self.uploadProgressUserInfos array];
+    NSData *uploadInfosData = [NSKeyedArchiver archivedDataWithRootObject:array];
+    [[NSUserDefaults standardUserDefaults] setObject:uploadInfosData forKey:SHKUploadInfosDefaultsKeyName];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark -
@@ -323,7 +368,21 @@ BOOL SHKinit;
 + (NSArray *)favoriteSharersForItem:(SHKItem *)item;
 {	
 	
-    NSArray *favoriteSharers =  nil;//[[NSUserDefaults standardUserDefaults] objectForKey:[self favoritesKeyForItem:item]];
+    NSArray *favoriteSharers = [[NSUserDefaults standardUserDefaults] objectForKey:[self favoritesKeyForItem:item]];
+    
+    //temporary check for iOS sharers. They were separated from original sharers such as SHKFacebook. Under certain circumstances this caused no sharers in shareMenu, see https://github.com/ShareKit/ShareKit/issues/885.
+    BOOL favoritesContainSoloLegacyFacebook = [favoriteSharers containsObject:@"SHKFacebook"] && ![favoriteSharers containsObject:@"SHKiOSFacebook"];
+    if (favoritesContainSoloLegacyFacebook) {
+        NSMutableArray *mutableFavoriteSharers = [favoriteSharers mutableCopy];
+        [mutableFavoriteSharers addObject:@"SHKiOSFacebook"];
+        favoriteSharers = mutableFavoriteSharers;
+    }
+    BOOL favoritesContainSoloLegacyTwitter = [favoriteSharers containsObject:@"SHKTwitter"] && ![favoriteSharers containsObject:@"SHKiOSTwitter"];
+    if (favoritesContainSoloLegacyTwitter) {
+        NSMutableArray *mutableFavoriteSharers = [favoriteSharers mutableCopy];
+        [mutableFavoriteSharers addObject:@"SHKiOSTwitter"];
+        favoriteSharers = mutableFavoriteSharers;
+    }
 		
 	// set defaults
 	if (favoriteSharers == nil)
@@ -445,45 +504,25 @@ BOOL SHKinit;
 
 + (NSString *)getAuthValueForKey:(NSString *)key forSharer:(NSString *)sharerId
 {
-#if TARGET_IPHONE_SIMULATOR
-	// Using NSUserDefaults for storage is very insecure, but because Keychain only exists on a device
-	// we use NSUserDefaults when running on the simulator to store objects.  This allows you to still test
-	// in the simulator.  You should NOT modify in a way that does not use keychain when actually deployed to a device.
-	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@%@%@",SHKCONFIG(authPrefix),sharerId,key]];
-#else
-	return [SSKeychain passwordForService:[NSString stringWithFormat:@"%@%@",SHKCONFIG(authPrefix),sharerId] 
-								  account:key 
-									error:nil ];
-#endif
+
+    return [SSKeychain passwordForService:[NSString stringWithFormat:@"%@%@",SHKCONFIG(authPrefix),sharerId]
+                                  account:key
+                                    error:nil ];
 }
 
 + (void)setAuthValue:(NSString *)value forKey:(NSString *)key forSharer:(NSString *)sharerId
 {
-#if TARGET_IPHONE_SIMULATOR
-	// Using NSUserDefaults for storage is very insecure, but because Keychain only exists on a device
-	// we use NSUserDefaults when running on the simulator to store objects.  This allows you to still test
-	// in the simulator.  You should NOT modify in a way that does not use keychain when actually deployed to a device.
-	[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@%@%@",SHKCONFIG(authPrefix),sharerId,key]];
-#else
-	[SSKeychain setPassword:value 
-				 forService:[NSString stringWithFormat:@"%@%@",SHKCONFIG(authPrefix),sharerId] 
-					account:key 
-					  error:nil];
-#endif
+    [SSKeychain setPassword:value
+                 forService:[NSString stringWithFormat:@"%@%@",SHKCONFIG(authPrefix),sharerId]
+                    account:key
+                      error:nil];
 }
 
 + (void)removeAuthValueForKey:(NSString *)key forSharer:(NSString *)sharerId
 {
-#if TARGET_IPHONE_SIMULATOR
-	// Using NSUserDefaults for storage is very insecure, but because Keychain only exists on a device
-	// we use NSUserDefaults when running on the simulator to store objects.  This allows you to still test
-	// in the simulator.  You should NOT modify in a way that does not use keychain when actually deployed to a device.
-	[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@%@%@",SHKCONFIG(authPrefix),sharerId,key]];
-#else
-	[SSKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@",SHKCONFIG(authPrefix),sharerId] 
-								 account:key 
-								   error:nil];
-#endif
+    [SSKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@",SHKCONFIG(authPrefix),sharerId]
+                                 account:key
+                                   error:nil];
 }
 
 + (void)logoutOfAll
@@ -538,6 +577,19 @@ static NSDictionary *sharersDictionary = nil;
 	return sharersDictionary;
 }
 
++ (NSArray *)activeSharersRequiringAuthentication {
+    
+    NSDictionary *sharersDictionary = [SHK sharersDictionary];
+    NSArray *services = [sharersDictionary objectForKey:@"services"];
+    NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:[services count]];
+    for (NSString *sharer in services) {
+        Class sharerClass = NSClassFromString(sharer);
+        if (sharerClass && [sharerClass canShare] && [sharerClass requiresAuthentication]) {
+            [result addObject:sharerClass];
+        }
+    }
+    return result;
+}
 
 #pragma mark -
 #pragma mark Offline Support

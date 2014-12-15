@@ -31,6 +31,7 @@
 
 #import "SHK.h"
 #import "SHKActivityIndicator.h"
+#import "SHKSharer_protected.h"
 
 
 @implementation SHKFoursquareV2VenuesForm
@@ -222,6 +223,12 @@
     }
 }
 
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    
+    self.location = [locations lastObject];
+    [self startloadingVenues];
+}
+
 #pragma mark Public
 - (void)startMonitoringLocation
 {
@@ -244,7 +251,7 @@
     self.locationManager = locationManager;
     
     if (self.location == nil) {
-        [[SHKActivityIndicator currentIndicator] displayActivity:SHKLocalizedString(@"Determine your location...")];
+        [self.delegate displayActivity:SHKLocalizedString(@"Determine your location...")];
     }
 }
 
@@ -270,14 +277,14 @@
 
 - (void)startloadingVenues
 {
-    [[SHKActivityIndicator currentIndicator] displayActivity:SHKLocalizedString(@"Searching places...")];
+    [self.delegate displayActivity:SHKLocalizedString(@"Searching places...")];
     
     [SHKFoursquareV2Request startRequestVenuesSearchLocation:self.location
                                                        query:self.query
                                                  accessToken:self.delegate.accessToken
                                                   completion:^ (SHKRequest *request) {
                                                       
-                                                      [[SHKActivityIndicator currentIndicator] hide];
+                                                      [self.delegate hideActivityIndicator];
                                                       
                                                       self.venues = nil;
                                                       
@@ -345,7 +352,8 @@
 
 - (void)cancel
 {
-	[[SHK currentHelper] hideCurrentViewControllerAnimated:YES];
+	[self.delegate hideActivityIndicator];
+    [[SHK currentHelper] hideCurrentViewControllerAnimated:YES];
 	[self.delegate sendDidCancel];
 }
 

@@ -12,9 +12,9 @@
 #import "GTMNSString+HTML.h"
 #import "SharersCommonHeaders.h"
 
-@implementation SHKEvernoteItem
-@synthesize note;
+NSString *const kSHKEvernoteUserInfo = @"kSHKEvernoteUserInfo";
 
+@implementation SHKEvernoteItem
 
 @end
 
@@ -47,6 +47,7 @@
 + (BOOL)canShareImage { return YES; }
 + (BOOL)canShareText  { return YES; }
 + (BOOL)canShareFile:(SHKFile *)file { return YES; }
++ (BOOL)canGetUserInfo { return YES; }
 + (BOOL)requiresAuthentication { return YES; }
 
 
@@ -63,21 +64,29 @@
     return session.isAuthenticated;
 }
 
-- (void)promptAuthorization {
+- (void)authorizationFormShow {
+    
     EvernoteSession *session = [EvernoteSession sharedSession];
     [session authenticateWithViewController:[SHK currentHelper].rootViewForUIDisplay completionHandler:^(NSError *error) {
+        
         BOOL success = (error == nil) && session.isAuthenticated;
         [self authDidFinish:success];
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:SHKLocalizedString(@"Authorize Error")
-                                         message:SHKLocalizedString(@"There was an error while authorizing")
-                                        delegate:nil
-                                   cancelButtonTitle:SHKLocalizedString(@"Close")
-                                   otherButtonTitles:nil] show];
+        
+        if (success) {
             
-        } else if (session.isAuthenticated && self.item) {
             [self tryPendingAction];
-        } 
+            
+        } else {
+            
+            BOOL userCancelled = [error.domain isEqualToString:@"com.evernote.sdk"] && error.code == -2998;
+            if (!userCancelled) {
+                [[[UIAlertView alloc] initWithTitle:SHKLocalizedString(@"Authorize Error")
+                                            message:SHKLocalizedString(@"There was an error while authorizing")
+                                           delegate:nil
+                                  cancelButtonTitle:SHKLocalizedString(@"Close")
+                                  otherButtonTitles:nil] show];
+            }
+        }
     }];
 }
 
@@ -86,15 +95,27 @@
     [self fillEvernoteSessionWithAppConfig];
     EvernoteSession *session = [EvernoteSession sharedSession];
     [session logout];
+    
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSHKEvernoteUserInfo];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (NSString *)username {
+    
+    NSData *userData = [[NSUserDefaults standardUserDefaults] dataForKey:kSHKEvernoteUserInfo];
+    EDAMUser *user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
+    NSString *result = user.username;
+    return result;
+}
 
 #pragma mark -
 #pragma mark Share Form
 
 - (NSArray *)shareFormFieldsForType:(SHKShareType)type 
 {
-	return [NSArray arrayWithObjects:
+	if (self.item.shareType == SHKShareTypeUserInfo) return nil;
+
+    return [NSArray arrayWithObjects:
 	 [SHKFormFieldSettings label:SHKLocalizedString(@"Title") key:@"title" type:SHKFormFieldTypeText start:self.item.title],
 	 //[SHKFormFieldSettings label:SHKLocalizedString(@"Memo")  key:@"text" type:SHKFormFieldTypeText start:self.item.text],
 	 [SHKFormFieldSettings label:SHKLocalizedString(@"Tag, tag")  key:@"tags" type:SHKFormFieldTypeText start:[self.item.tags componentsJoinedByString:@", "]],
@@ -105,10 +126,16 @@
 #pragma mark Implementation
 
 - (BOOL)send {
+    
 	if (![self validateItem])
 		return NO;
-	[self sendDidStart];
     
+    if (self.item.shareType == SHKShareTypeUserInfo) {
+        [self downloadUserInfo];
+        return YES;
+    }
+    
+    [self sendDidStart];
     EvernoteNoteStore *noteStore = [EvernoteNoteStore noteStore];
     
     SHKEvernoteItem *enItem = nil;
@@ -239,6 +266,27 @@
 - (NSString *)enMediaTagWithResource:(EDAMResource *)src width:(CGFloat)width height:(CGFloat)height {
 	NSString *sizeAtr = width > 0 && height > 0 ? [NSString stringWithFormat:@"height=\"%.0f\" width=\"%.0f\" ",height,width]:@"";
 	return [NSString stringWithFormat:@"<en-media type=\"%@\" %@hash=\"%@\"/>",src.mime,sizeAtr,[src.data.body md5]];
+}
+
+- (void)downloadUserInfo {
+    
+    self.quiet = YES;
+    [self sendDidStart];
+    
+    EvernoteUserStore *userStore = [[EvernoteUserStore alloc] initWithSession:[EvernoteSession sharedSession]];
+    [userStore getUserWithSuccess:^(EDAMUser *user) {
+        
+        NSData *userData = [NSKeyedArchiver archivedDataWithRootObject:user];
+        [[NSUserDefaults standardUserDefaults] setObject:userData forKey:kSHKEvernoteUserInfo];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [self sendDidFinish];
+    }
+                          failure:^(NSError *error) {
+                              
+                              SHKLog(@"Evernote user data fetch failed with error %@", [error description]);
+                              [self sendDidFailWithError:error];
+                          }];
 }
 
 @end

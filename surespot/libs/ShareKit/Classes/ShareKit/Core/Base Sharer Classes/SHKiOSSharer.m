@@ -55,11 +55,15 @@
     
     SLComposeViewController *sharerUIController = [SLComposeViewController composeViewControllerForServiceType:serviceType];
     
-    BOOL addedImage = [sharerUIController addImage:self.item.image];
-    if (!addedImage) return NO;
-    
-    BOOL addedURL = [sharerUIController addURL:self.item.URL];
-    if (!addedURL) return NO;
+    if (self.item.image) {
+        BOOL addedImage = [sharerUIController addImage:self.item.image];
+        if (!addedImage) return NO;
+    }
+
+    if (self.item.URL) {
+        BOOL addedURL = [sharerUIController addURL:self.item.URL];
+        if (!addedURL) return NO;
+    }
     
     NSString *initialText = (self.item.shareType == SHKShareTypeText ? self.item.text : self.item.title);
     
@@ -132,10 +136,10 @@
                                     
                                     [self authDidFinish:granted];
     
-                                    if (!error) {
+                                    if (granted) {
                                         [self tryPendingAction];
                                     } else {
-                                        SHKLog(@"auth failed:%@", [error description]);
+                                        [self iOSAuthorizationFailedWithError:error];                                        
                                         [[self class] logout];
                                     }
                                 }];
@@ -144,13 +148,16 @@
 - (void)iOSAuthorizationFailedWithError:(NSError *)error {
     
     if (!error) {
-        SHKLog(@"User revoked access in settings.app, or in service itself.");
+        [self presentRevokedAccessInSettingsAlert];
     } else {
         SHKLog(@"auth failed:%@", [error description]);
         //code 6 means user account not exists in settings.app (at least for Facebook)
         if ([error.domain isEqualToString:@"com.apple.accounts"] && error.code == 6) {
             [self presentNoAvailableAccountAlert];
+        } else if ([error.domain isEqualToString:@"com.apple.accounts"] && error.code == 8) {
+            SHKLog(@"Missing Facebook app id - set it in your configurator");
         }
+        //code 7 user just has not allowed access - no need to show alert.
     }
     [[self class] logout];
 }
@@ -166,16 +173,38 @@
 
 - (void)presentNoAvailableAccountAlert {
     
+    SHKLog(@"User revoked access in settings.app, or in service itself.");
+    
     if (self.quiet) return;
     
-    NSString *alertTitle = SHKLocalizedString(@"No %@ Accounts", [[self class] sharerTitle]);
-    NSString *alertMessage = SHKLocalizedString(@"There are no %@ accounts configured. You can add or create a %@ account in Settings.", [[self class] sharerTitle], [[self class] sharerTitle]);
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
-                                                    message:alertMessage
-                                                   delegate:nil
-                                          cancelButtonTitle:SHKLocalizedString(@"Cancel")
-                                          otherButtonTitles:nil];
-    [alert show];
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        
+        NSString *alertTitle = SHKLocalizedString(@"No %@ Accounts", [[self class] sharerTitle]);
+        NSString *alertMessage = SHKLocalizedString(@"There are no %@ accounts configured. You can add or create a %@ account in Settings.", [[self class] sharerTitle], [[self class] sharerTitle]);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                        message:alertMessage
+                                                       delegate:nil
+                                              cancelButtonTitle:SHKLocalizedString(@"Cancel")
+                                              otherButtonTitles:nil];
+        [alert show];
+    });
+}
+
+- (void)presentRevokedAccessInSettingsAlert {
+    
+    if (self.quiet) return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        
+        NSString *alertTitle = SHKLocalizedString(@"No Access", [[self class] sharerTitle]);
+        NSString *alertMessage = SHKLocalizedString(@"Access to %@ is not allowed for this app. You can allow access in Settings.", [[self class] sharerTitle]);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                        message:alertMessage
+                                                       delegate:nil
+                                              cancelButtonTitle:SHKLocalizedString(@"Cancel")
+                                              otherButtonTitles:nil];
+        [alert show];
+    });
 }
 
 #pragma mark - MISC

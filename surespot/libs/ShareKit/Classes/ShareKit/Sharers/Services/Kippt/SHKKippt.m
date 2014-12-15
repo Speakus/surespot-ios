@@ -38,6 +38,10 @@ NSString *kAccountURL = @"https://kippt.com/api/account/";
 NSString *kListsURL = @"https://kippt.com/api/lists/?limit=0";
 NSString *kNewClipURL = @"https://kippt.com/api/clips/";
 
+NSString *kListsDictionaryKey = @"listsDefaultsKey";
+NSString *kListsDisplayValuesKey = @"listsDisplayValues";
+NSString *kListsSaveValuesKey = @"listsSaveValues";
+
 // -- For HTTP Basic Auth --
 
 static char *alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -142,9 +146,7 @@ NSString *base64(NSData *plainText) {
     FormControllerCallback result = ^ (SHKFormController *form) {
         
         // Display an activity indicator
-        if (!weakSelf.quiet) {
-            [[SHKActivityIndicator currentIndicator] displayActivity:SHKLocalizedString(@"Logging in...")];
-        }
+        [weakSelf displayActivity:SHKLocalizedString(@"Logging in...")];
         
         weakSelf.pendingForm = form;
 
@@ -157,9 +159,8 @@ NSString *base64(NSData *plainText) {
         
         // Send request
         [weakSelf sendRequest:kAccountURL params:nil method:@"POST" completion:^ (SHKRequest *request) {
-            
-            // Hide the activity indicator
-            [[SHKActivityIndicator currentIndicator] hide];
+                       
+            [self hideActivityIndicator];
             
             if (request.success)
             {
@@ -183,6 +184,12 @@ NSString *base64(NSData *plainText) {
     return result;
 }
 
++ (void)logout {
+    
+    [super logout];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kListsDictionaryKey];
+}
+
 #pragma mark -
 #pragma mark Share Form
 
@@ -190,24 +197,47 @@ NSString *base64(NSData *plainText) {
 {
 	if (type == SHKShareTypeURL) {
         
-        // Placeholder list
-        NSMutableArray *lists = [NSMutableArray array];
-        [lists addObject:@"Inbox"];
+        SHKFormFieldSettings *titleField = [SHKFormFieldSettings label:SHKLocalizedString(@"Title")
+                                                                   key:@"title"
+                                                                  type:SHKFormFieldTypeText
+                                                                 start:self.item.title];
+        SHKFormFieldSettings *labelField = [SHKFormFieldSettings label:SHKLocalizedString(@"Notes")
+                                                                   key:@"notes" type:SHKFormFieldTypeText
+                                                                 start:self.item.text];
         
-		return [NSArray arrayWithObjects:
-				[SHKFormFieldSettings label:SHKLocalizedString(@"Title") key:@"title" type:SHKFormFieldTypeText start:self.item.title],
-				[SHKFormFieldSettings label:SHKLocalizedString(@"Notes") key:@"notes" type:SHKFormFieldTypeText start:self.item.text],
-				[SHKFormFieldOptionPickerSettings label:SHKLocalizedString(@"List")
-                                                    key:@"list"
-                                                  start:nil
-                                            pickerTitle:SHKLocalizedString(@"List")
-                                        selectedIndexes:[[NSMutableIndexSet alloc] initWithIndex:0]
-                                          displayValues:lists
-                                             saveValues:nil
-                                          allowMultiple:NO
-                                           fetchFromWeb:YES
-                                               provider:self], nil];}
-	return nil;
+        NSDictionary *defaultsLists = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kListsDictionaryKey];
+        NSMutableIndexSet *defaultPickedIndex = [[NSMutableIndexSet alloc] init];
+        NSArray *displayValues = nil;
+        NSArray *saveValues = nil;
+        
+        if (defaultsLists) {
+            [defaultPickedIndex addIndex:0];
+            displayValues = defaultsLists[kListsDisplayValuesKey];
+            saveValues = defaultsLists[kListsSaveValuesKey];
+        }
+        
+        SHKFormFieldOptionPickerSettings *listField = [SHKFormFieldOptionPickerSettings label:SHKLocalizedString(@"List")
+                                                                                          key:@"list"
+                                                                                        start:SHKLocalizedString(@"Select list")
+                                                                                  pickerTitle:SHKLocalizedString(@"List")
+                                                                              selectedIndexes:defaultPickedIndex
+                                                                                displayValues:displayValues
+                                                                                   saveValues:saveValues
+                                                                                allowMultiple:NO
+                                                                                 fetchFromWeb:YES
+                                                                                     provider:self];
+        listField.validationBlock = ^ (SHKFormFieldOptionPickerSettings *formFieldSettings ) {
+            
+            BOOL result = [formFieldSettings valueToSave].length > 0;
+            return result;
+        };
+        
+        return @[titleField, labelField, listField];
+        
+    } else {
+        
+        return nil;
+    }
 }
 
 #pragma mark -
@@ -216,9 +246,12 @@ NSString *base64(NSData *plainText) {
 - (void)SHKFormOptionControllerEnumerateOptions:(SHKFormOptionController *)optionController
 {
     self.curOptionController = optionController;
+    [self displayActivity:SHKLocalizedString(@"Loading...")];
     
     // This is our cue to fire a request
     [self sendRequest:kListsURL params:nil method:@"GET" completion:^(SHKRequest *request) {
+        
+        [self hideActivityIndicator];
         
         if (request.response.statusCode != 200) {
             
@@ -239,6 +272,9 @@ NSString *base64(NSData *plainText) {
                 [saveValues addObject:saveValue];
             }
             
+            NSDictionary *defaultsLists = @{kListsDisplayValuesKey:displayValues, kListsSaveValuesKey:saveValues};
+            [[NSUserDefaults standardUserDefaults] setObject:defaultsLists forKey:kListsDictionaryKey];
+            
             [self.curOptionController optionsEnumeratedDisplay:displayValues save:saveValues];
         }
     }];
@@ -246,7 +282,7 @@ NSString *base64(NSData *plainText) {
 
 - (void)SHKFormOptionControllerCancelEnumerateOptions:(SHKFormOptionController *)optionController
 {
-
+    [self hideActivityIndicator];
 }
 
 #pragma mark -

@@ -26,7 +26,7 @@
 //
 
 #import "SHKOfflineSharer.h"
-#import "SHKSharer.h"
+#import "SHKSharer_protected.h"
 
 @interface SHKOfflineSharer ()
 
@@ -86,10 +86,7 @@
 #pragma mark -
 #pragma mark SHKSharerDelegate
 
-- (void)sharerStartedSending:(SHKSharer *)aSharer
-{
-	
-}
+- (void)sharerStartedSending:(SHKSharer *)aSharer { }
 
 - (void)sharerFinishedSending:(SHKSharer *)aSharer
 {
@@ -106,19 +103,12 @@
     self.isShareFinished = YES;
 }
 
-- (void)sharerAuthDidFinish:(SHKSharer *)sharer success:(BOOL)success
-{
-
-}
-
-- (void)sharerShowBadCredentialsAlert:(SHKSharer *)sharer
-{
-    
-}
-
-- (void)sharerShowOtherAuthorizationErrorAlert:(SHKSharer *)sharer
-{
-    
-}
+- (void)sharerAuthDidFinish:(SHKSharer *)sharer success:(BOOL)success { }
+- (void)sharerShowBadCredentialsAlert:(SHKSharer *)sharer { }
+- (void)sharerShowOtherAuthorizationErrorAlert:(SHKSharer *)sharer { }
+- (void)hideActivityIndicatorForSharer:(SHKSharer *)sharer { }
+- (void)displayActivity:(NSString *)activityDescription forSharer:(SHKSharer *)sharer { }
+- (void)displayCompleted:(NSString *)completionText forSharer:(SHKSharer *)sharer { }
+- (void)showProgress:(CGFloat)progress forSharer:(SHKSharer *)sharer { }
 
 @end
