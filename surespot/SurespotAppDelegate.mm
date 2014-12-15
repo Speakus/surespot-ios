@@ -13,7 +13,6 @@
 #import "DDTTYLogger.h"
 #import "SurespotLogFormatter.h"
 #import "UIUtils.h"
-#import "TestFlight.h"
 #import "IdentityController.h"
 #import "UIUtils.h"
 #import "AGWindowView.h"
@@ -42,9 +41,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [TestFlight takeOff:@"b1b351a8-07ad-4433-8889-701d2775c64d"];
-    
-    
     //-- Set Notification
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {

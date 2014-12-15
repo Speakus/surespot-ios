@@ -78,7 +78,6 @@
 		665F4DF71831923C0083BCE7 /* REMenuContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 665F4DF01831923C0083BCE7 /* REMenuContainerView.m */; };
 		665F4DF81831923C0083BCE7 /* REMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 665F4DF21831923C0083BCE7 /* REMenuItem.m */; };
 		665F4DF91831923C0083BCE7 /* REMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 665F4DF41831923C0083BCE7 /* REMenuItemView.m */; };
-		665F4E0D183324360083BCE7 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 665F4E081833238D0083BCE7 /* libTestFlight.a */; };
 		665F4E0F183325C50083BCE7 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665F4E0E183325C50083BCE7 /* AdSupport.framework */; };
 		666D3364187F69AD00B73F69 /* invite-accept.caf in Resources */ = {isa = PBXBuildFile; fileRef = 666D335E187F69AD00B73F69 /* invite-accept.caf */; };
 		666D3368187F69AD00B73F69 /* message.caf in Resources */ = {isa = PBXBuildFile; fileRef = 666D3362187F69AD00B73F69 /* message.caf */; };
@@ -133,6 +132,7 @@
 		66AC20AB18690CBD004E58E1 /* KeyFingerprintLoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66AC20AA18690CBD004E58E1 /* KeyFingerprintLoadingView.xib */; };
 		66BB5A3A187B7EE9007B5C47 /* SurespotSettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BB5A39187B7EE9007B5C47 /* SurespotSettingsStore.m */; };
 		66BB5A49187C7672007B5C47 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BB5A48187C7672007B5C47 /* HelpViewController.m */; };
+		66BFDF0A1A3F7A9F00498240 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BFDF091A3F7A9F00498240 /* OpenGLES.framework */; };
 		66CFB77818BE3C34006B15A5 /* libCopy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A786A418BE369C0044BB22 /* libCopy.a */; };
 		66CFB77918BE3C34006B15A5 /* libEmail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A786A618BE369C0044BB22 /* libEmail.a */; };
 		66CFB77A18BE3C34006B15A5 /* libFacebook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A786AC18BE369C0044BB22 /* libFacebook.a */; };
@@ -547,10 +547,6 @@
 		665F4DF21831923C0083BCE7 /* REMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REMenuItem.m; sourceTree = "<group>"; };
 		665F4DF31831923C0083BCE7 /* REMenuItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REMenuItemView.h; sourceTree = "<group>"; };
 		665F4DF41831923C0083BCE7 /* REMenuItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REMenuItemView.m; sourceTree = "<group>"; };
-		665F4E081833238D0083BCE7 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
-		665F4E091833238D0083BCE7 /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
-		665F4E0A1833238D0083BCE7 /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
-		665F4E0B1833238D0083BCE7 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		665F4E0E183325C50083BCE7 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		666D335E187F69AD00B73F69 /* invite-accept.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "invite-accept.caf"; sourceTree = "<group>"; };
 		666D3362187F69AD00B73F69 /* message.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = message.caf; sourceTree = "<group>"; };
@@ -646,6 +642,7 @@
 		66BB5A39187B7EE9007B5C47 /* SurespotSettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SurespotSettingsStore.m; sourceTree = "<group>"; };
 		66BB5A47187C7672007B5C47 /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
 		66BB5A48187C7672007B5C47 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
+		66BFDF091A3F7A9F00498240 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		66D3B04E182EAB4200B37A6C /* surespot.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = surespot.xcassets; sourceTree = "<group>"; };
 		66DAB60C186CBE91006C262F /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		66DAB617186CBF59006C262F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -968,6 +965,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66BFDF0A1A3F7A9F00498240 /* OpenGLES.framework in Frameworks */,
 				66CFB77818BE3C34006B15A5 /* libCopy.a in Frameworks */,
 				66CFB77918BE3C34006B15A5 /* libEmail.a in Frameworks */,
 				66CFB77A18BE3C34006B15A5 /* libFacebook.a in Frameworks */,
@@ -1003,7 +1001,6 @@
 				66E21DFB1847D8A10005D91E /* MessageUI.framework in Frameworks */,
 				667EFF9718425D82002C0406 /* SystemConfiguration.framework in Frameworks */,
 				665F4E0F183325C50083BCE7 /* AdSupport.framework in Frameworks */,
-				665F4E0D183324360083BCE7 /* libTestFlight.a in Frameworks */,
 				66FF0FF6182AE6960038ECA6 /* QuartzCore.framework in Frameworks */,
 				661C2ED31763CB57000649E7 /* libz.dylib in Frameworks */,
 				66E4F5C417629B6400596E6B /* Security.framework in Frameworks */,
@@ -1052,6 +1049,7 @@
 		6604A2BD17626B9E0072216A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				66BFDF091A3F7A9F00498240 /* OpenGLES.framework */,
 				66A786B518BE36F60044BB22 /* GoogleOpenSource.framework */,
 				66A786B618BE36F60044BB22 /* GooglePlus.bundle */,
 				66A786B718BE36F60044BB22 /* GooglePlus.framework */,
@@ -1285,17 +1283,6 @@
 			path = REMenu;
 			sourceTree = "<group>";
 		};
-		665F4E071833238D0083BCE7 /* TestFlightSDK */ = {
-			isa = PBXGroup;
-			children = (
-				665F4E081833238D0083BCE7 /* libTestFlight.a */,
-				665F4E091833238D0083BCE7 /* TestFlight+AsyncLogging.h */,
-				665F4E0A1833238D0083BCE7 /* TestFlight+ManualSessions.h */,
-				665F4E0B1833238D0083BCE7 /* TestFlight.h */,
-			);
-			path = TestFlightSDK;
-			sourceTree = "<group>";
-		};
 		666D335D187F69AD00B73F69 /* sounds */ = {
 			isa = PBXGroup;
 			children = (
@@ -1505,7 +1492,6 @@
 				667EFF9318425A87002C0406 /* Reachability.h */,
 				667EFF9418425A87002C0406 /* Reachability.m */,
 				66A2D92F183C25E800785270 /* SVPullToRefresh */,
-				665F4E071833238D0083BCE7 /* TestFlightSDK */,
 				665F4DEA1831923C0083BCE7 /* REMenu */,
 				66FF0FFC182D3D920038ECA6 /* Lumberjack */,
 				66FF0FDF18242B6B0038ECA6 /* Toast */,
