@@ -32,7 +32,6 @@
 #import "HomeCell+WebImageCache.h"
 #import "KeyFingerprintViewController.h"
 #import "QRInviteViewController.h"
-#import "ShareKit.h"
 #import "VoiceDelegate.h"
 #import "PurchaseDelegate.h"
 #import "SurespotSettingsStore.h"
@@ -1864,16 +1863,32 @@ const Float32 voiceRecordDelay = 0.3;
         
         
         [[NetworkController sharedInstance] getShortUrl:inviteUrl callback:^(id shortUrl) {
+            [_progressView removeView];
             NSString * text = [NSString stringWithFormat:NSLocalizedString(@"external_invite_message", nil), shortUrl];
             
-            SHKItem *item = [SHKItem text: text];
+            UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:@[text] applicationActivities:nil];
             
-            SHKActionSheet* actionSheet = [SHKActionSheet actionSheetForItem:item];
-            [SHK setRootViewController:self];
+            controller.excludedActivityTypes = @[UIActivityTypePostToWeibo,
+                                                 UIActivityTypePrint,
+                                                 UIActivityTypeAssignToContact,
+                                                 UIActivityTypeSaveToCameraRoll,
+                                                 UIActivityTypeAddToReadingList,
+                                                 UIActivityTypePostToFlickr,
+                                                 UIActivityTypePostToVimeo,
+                                                 UIActivityTypePostToTencentWeibo,
+                                                 UIActivityTypeAirDrop];
             
-            [_progressView removeView];
-            [actionSheet showInView:self.view];
-            
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+            {
+                [self presentViewController:controller animated:YES completion:nil];
+            }
+            //if iPad
+            else
+            {
+                // Change Rect to position Popover
+                _popover = [[UIPopoverController alloc] initWithContentViewController:controller];
+                [_popover presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/2, 0, 0) inView:self.view permittedArrowDirections:0 animated:YES];
+            }
         }];
     }];
     [menuItems addObject:shareItem];

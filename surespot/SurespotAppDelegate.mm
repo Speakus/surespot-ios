@@ -16,10 +16,6 @@
 #import "IdentityController.h"
 #import "UIUtils.h"
 #import "AGWindowView.h"
-#import "SurespotSHKConfigurator.h"
-#import "SHKConfiguration.h"
-#import "SHKGooglePlus.h"
-#import "SHKFacebook.h"
 #import <StoreKit/StoreKit.h>
 #import "PurchaseDelegate.h"
 #import "SoundController.h"
@@ -60,9 +56,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     if  (launchOptions) {
         DDLogVerbose(@"received launch options: %@", launchOptions);
     }
-    
-    DefaultSHKConfigurator *configurator = [[SurespotSHKConfigurator alloc] init];
-    [SHKConfiguration sharedInstanceWithConfigurator:configurator];
     
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     [[DDTTYLogger sharedInstance]setLogFormatter: [SurespotLogFormatter new]];
@@ -158,13 +151,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             }
         }
     }
-    else
-        if ([url.scheme hasPrefix:[NSString stringWithFormat:@"fb%@", SHKCONFIG(facebookAppId)]]) {
-            return [SHKFacebook handleOpenURL:url sourceApplication:@"surespot"];
-        } else if ([url.scheme isEqualToString:@"com.twofours.surespot"]) {
-            return [SHKGooglePlus handleURL:url sourceApplication:sourceApplication annotation:annotation];
-        }
-    
     
     return YES;
 }
@@ -284,16 +270,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     //  DDLogVerbose(@"foreground");
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    [SHKFacebook handleDidBecomeActive];
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    [SHKFacebook handleWillTerminate];
 }
 
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
