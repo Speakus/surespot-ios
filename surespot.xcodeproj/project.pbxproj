@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6604A2BF17626B9E0072216A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2BE17626B9E0072216A /* UIKit.framework */; };
 		6604A2C117626B9E0072216A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2C017626B9E0072216A /* Foundation.framework */; };
 		6604A2C317626B9E0072216A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2C217626B9E0072216A /* CoreGraphics.framework */; };
 		6604A2CB17626B9E0072216A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6604A2CA17626B9E0072216A /* main.m */; };
@@ -98,6 +97,8 @@
 		667F80001A3FAD4A00181B42 /* libGTLTouchStaticLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 667F7FFB1A3FAD2900181B42 /* libGTLTouchStaticLib.a */; };
 		667F80021A3FADCB00181B42 /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 667F80011A3FADCB00181B42 /* GTMOAuth2ViewTouch.xib */; };
 		667F80051A3FAE8000181B42 /* GTLDrive_Sources.m in Sources */ = {isa = PBXBuildFile; fileRef = 667F80031A3FAE8000181B42 /* GTLDrive_Sources.m */; };
+		667F800C1A3FB99100181B42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2BE17626B9E0072216A /* UIKit.framework */; };
+		667F800D1A3FB9A900181B42 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BFDF091A3F7A9F00498240 /* OpenGLES.framework */; };
 		6686623D18565AD5001491B1 /* LoginViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6686623818565AD5001491B1 /* LoginViewController.mm */; };
 		6686623E18565AD5001491B1 /* SignupViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6686623A18565AD5001491B1 /* SignupViewController.mm */; };
 		6686623F18565AD5001491B1 /* SwipeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6686623C18565AD5001491B1 /* SwipeViewController.mm */; };
@@ -128,7 +129,6 @@
 		66AC20AB18690CBD004E58E1 /* KeyFingerprintLoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66AC20AA18690CBD004E58E1 /* KeyFingerprintLoadingView.xib */; };
 		66BB5A3A187B7EE9007B5C47 /* SurespotSettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BB5A39187B7EE9007B5C47 /* SurespotSettingsStore.m */; };
 		66BB5A49187C7672007B5C47 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BB5A48187C7672007B5C47 /* HelpViewController.m */; };
-		66BFDF0A1A3F7A9F00498240 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BFDF091A3F7A9F00498240 /* OpenGLES.framework */; };
 		66D3B04F182EAB4200B37A6C /* surespot.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 66D3B04E182EAB4200B37A6C /* surespot.xcassets */; };
 		66DAB60D186CBE91006C262F /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DAB60C186CBE91006C262F /* Twitter.framework */; };
 		66DAB618186CBF59006C262F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DAB617186CBF59006C262F /* CoreLocation.framework */; };
@@ -797,9 +797,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				667F800D1A3FB9A900181B42 /* OpenGLES.framework in Frameworks */,
+				667F800C1A3FB99100181B42 /* UIKit.framework in Frameworks */,
 				667F80001A3FAD4A00181B42 /* libGTLTouchStaticLib.a in Frameworks */,
-				6604A2BF17626B9E0072216A /* UIKit.framework in Frameworks */,
-				66BFDF0A1A3F7A9F00498240 /* OpenGLES.framework in Frameworks */,
 				662CA5AA18734E9500684790 /* StoreKit.framework in Frameworks */,
 				66DAB64E186F2B2F006C262F /* AudioToolbox.framework in Frameworks */,
 				66DAB649186F2911006C262F /* CoreAudio.framework in Frameworks */,
@@ -2257,8 +2257,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libstdc++";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/adam/dev/surespot/surespot-ios/surespot/libs/ShareKit/Frameworks",
@@ -2282,7 +2282,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2298,8 +2298,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libstdc++";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iOS Distribution: surespot llc";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Distribution: surespot llc";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/adam/dev/surespot/surespot-ios/surespot/libs/ShareKit/Frameworks",
@@ -2317,13 +2317,13 @@
 					"$(SRCROOT)/surespot/",
 					"$(SRCROOT)/surespot/libs/cryptopp/lib/",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "09985f84-bc1b-44df-b4b4-ae9e79401095";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "09985f84-bc1b-44df-b4b4-ae9e79401095";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
