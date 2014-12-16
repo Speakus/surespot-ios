@@ -1887,6 +1887,7 @@ const Float32 voiceRecordDelay = 0.3;
             {
                 // Change Rect to position Popover
                 _popover = [[UIPopoverController alloc] initWithContentViewController:controller];
+                _popover.delegate = self;
                 [_popover presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/2, 0, 0) inView:self.view permittedArrowDirections:0 animated:YES];
             }
         }];
