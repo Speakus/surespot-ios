@@ -741,7 +741,7 @@ const Float32 voiceRecordDelay = 0.3;
 - (void)swipeViewCurrentItemIndexDidChange:(SwipeView *)swipeView
 {
     NSInteger currPage = swipeView.currentPage;
-    DDLogVerbose(@"swipeview index changed to %d scrolling to: %d", currPage, _scrollingTo);
+    DDLogInfo(@"swipeview index changed to %d scrolling to: %d", currPage, _scrollingTo);
     
     UITableView * tableview;
     if (currPage == 0) {
