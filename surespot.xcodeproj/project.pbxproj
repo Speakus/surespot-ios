@@ -94,7 +94,6 @@
 		66755100184C55E900C55AAC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E70AB21847F8E100433D6F /* MobileCoreServices.framework */; };
 		667EFF9518425A87002C0406 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 667EFF9418425A87002C0406 /* Reachability.m */; };
 		667EFF9718425D82002C0406 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 667EFF9618425D82002C0406 /* SystemConfiguration.framework */; };
-		667F80021A3FADCB00181B42 /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 667F80011A3FADCB00181B42 /* GTMOAuth2ViewTouch.xib */; };
 		667F80051A3FAE8000181B42 /* GTLDrive_Sources.m in Sources */ = {isa = PBXBuildFile; fileRef = 667F80031A3FAE8000181B42 /* GTLDrive_Sources.m */; };
 		667F800C1A3FB99100181B42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2BE17626B9E0072216A /* UIKit.framework */; };
 		667F800D1A3FB9A900181B42 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BFDF091A3F7A9F00498240 /* OpenGLES.framework */; };
@@ -1937,7 +1936,6 @@
 				661F3B8818689DDF003C7AE3 /* KeyFingerprintCell.xib in Resources */,
 				661F46A41865E063004A71B0 /* DeleteIdentityView.xib in Resources */,
 				66AC20AB18690CBD004E58E1 /* KeyFingerprintLoadingView.xib in Resources */,
-				667F80021A3FADCB00181B42 /* GTMOAuth2ViewTouch.xib in Resources */,
 				661F469A1864C0B2004A71B0 /* GenerateKeysView.xib in Resources */,
 				661F46A81865EDC3004A71B0 /* ChangePasswordView.xib in Resources */,
 			);
@@ -2260,8 +2258,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libstdc++";
-				CODE_SIGN_IDENTITY = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2280,11 +2278,11 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "/Users/adam/dev/surespot/surespot-ios/surespot/libs/google-api-objectivec-client-read-only/Source/** /Users/adam/dev/surespot/libs/ios/github/src/QR-Code-Encoder-for-Objective-C/QRCodeEncoderObjectiveCAtGithub";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/surespot/libs/google-api-objectivec-client-read-only/Source/** /Users/adam/dev/surespot/libs/ios/github/src/QR-Code-Encoder-for-Objective-C/QRCodeEncoderObjectiveCAtGithub";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2296,8 +2294,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libstdc++";
-				CODE_SIGN_IDENTITY = "iOS Distribution: surespot llc";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Distribution: surespot llc";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2316,11 +2314,11 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "09985f84-bc1b-44df-b4b4-ae9e79401095";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "09985f84-bc1b-44df-b4b4-ae9e79401095";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "/Users/adam/dev/surespot/libs/ios/google/google-api-objectivec-client-read-only/source/** /Users/adam/dev/surespot/libs/ios/github/src/QR-Code-Encoder-for-Objective-C/QRCodeEncoderObjectiveCAtGithub";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/surespot/libs/google-api-objectivec-client-read-only/** $(SRCROOT)/surespot/libs/QR-Code-Encoder-for-Objective-C/QRCodeEncoderObjectiveCAtGithub";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2330,6 +2328,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/surespot.app/surespot";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
@@ -2338,6 +2337,7 @@
 				GCC_PREFIX_HEADER = "surespot/surespot-Prefix.pch";
 				INFOPLIST_FILE = "surespotTests/surespotTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
