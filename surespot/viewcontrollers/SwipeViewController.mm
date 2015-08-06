@@ -356,9 +356,6 @@ const Float32 voiceRecordDelay = 0.3;
     //  [UIView setAnimationDuration:animationDuration];
     //  [UIView setAnimationCurve:animationCurve];
     
-    
-    
-    
     CGRect newFrame = _textFieldContainer.frame;
     CGRect keyboardFrameEnd = [self.view convertRect:keyboardEndFrame toView:nil];
     
@@ -366,15 +363,26 @@ const Float32 voiceRecordDelay = 0.3;
     CGRect keyboardFrameBegin = [self.view convertRect:keyboardBeginFrame toView:nil];
     DDLogInfo(@"keyboard frame begin origin y: %f, height: %f", keyboardFrameBegin.origin.y, keyboardFrameBegin.size.height);
     DDLogInfo(@"keyboard frame end origin y: %f, height: %f", keyboardFrameEnd.origin.y, keyboardFrameEnd.size.height);
-    int height = keyboardFrameBegin.origin.y-keyboardFrameEnd.origin.y;
+    int height = keyboardFrameBegin.origin.y - keyboardFrameEnd.origin.y;
+    
+    // fix for when we're being notified of the keyboard's existence/non-existence, not necessarily changing its height via begin/end
+    if (height == 0) {
+        height = keyboardFrameEnd.size.height;
+    }
+    
     DDLogInfo(@"keyboard height: %d",height);
     DDLogInfo(@"origin y before: %f",newFrame.origin.y);
     
     newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
-    DDLogInfo(@"origin y after: %f",newFrame.origin.y);
-    _textFieldContainer.frame = newFrame;
-    
-    
+    //if (newFrame.origin.y < keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height)
+    //{
+        DDLogInfo(@"origin y after: %f",newFrame.origin.y);
+        if (newFrame.origin.y < 0)
+        {
+            DDLogWarn(@"newFrame.origin.y less than 0, was %f", newFrame.origin.y);
+        }
+        _textFieldContainer.frame = newFrame;
+    //}
     
     CGRect frame = _swipeView.frame;
     DDLogInfo(@"swipeview frame: origin x: %f, origin y: %f, height: %f",_swipeView.frame.origin.x, _swipeView.frame.origin.y, _swipeView.frame.size.height);
@@ -399,6 +407,7 @@ const Float32 voiceRecordDelay = 0.3;
                 CGRect aRect = self.view.frame;
                 aRect.size.height -= height;
                 if (!CGRectContainsPoint(aRect, bottomCell.frame.origin) ) {
+                    DDLogInfo(@"tableView.contentOffset.y: %f, height: %d", tableView.contentOffset.y, height);
                     CGPoint newOffset = CGPointMake(0, tableView.contentOffset.y + height);
                     [tableView setContentOffset:newOffset animated:NO];
                 }
