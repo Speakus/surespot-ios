@@ -415,10 +415,10 @@ const Float32 voiceRecordDelay = 0.3;
         frame.size.height = wholeScreen.size.height - _textFieldContainer.frame.size.height - 20;
     }
     
-    BOOL keyboardGoingAway = (keyboardFrameEnd.origin.y < wholeScreen.size.height - 60);
+    BOOL keyboardNotGoingAway = (keyboardFrameEnd.origin.y < wholeScreen.size.height - 60);
     BOOL adjustedSwipeView = NO;
     // if keyboard is not going away, we need to make sure the swipeview accounts for its presence
-    if (keyboardGoingAway == YES) {
+    if (keyboardNotGoingAway == YES) {
         if (frame.size.height > wholeScreen.size.height - keyboardFrameEnd.size.height - _textFieldContainer.frame.size.height - 20) {
             frame.size.height = wholeScreen.size.height - keyboardFrameEnd.size.height - _textFieldContainer.frame.size.height - 20;
             adjustedSwipeView = YES;
