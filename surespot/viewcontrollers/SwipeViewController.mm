@@ -79,6 +79,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 @property (strong, nonatomic) IBOutlet UIView *textFieldContainer;
 @property (atomic, strong) ALAssetsLibrary * assetLibrary;
 @property (atomic, strong) LoadingView * progressView;
+@property (nonatomic) float savedTextHeight;
 @end
 @implementation SwipeViewController
 
@@ -364,6 +365,7 @@ const Float32 voiceRecordDelay = 0.3;
     DDLogInfo(@"keyboard frame begin origin y: %f, height: %f", keyboardFrameBegin.origin.y, keyboardFrameBegin.size.height);
     DDLogInfo(@"keyboard frame end origin y: %f, height: %f", keyboardFrameEnd.origin.y, keyboardFrameEnd.size.height);
     int height = keyboardFrameBegin.origin.y - keyboardFrameEnd.origin.y;
+    int heightDelta = height;
     
     // fix for when we're being notified of the keyboard's existence/non-existence, not necessarily changing its height via begin/end
     if (height == 0) {
@@ -373,20 +375,56 @@ const Float32 voiceRecordDelay = 0.3;
     DDLogInfo(@"keyboard height: %d",height);
     DDLogInfo(@"origin y before: %f",newFrame.origin.y);
     
+    CGRect wholeScreen = self.view.frame;
+    
+    /*
+     if (newFrame.origin.y - height + _textFieldContainer.frame.size.height + 20 > wholeScreen.size.height){
+        DDLogWarn(@"newFrame.origin.y plus textfieldContainer frame size height greater than whole screen height");
+        return;
+    }
+    */
+    
     newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
-    //if (newFrame.origin.y < keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height)
-    //{
-        DDLogInfo(@"origin y after: %f",newFrame.origin.y);
-        if (newFrame.origin.y < 0)
-        {
-            DDLogWarn(@"newFrame.origin.y less than 0, was %f", newFrame.origin.y);
-        }
-        _textFieldContainer.frame = newFrame;
-    //}
+    DDLogInfo(@"origin y after: %f",newFrame.origin.y);
+    if (newFrame.origin.y < 0)
+    {
+        DDLogWarn(@"newFrame.origin.y less than 0, was %f", newFrame.origin.y);
+        // store difference from 0 - we'll need to "restore this height"
+        _savedTextHeight = 0 - newFrame.origin.y;
+        newFrame.origin.y = 0;
+    }
+    else if (_savedTextHeight > 0){
+        newFrame.origin.y -= _savedTextHeight;
+        _savedTextHeight = 0;
+    }
+        
+    _textFieldContainer.frame = newFrame;
     
     CGRect frame = _swipeView.frame;
     DDLogInfo(@"swipeview frame: origin x: %f, origin y: %f, height: %f",_swipeView.frame.origin.x, _swipeView.frame.origin.y, _swipeView.frame.size.height);
     frame.size.height -= height;
+    
+    // make sure the swipe view doesn't go "above" the top of the screen (minus area for "friends" spot - what control would this be so we don't have to guestimate @ 26 pixels?)
+    if (frame.origin.y < 26) {
+        frame.size.height -= 26 + frame.origin.y;
+        frame.origin.y = 26;
+    }
+    
+    // never overlap swipeview with the text field container
+    if (frame.size.height > wholeScreen.size.height - _textFieldContainer.frame.size.height - 20) {
+        frame.size.height = wholeScreen.size.height - _textFieldContainer.frame.size.height - 20;
+    }
+    
+    BOOL keyboardGoingAway = (keyboardFrameEnd.origin.y < wholeScreen.size.height - 60);
+    BOOL adjustedSwipeView = NO;
+    // if keyboard is not going away, we need to make sure the swipeview accounts for its presence
+    if (keyboardGoingAway == YES) {
+        if (frame.size.height > wholeScreen.size.height - keyboardFrameEnd.size.height - _textFieldContainer.frame.size.height - 20) {
+            frame.size.height = wholeScreen.size.height - keyboardFrameEnd.size.height - _textFieldContainer.frame.size.height - 20;
+            adjustedSwipeView = YES;
+        }
+    }
+    
     _swipeView.frame = frame;
     
     CGRect buttonFrame = _theButton.frame;
@@ -405,10 +443,13 @@ const Float32 voiceRecordDelay = 0.3;
             
             if (bottomCell) {
                 CGRect aRect = self.view.frame;
-                aRect.size.height -= height;
+                aRect.size.height -= heightDelta;
+                    
                 if (!CGRectContainsPoint(aRect, bottomCell.frame.origin) ) {
-                    DDLogInfo(@"tableView.contentOffset.y: %f, height: %d", tableView.contentOffset.y, height);
-                    CGPoint newOffset = CGPointMake(0, tableView.contentOffset.y + height);
+                    DDLogInfo(@"tableView.contentOffset.y: %f, height: %d", tableView.contentOffset.y, heightDelta);
+                    // something special needs to happen here when adjustedSwipeView == YES, but I can't figure out what...
+                    // almost like a delayed/forced refresh
+                    CGPoint newOffset = CGPointMake(0, tableView.contentOffset.y + heightDelta);
                     [tableView setContentOffset:newOffset animated:NO];
                 }
             }
