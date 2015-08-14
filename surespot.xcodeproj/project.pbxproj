@@ -2261,7 +2261,7 @@
 				CODE_SIGN_IDENTITY = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Development: Cherie berdovich (NXD3EGT7CY)";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "surespot/surespot-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -2273,10 +2273,7 @@
 					"$(SRCROOT)/surespot/libs/cryptopp/lib/",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "fc16db55-72f7-474e-b466-4d5274ffafd1";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "fc16db55-72f7-474e-b466-4d5274ffafd1";
@@ -2297,7 +2294,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "surespot/surespot-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -2309,10 +2306,7 @@
 					"$(SRCROOT)/surespot/libs/cryptopp/lib/",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "18dcb900-c285-426d-9f79-acfed12ebf2a";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "18dcb900-c285-426d-9f79-acfed12ebf2a";
