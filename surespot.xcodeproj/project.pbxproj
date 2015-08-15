@@ -2305,7 +2305,7 @@
 					"$(SRCROOT)/surespot/",
 					"$(SRCROOT)/surespot/libs/cryptopp/lib/",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "18dcb900-c285-426d-9f79-acfed12ebf2a";
