@@ -12,6 +12,8 @@
 @interface SurespotAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) UIImageView *imageView;
+
 //@property (strong, nonatomic) AGWindowView * overlayView;
 //@property (strong, nonatomic) UIWindow * overlayWindow;
 @end
