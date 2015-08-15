@@ -35,6 +35,41 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 @implementation SurespotAppDelegate
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+
+    // in our case, show the surespot logo centered on a black background
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+    {
+        UIView *colorView = [[UIView alloc] initWithFrame:self.window.frame];
+        colorView.tag = 9999;
+        colorView.backgroundColor = [UIColor blackColor];
+        _imageView = [[UIImageView alloc]initWithFrame:[colorView frame]];
+        UIImage * image =[UIImage imageNamed:@"surespot_logo.png"];
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [_imageView setImage:image];
+        [colorView addSubview:_imageView];
+        [self.window addSubview:colorView];
+        [self.window bringSubviewToFront:colorView];
+    }
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    // remove the surespot logo centered on a black background
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+    {
+        UIView *colorView = [self.window viewWithTag:9999];
+        if(_imageView != nil) {
+            [_imageView removeFromSuperview];
+            _imageView = nil;
+        }
+        [colorView removeFromSuperview];
+    }
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     //-- Set Notification
@@ -250,12 +285,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     
     return NO;    
-}
-
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
