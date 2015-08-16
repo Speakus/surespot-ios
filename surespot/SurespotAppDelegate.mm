@@ -47,7 +47,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         colorView.tag = 9999;
         colorView.backgroundColor = [UIColor blackColor];
         _imageView = [[UIImageView alloc]initWithFrame:[colorView frame]];
-        UIImage * image =[UIImage imageNamed:@"surespot_logo.png"];
+        UIImage * image =[UIImage imageNamed:@"surespotlauncher512.png"];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
         [_imageView setImage:image];
         [colorView addSubview:_imageView];
