@@ -61,7 +61,29 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 const NSInteger SEND_THRESHOLD = 25;
 
 
-
+- (BOOL) hasPermissionForMic {
+    // this will only work with iOS 8+
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1)
+    {
+        switch ([[AVAudioSession sharedInstance] recordPermission]) {
+            case AVAudioSessionRecordPermissionGranted:
+                return YES;
+                break;
+            case AVAudioSessionRecordPermissionDenied:
+                return NO;
+                break;
+            case AVAudioSessionRecordPermissionUndetermined:
+                // This is the initial state before a user has made any choice
+                // You can use this spot to request permission here if you want
+                return YES;
+                break;
+            default:
+                return YES;
+                break;
+        }
+    }
+    return YES;
+}
 
 - (id) initWithUsername: (NSString *) username
              ourVersion:(NSString *) ourVersion
