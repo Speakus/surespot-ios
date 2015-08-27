@@ -245,6 +245,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         return;
     }
     
+    if ([newPassword isEqualToString:password]) {
+        [UIUtils showToastKey:@"cannot_change_to_same_password" duration:2];
+        _shinyNewPassword.text = @"";
+        _confirmPassword.text = @"";        
+        [_shinyNewPassword becomeFirstResponder];
+        return;
+    }
+    
     if (![confirmPassword isEqualToString:newPassword]) {
         [UIUtils showToastKey:@"passwords_do_not_match" duration:1.5];
         _shinyNewPassword.text = @"";

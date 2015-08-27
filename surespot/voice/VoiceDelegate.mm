@@ -266,6 +266,16 @@ const NSInteger SEND_THRESHOLD = 25;
     [self stopPlayingDeactivateSession:NO];
     
     if (!_recorder.recording) {
+        
+        if (![self hasPermissionForMic]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Use of microphone disabled"
+                                                        message:@"This device is not configured to allow Surespot to access your microphone."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
         [self prepareRecording];
         
         _theirUsername = username;

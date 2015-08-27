@@ -146,6 +146,7 @@
 "change_password_actionbar_right"="change";
 "change_password_progress"="changing password";
 "could_not_change_password"="could not change password";
+"cannot_change_to_same_password"="Your new password must be different than your old one";
 "password_changed"="password changed, please backup the identity";
 "delete"="delete";
 "delete_identity_progress"="deleting identity";
