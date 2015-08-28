@@ -3,7 +3,7 @@
 //  surespot
 //
 //  Created by Adam on 10/20/13.
-//  Copyright (c) 2013 2fours. All rights reserved.
+//  Copyright (c) 2013 surespot. All rights reserved.
 //
 
 //
@@ -11,7 +11,7 @@
 //  surespot
 //
 //  Created by Adam on 10/19/13.
-//  Copyright (c) 2013 2fours. All rights reserved.
+//  Copyright (c) 2013 surespot. All rights reserved.
 //
 
 #import "GetSharedSecretOperation.h"

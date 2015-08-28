@@ -3,7 +3,7 @@
 //  surespot
 //
 //  Created by Adam on 1/7/14.
-//  Copyright (c) 2014 2fours. All rights reserved.
+//  Copyright (c) 2014 surespot. All rights reserved.
 //
 
 #import "HelpViewController.h"

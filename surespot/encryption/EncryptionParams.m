@@ -3,7 +3,7 @@
 //  surespot
 //
 //  Created by Adam on 12/14/13.
-//  Copyright (c) 2013 2fours. All rights reserved.
+//  Copyright (c) 2013 surespot. All rights reserved.
 //
 
 #import "EncryptionParams.h"

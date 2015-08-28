@@ -3,7 +3,7 @@
 //  LoadingView
 //
 
-//  heavily Modified by 2fours
+//  heavily Modified by surespot
 
 //  Created by Matt Gallagher on 12/04/09.
 //  Copyright Matt Gallagher 2009. All rights reserved.

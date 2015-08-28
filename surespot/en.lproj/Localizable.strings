@@ -290,7 +290,7 @@ We give a portion of any profit to the EFF so that they may continue to fight fo
 "ecdh_match"="ECDH shared secret derivation";
 "welcome_to_surespot"="Welcome to surespot! Data sent using this app is end-to-end encrypted with symmetric-key encryption (256 bit AES-GCM) using keys created with 521 bit ECDH shared secret derivation.";
 
-"about_about"="surespot - a 2fours production";
+"about_about"="surespot";
 "about_website_match"="https://www.surespot.me";
 "about_website_link"="https://www.surespot.me";
 "tos_match"="terms of service";
@@ -305,14 +305,14 @@ We give a portion of any profit to the EFF so that they may continue to fight fo
 "howsurespotworks_link"="https://www.surespot.me/documents/how_surespot_works.html";
 "support_match"="press here";
 "support_link"="https://www.surespot.me/support.html";
-"email_match"="support@2fours.com";
-"email_link"="mailto:support@2fours.com";
+"email_match"="support@surespot.me";
+"email_link"="mailto:support@surespot.me";
 "about_audio_match"="Marco Angelo";
 "about_audio_link"="https://soundcloud.com/merakiaudio";
 "about_website"="Please visit the surespot website at https://www.surespot.me for more information, including the terms of service, privacy policy, and data and threat analysis.
 Surespot is 100% open source and welcomes your participation - view the source code on github at https://github.com/surespot.
 For a more technical overview of how surespot works please touch here.
-For questions or support please press here or email support@2fours.com.
+For questions or support please press here or email support@surespot.me.
 Custom notification sounds created by Marco Angelo.";
 
 
