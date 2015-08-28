@@ -7,6 +7,7 @@
 "export_sd"="Execute Device Storage Backup.";
 "import_sd"="Restore from Device Storage.";
 "delete_identity_user"="delete identity: %@";
+"delete_identity_from_device_user"="delete identity from device: %@";
 "import_identities"="restore identity...";
 "create_identity_label"="create new identity...";
 "no_identity_exported"="no identity backed up";
@@ -151,6 +152,7 @@
 "delete"="delete";
 "delete_identity_progress"="deleting identity";
 "could_not_delete_identity"="could not delete identity";
+"could_not_delete_identity_from_device"="could not delete identity from device";
 "identity_deleted"="identity deleted";
 "backup"="backup";
 "backup_identity"="backup identity %@";
@@ -189,6 +191,7 @@
 "delete_all_messages"="delete all messages";
 "pay_what_you_like"="pay what you like";
 "delete_identity"="delete identity";
+"delete_identity_from_device"="delete identity from device";
 "surespot_help"="surespot help";
 "could_not_backup_identity_to_google_drive"="Could not backup identity to Google Drive";
 "identity_successfully_backed_up_to_google_drive"="Identity successfully backed up to Google Drive";
