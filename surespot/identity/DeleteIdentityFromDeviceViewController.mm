@@ -110,6 +110,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             password = [[alertView textFieldAtIndex:0] text];
         }
         
+        // TODO: ASK ADAM: need a way to check if password is valid.  Is there a way to do this without a round-trip to the server?
         if (![UIUtils stringIsNilOrEmpty:password]) {
             [self deleteIdentityForUsername:_name password:password];
         }
