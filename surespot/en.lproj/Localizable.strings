@@ -7,7 +7,7 @@
 "export_sd"="Execute Device Storage Backup.";
 "import_sd"="Restore from Device Storage.";
 "delete_identity_user"="delete identity: %@";
-"delete_identity_from_device_user"="delete identity from device: %@";
+"remove_identity_from_device_user"="remove identity from device: %@";
 "import_identities"="restore identity...";
 "create_identity_label"="create new identity...";
 "no_identity_exported"="no identity backed up";
@@ -150,10 +150,12 @@
 "cannot_change_to_same_password"="Your new password must be different than your old one";
 "password_changed"="password changed, please backup the identity";
 "delete"="delete";
+"remove"="remove";
 "delete_identity_progress"="deleting identity";
 "could_not_delete_identity"="could not delete identity";
-"could_not_delete_identity_from_device"="could not delete identity from device";
+"could_not_remove_identity_from_device"="could not remove identity from device";
 "identity_deleted"="identity deleted";
+"identity_removed"="identity removed";
 "backup"="backup";
 "backup_identity"="backup identity %@";
 "backed_up_identity_to_path"="backed up identity %1$@ to %2$@";
@@ -181,6 +183,7 @@
 "confirm_password"="confirm password";
 "change_password"="change password";
 "delete_identity_message_warning"="Deleting an identity will erase all messages that identity has sent. It can not be undone.";
+"remove_identity_from_device_message_warning"="Removing an identity from a device will remove the identity from this device, but it will not delete the identity or sent messages from the server.";
 "identity_colon"="identity:";
 "backup_location_note"="Note: this may or may not be the removable SD card depending on your device.";
 "invite_others"="Invite others to communicate with you privately via surespot by sharing an auto-invite link with them.";
@@ -191,7 +194,7 @@
 "delete_all_messages"="delete all messages";
 "pay_what_you_like"="pay what you like";
 "delete_identity"="delete identity";
-"delete_identity_from_device"="delete identity from device";
+"remove_identity_from_device"="remove identity from device";
 "surespot_help"="surespot help";
 "could_not_backup_identity_to_google_drive"="Could not backup identity to Google Drive";
 "identity_successfully_backed_up_to_google_drive"="Identity successfully backed up to Google Drive";

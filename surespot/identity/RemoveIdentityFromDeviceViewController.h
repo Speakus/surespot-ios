@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DeleteIdentityFromDeviceViewController : UIViewController<UIPickerViewDataSource, UIPickerViewDelegate>
+@interface RemoveIdentityFromDeviceViewController : UIViewController<UIPickerViewDataSource, UIPickerViewDelegate>
 
 @end

@@ -1,5 +1,5 @@
 //
-//  DeleteIdentityFromDeviceViewController.m
+//  RemoveIdentityFromDeviceViewController.m
 //  surespot
 //
 //  Created by Owen Emlen on 8/28/15.
@@ -7,7 +7,7 @@
 //
 
 
-#import "DeleteIdentityFromDeviceViewController.h"
+#import "RemoveIdentityFromDeviceViewController.h"
 #import "IdentityController.h"
 #import "DDLog.h"
 #import "SurespotConstants.h"
@@ -29,7 +29,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
 
 
-@interface DeleteIdentityFromDeviceViewController ()
+@interface RemoveIdentityFromDeviceViewController ()
 @property (strong, nonatomic) IBOutlet UILabel *label1;
 @property (atomic, strong) NSArray * identityNames;
 @property (strong, nonatomic) IBOutlet UIPickerView *userPicker;
@@ -42,17 +42,17 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 
 
-@implementation DeleteIdentityFromDeviceViewController
+@implementation RemoveIdentityFromDeviceViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.navigationItem setTitle:NSLocalizedString(@"delete", nil)];
-    [_bExecute setTitle:NSLocalizedString(@"delete_identity_from_device", nil) forState:UIControlStateNormal];
+    [self.navigationItem setTitle:NSLocalizedString(@"remove", nil)];
+    [_bExecute setTitle:NSLocalizedString(@"remove_identity_from_device", nil) forState:UIControlStateNormal];
     [self loadIdentityNames];
     self.navigationController.navigationBar.translucent = NO;
     
-    _label1.text = NSLocalizedString(@"delete_identity_from_device_message_warning", nil);
+    _label1.text = NSLocalizedString(@"remove_identity_from_device_message_warning", nil);
     
     _scrollView.contentSize = self.view.frame.size;
     [_userPicker selectRow:[_identityNames indexOfObject:[[IdentityController sharedInstance] getLoggedInUser]] inComponent:0 animated:YES];
@@ -97,7 +97,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     _name = name;
     
     //show alert view to get password
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"delete_identity_from_device_user", nil), name] message:[NSString stringWithFormat:NSLocalizedString(@"enter_password_for", nil), name] delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:NSLocalizedString(@"ok", nil), nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"remove_identity_from_device_user", nil), name] message:[NSString stringWithFormat:NSLocalizedString(@"enter_password_for", nil), name] delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:NSLocalizedString(@"ok", nil), nil];
     alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
     [alertView show];
     
@@ -110,7 +110,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
             password = [[alertView textFieldAtIndex:0] text];
         }
         
-        // TODO: ASK ADAM: need a way to check if password is valid.  Is there a way to do this without a round-trip to the server?
         if (![UIUtils stringIsNilOrEmpty:password]) {
             [self deleteIdentityForUsername:_name password:password];
         }
@@ -118,12 +117,12 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(void) deleteIdentityForUsername: (NSString *) username password: (NSString *) password {
-    _progressView = [LoadingView showViewKey:@"delete_identity_from_device_progress"];
-    SurespotIdentity * identity = [[IdentityController sharedInstance] getIdentityWithUsername:username andPassword:password];
+    _progressView = [LoadingView showViewKey:@"remove_identity_from_device_progress"];
+    SurespotIdentity * identity = [[IdentityController sharedInstance] loadIdentityUsername:username password:password];
     if (!identity) {
         [_progressView removeView];
         _progressView = nil;
-        [UIUtils showToastKey:@"could_not_delete_identity_from_device" duration:2];
+        [UIUtils showToastKey:@"could_not_remove_identity_from_device" duration:3];
         return;
     }
     
@@ -131,7 +130,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [[IdentityController sharedInstance] deleteIdentityUsername:username];
     [_progressView removeView];
     _progressView = nil;
-    [UIUtils showToastKey:@"identity_deleted_from_device" duration:2];
+    [UIUtils showToastKey:@"identity_removed_from_device" duration:2];
 }
 
 -(BOOL) shouldAutorotate {

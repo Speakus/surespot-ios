@@ -15,6 +15,7 @@
 #import "LoadingView.h"
 #import "DDLog.h"
 #import "RestoreIdentitiesViewController.h"
+#import "RemoveIdentityFromDeviceViewController.h"
 #import "SwipeViewController.h"
 #import "HelpViewController.h"
 
@@ -420,6 +421,14 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }];
     
     [menuItems addObject:restoreItem];
+  
+    REMenuItem * removeIdentityItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"remove_identity_from_device", nil) image:[UIImage imageNamed:@"ic_menu_delete"] highlightedImage:nil action:^(REMenuItem * item){
+        // TODO: HEREHERE: WHY does this crash?!  And how to debug it?
+        RemoveIdentityFromDeviceViewController * controller = [[RemoveIdentityFromDeviceViewController alloc] init];
+        [self.navigationController pushViewController:controller animated:YES];
+    }];
+    
+    [menuItems addObject:removeIdentityItem];
     
     REMenuItem * clearCacheItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"clear_local_cache", nil) image:[UIImage imageNamed:@"ic_menu_delete"] highlightedImage:nil action:^(REMenuItem * item){
         [UIUtils clearLocalCache];

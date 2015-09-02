@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5AF842411B910B03009BC037 /* DeleteIdentityFromDeviceView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5AF842401B910B03009BC037 /* DeleteIdentityFromDeviceView.xib */; };
-		5AF842511B910FD7009BC037 /* DeleteIdentityFromDeviceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5AF842501B910FD7009BC037 /* DeleteIdentityFromDeviceViewController.mm */; };
+		5AF842411B910B03009BC037 /* RemoveIdentityFromDeviceView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5AF842401B910B03009BC037 /* RemoveIdentityFromDeviceView.xib */; };
+		5AF842511B910FD7009BC037 /* RemoveIdentityFromDeviceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5AF842501B910FD7009BC037 /* RemoveIdentityFromDeviceViewController.mm */; };
 		6604A2C117626B9E0072216A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2C017626B9E0072216A /* Foundation.framework */; };
 		6604A2C317626B9E0072216A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2C217626B9E0072216A /* CoreGraphics.framework */; };
 		6604A2CB17626B9E0072216A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6604A2CA17626B9E0072216A /* main.m */; };
@@ -268,9 +268,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5AF842401B910B03009BC037 /* DeleteIdentityFromDeviceView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeleteIdentityFromDeviceView.xib; sourceTree = "<group>"; };
-		5AF842421B910B98009BC037 /* DeleteIdentityFromDeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeleteIdentityFromDeviceViewController.h; sourceTree = "<group>"; };
-		5AF842501B910FD7009BC037 /* DeleteIdentityFromDeviceViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DeleteIdentityFromDeviceViewController.mm; sourceTree = "<group>"; };
+		5AF842401B910B03009BC037 /* RemoveIdentityFromDeviceView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RemoveIdentityFromDeviceView.xib; sourceTree = "<group>"; };
+		5AF842421B910B98009BC037 /* RemoveIdentityFromDeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoveIdentityFromDeviceViewController.h; sourceTree = "<group>"; };
+		5AF842501B910FD7009BC037 /* RemoveIdentityFromDeviceViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RemoveIdentityFromDeviceViewController.mm; sourceTree = "<group>"; };
 		6604A2BB17626B9E0072216A /* surespot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = surespot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6604A2BE17626B9E0072216A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		6604A2C017626B9E0072216A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1549,9 +1549,9 @@
 				661F3B921868ECFE003C7AE3 /* KeyFingerprintLoadingCell.h */,
 				661F3B931868ECFE003C7AE3 /* KeyFingerprintLoadingCell.m */,
 				66AC20AA18690CBD004E58E1 /* KeyFingerprintLoadingView.xib */,
-				5AF842401B910B03009BC037 /* DeleteIdentityFromDeviceView.xib */,
-				5AF842421B910B98009BC037 /* DeleteIdentityFromDeviceViewController.h */,
-				5AF842501B910FD7009BC037 /* DeleteIdentityFromDeviceViewController.mm */,
+				5AF842401B910B03009BC037 /* RemoveIdentityFromDeviceView.xib */,
+				5AF842421B910B98009BC037 /* RemoveIdentityFromDeviceViewController.h */,
+				5AF842501B910FD7009BC037 /* RemoveIdentityFromDeviceViewController.mm */,
 			);
 			path = identity;
 			sourceTree = "<group>";
@@ -1914,7 +1914,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5AF842411B910B03009BC037 /* DeleteIdentityFromDeviceView.xib in Resources */,
+				5AF842411B910B03009BC037 /* RemoveIdentityFromDeviceView.xib in Resources */,
 				66EBE0CF1855C97100F2452D /* GTMOAuth2ViewTouch.xib in Resources */,
 				66E21E001847E1220005D91E /* InAppSettings.bundle in Resources */,
 				661F469E1864C0BE004A71B0 /* BackupIdentityView.xib in Resources */,
@@ -2030,7 +2030,7 @@
 				6614EEB8185F59F700A65CDE /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */,
 				66DAB62E186DEEFC006C262F /* VoiceDelegate.mm in Sources */,
 				66E4F5B8176298CB00596E6B /* SocketIOJSONSerialization.m in Sources */,
-				5AF842511B910FD7009BC037 /* DeleteIdentityFromDeviceViewController.mm in Sources */,
+				5AF842511B910FD7009BC037 /* RemoveIdentityFromDeviceViewController.mm in Sources */,
 				66E4F5B9176298CB00596E6B /* SocketIOPacket.m in Sources */,
 				66EBE0CB1855C97100F2452D /* KeyboardState.m in Sources */,
 				66EBE0B21855C97100F2452D /* GenerateSharedSecretOperation.mm in Sources */,
