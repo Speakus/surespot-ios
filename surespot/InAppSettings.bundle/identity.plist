@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>PreferenceSpecifiers</key>
-	<array>		
+	<array>
 		<dict>
 			<key>IASKViewControllerClass</key>
 			<string>ChangePasswordViewController</string>
@@ -41,6 +41,16 @@
 			<string>init</string>
 			<key>Title</key>
 			<string>pref_title_delete_identity</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>IASKViewControllerClass</key>
+			<string>RemoveIdentityFromDeviceViewController</string>
+			<key>IASKViewControllerSelector</key>
+			<string>init</string>
+			<key>Title</key>
+			<string>pref_title_remove_identity_from_device</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
