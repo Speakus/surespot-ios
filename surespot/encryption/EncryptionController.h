@@ -123,4 +123,11 @@ extern int const PBKDF_ROUNDS;
 +(NSData *) encodeDHPublicKeyData: (ECDHPublicKey *) dhPubKey;
 +(NSString *) md5: (NSData *) data;
 +(NSString *)hashedValueForAccountName:(NSString*)userAccountName;
++(BOOL) verifySigUsingKey: (ECDSAPublicKey *) signingKey
+                signature: (NSData *) signature
+                 username: (NSString *) username
+                  version: (NSInteger) version
+                 dhPubKey: (NSString *) dhPubKey
+                dsaPubKey: (NSString *) dsaPubKey;
++(ECDSAPublicKey *) serverPublicKey;
 @end

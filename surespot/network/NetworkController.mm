@@ -288,7 +288,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [operation start];
 }
 
-- (void) getPublicKeysForUsername:(NSString *)username andVersion:(NSString *)version successBlock:(JSONSuccessBlock)successBlock failureBlock:(JSONFailureBlock) failureBlock{
+- (void) getPublicKeys2ForUsername:(NSString *)username andVersion:(NSString *)version successBlock:(JSONSuccessBlock)successBlock failureBlock:(JSONFailureBlock) failureBlock{
     NSURLRequest *request = [self buildPublicKeyRequestForUsername:username version:version];
     
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:successBlock failure: failureBlock];
@@ -299,7 +299,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(NSURLRequest *) buildPublicKeyRequestForUsername: (NSString *) username version: (NSString *) version {
-    NSString * path = [[NSString stringWithFormat: @"publickeys/%@/%@",username, version]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] ;
+    NSString * path = [[NSString stringWithFormat: @"publickeys/%@/since/%@",username, version]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] ;
     NSURLRequest *request = [self requestWithMethod:@"GET" path: path parameters: nil];
     return request;
 }
