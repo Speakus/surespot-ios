@@ -146,6 +146,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                   andSignature:signatureString
                                                   successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                                                       NSString * keyToken = [JSON objectForKey:@"token"];
+                                                      NSInteger iKeyVersion = [[JSON valueForKey:@"keyversion"] integerValue];
                                                       NSString * keyVersion = [[JSON objectForKey:@"keyversion"] stringValue];
                                                       
                                                       NSData * tokenSignature = [EncryptionController signData1:[NSData dataFromBase64String:keyToken] data2:[passwordString dataUsingEncoding:NSUTF8StringEncoding] withPrivateKey:[identity getDsaPrivateKey]];
@@ -157,7 +158,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                       NSString * encodedDHKey = [EncryptionController encodeDHPublicKey: [keys dhPubKey]];
                                                       NSString * encodedDSAKey = [EncryptionController encodeDSAPublicKey:[keys dsaPubKey]];
 
-                                                      NSString * clientSig = [[EncryptionController signUsername:username andVersion:1 andDhPubKey:encodedDHKey andDsaPubKey:encodedDSAKey withPrivateKey:keys.dsaPrivKey] SR_stringByBase64Encoding];
+                                                      NSString * clientSig = [[EncryptionController signUsername:username andVersion:iKeyVersion andDhPubKey:encodedDHKey andDsaPubKey:encodedDSAKey withPrivateKey:[identity getDsaPrivateKey]] SR_stringByBase64Encoding];
 
                                                       
                                                       [[IdentityController sharedInstance] setExpectedKeyVersionForUsername:username version:keyVersion];
