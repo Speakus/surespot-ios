@@ -55,7 +55,11 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     _label1.text = NSLocalizedString(@"remove_identity_from_device_message_warning", nil);
     
     _scrollView.contentSize = self.view.frame.size;
-    [_userPicker selectRow:[_identityNames indexOfObject:[[IdentityController sharedInstance] getLoggedInUser]] inComponent:0 animated:YES];
+    if ([[IdentityController sharedInstance] getLoggedInUser]) {
+        [_userPicker selectRow:[_identityNames indexOfObject:[[IdentityController sharedInstance] getLoggedInUser]] inComponent:0 animated:YES];
+    } else {
+        [_userPicker selectRow:0 inComponent:0 animated:YES];
+    }
 }
 
 -(void) loadIdentityNames {

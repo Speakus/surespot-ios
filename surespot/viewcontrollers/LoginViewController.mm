@@ -423,7 +423,6 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [menuItems addObject:restoreItem];
   
     REMenuItem * removeIdentityItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"remove_identity_from_device", nil) image:[UIImage imageNamed:@"ic_menu_delete"] highlightedImage:nil action:^(REMenuItem * item){
-        // TODO: HEREHERE: WHY does this crash?!  And how to debug it?
         RemoveIdentityFromDeviceViewController * controller = [[RemoveIdentityFromDeviceViewController alloc] init];
         [self.navigationController pushViewController:controller animated:YES];
     }];
