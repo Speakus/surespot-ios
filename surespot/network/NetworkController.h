@@ -23,8 +23,8 @@ typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *e
 
 +(NetworkController*)sharedInstance;
 
--(void) loginWithUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature              successBlock:(JSONCookieSuccessBlock) successBlock failureBlock: (JSONFailureBlock) failureBlock;
--(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
+-(void) loginWithUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature successBlock:(JSONCookieSuccessBlock) successBlock failureBlock: (JSONFailureBlock) failureBlock;
+-(void) createUser2WithUsername: (NSString *) username derivedPassword: (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey authSig: (NSString *)authSig clientSig: (NSString *) clientSig successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
 -(void) getFriendsSuccessBlock:(JSONSuccessBlock)successBlock failureBlock: (JSONFailureBlock) failureBlock;
 -(void) inviteFriend: (NSString *) friendname successBlock: (HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock ;
 -(void) getKeyVersionForUsername:(NSString *)username successBlock:(HTTPSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock;
@@ -65,14 +65,15 @@ typedef void (^HTTPFailureBlock) (AFHTTPRequestOperation *operation , NSError *e
 -(void) getKeyTokenForUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature
                   successBlock:(JSONSuccessBlock)successBlock failureBlock: (JSONFailureBlock) failureBlock;
 
--(void) updateKeysForUsername:(NSString *) username
+-(void) updateKeys2ForUsername:(NSString *) username
                      password:(NSString *) password
                   publicKeyDH:(NSString *) pkDH
                  publicKeyDSA:(NSString *) pkDSA
                       authSig:(NSString *) authSig
                      tokenSig:(NSString *) tokenSig
                    keyVersion:(NSString *) keyversion
-                 successBlock:(HTTPSuccessBlock) successBlock
+                    clientSig:(NSString *) clientSig
+                successBlock:(HTTPSuccessBlock) successBlock
                  failureBlock:(HTTPFailureBlock) failureBlock;
 
 -(void) getDeleteTokenForUsername:(NSString*) username andPassword:(NSString *)password andSignature: (NSString *) signature

@@ -144,14 +144,16 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         
         NSString * encodedDHKey = [EncryptionController encodeDHPublicKey: [keys dhPubKey]];
         NSString * encodedDSAKey = [EncryptionController encodeDSAPublicKey:[keys dsaPubKey]];
-        NSString * signature = [[EncryptionController signUsername:username andPassword: [encPassword dataUsingEncoding:NSUTF8StringEncoding] withPrivateKey:keys.dsaPrivKey] SR_stringByBase64Encoding];
+        NSString * authSig = [[EncryptionController signUsername:username andPassword: [encPassword dataUsingEncoding:NSUTF8StringEncoding] withPrivateKey:keys.dsaPrivKey] SR_stringByBase64Encoding];
+        NSString * clientSig = [[EncryptionController signUsername:username andVersion:1 andDhPubKey:encodedDHKey andDsaPubKey:encodedDSAKey withPrivateKey:keys.dsaPrivKey] SR_stringByBase64Encoding];
         
         [[NetworkController sharedInstance]
-         addUser: username
+         createUser2WithUsername: username
          derivedPassword: encPassword
          dhKey: encodedDHKey
          dsaKey: encodedDSAKey
-         signature: signature
+         authSig: authSig
+         clientSig: clientSig
          successBlock:^(AFHTTPRequestOperation *operation, id responseObject, NSHTTPCookie * cookie) {
              DDLogVerbose(@"signup response: %d",  [operation.response statusCode]);
              [[IdentityController sharedInstance] createIdentityWithUsername:username andPassword:password andSalt:salt andKeys:keys cookie:cookie];

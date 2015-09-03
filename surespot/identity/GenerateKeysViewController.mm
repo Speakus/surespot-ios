@@ -139,6 +139,8 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSString * passwordString = [derivedPassword SR_stringByBase64Encoding];
     NSString * signatureString = [signature SR_stringByBase64Encoding];
     
+
+
     [[NetworkController sharedInstance] getKeyTokenForUsername:username
                                                    andPassword:passwordString
                                                   andSignature:signatureString
@@ -151,13 +153,22 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                       NSString * tokenSignatureString = [tokenSignature SR_stringByBase64Encoding];
                                                       
                                                       IdentityKeys * keys = [EncryptionController generateKeyPairs];
+                                                      
+                                                      NSString * encodedDHKey = [EncryptionController encodeDHPublicKey: [keys dhPubKey]];
+                                                      NSString * encodedDSAKey = [EncryptionController encodeDSAPublicKey:[keys dsaPubKey]];
+
+                                                      NSString * clientSig = [[EncryptionController signUsername:username andVersion:1 andDhPubKey:encodedDHKey andDsaPubKey:encodedDSAKey withPrivateKey:keys.dsaPrivKey] SR_stringByBase64Encoding];
+
+                                                      
                                                       [[IdentityController sharedInstance] setExpectedKeyVersionForUsername:username version:keyVersion];
-                                                      [[NetworkController sharedInstance] updateKeysForUsername:username
+                                                      [[NetworkController sharedInstance] updateKeys2ForUsername:username
                                                                                                        password:passwordString
                                                                                                     publicKeyDH:[EncryptionController encodeDHPublicKey:keys.dhPubKey]
                                                                                                    publicKeyDSA:[EncryptionController encodeDSAPublicKey:keys.dsaPubKey]
                                                                                                         authSig:signatureString
-                                                                                                       tokenSig:tokenSignatureString keyVersion:keyVersion
+                                                                                                       tokenSig:tokenSignatureString
+                                                                                                      keyVersion:keyVersion
+                                                                                                       clientSig: clientSig
                                                                                                    successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                                                                        [[IdentityController sharedInstance] rollKeysForUsername: username
                                                                                                                                                        password: password
