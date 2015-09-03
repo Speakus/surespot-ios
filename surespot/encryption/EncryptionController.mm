@@ -371,6 +371,29 @@ int const PBKDF_ROUNDS = 20000;
     return sig;
 }
 
++ (NSData *) signUsername:(NSString *)username andVersion:(NSUInteger)version andDhPubKey:(NSString *)dhPubKey andDsaPubKey:(NSString *)dsaPubKey withPrivateKey:(ECDSAPrivateKey *)privateKey {
+    CryptoPP::ECDSA<ECP, SHA256>::Signer signer(*privateKey);
+    
+    NSMutableData *concatData = [NSMutableData dataWithData: [username dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSData * versionData = [NSData dataWithBytes:&version length:4];
+    [concatData appendData:versionData];
+    [concatData appendData:[dhPubKey dataUsingEncoding: NSUTF8StringEncoding]];
+    [concatData appendData:[dsaPubKey dataUsingEncoding: NSUTF8StringEncoding]];
+
+    int sigLength = signer.MaxSignatureLength();
+    
+    byte * signature = new byte[sigLength];
+    int sigLen = signer.SignMessage(randomRng, (byte *)[concatData bytes], concatData.length, signature);
+    
+    byte * buffer = new Byte[10000];
+    int put = CryptoPP::DSAConvertSignatureFormat(buffer, 10000, CryptoPP::DSASignatureFormat::DSA_DER, signature, sigLen, CryptoPP::DSASignatureFormat::DSA_P1363);
+    
+    NSMutableData * sig = [NSMutableData dataWithBytesNoCopy:buffer  length:put freeWhenDone:true];    
+    return sig;
+
+}
+
 +(BOOL) verifyPublicKeySignature: (NSData *) signature data: (NSString *) data {
     CryptoPP::ECDSA<ECP, SHA256>::Verifier verifier(*[self serverPublicKey]);
     NSMutableData * keyData = [NSMutableData dataWithData:[data dataUsingEncoding:NSUTF8StringEncoding ]];
@@ -393,6 +416,41 @@ int const PBKDF_ROUNDS = 20000;
     return result ? YES : NO;
     
 }
+
++(BOOL) verifySigUsingKey: (ECDSAPublicKey *) signingKey
+                signature: (NSData *) signature
+                 username: (NSString *) username
+                  version: (NSInteger) version
+                 dhPubKey: (NSString *) dhPubKey
+                dsaPubKey: (NSString *) dsaPubKey
+{
+    CryptoPP::ECDSA< ECP, SHA256>::Verifier verifier(*signingKey);
+    NSMutableData * keyData = [NSMutableData dataWithData:[username dataUsingEncoding:NSUTF8StringEncoding ]];
+    NSData * versionData = [NSData dataWithBytes:&version length:4];
+    [keyData appendData:versionData];
+    [keyData appendData:[dhPubKey dataUsingEncoding:NSUTF8StringEncoding]];
+    [keyData appendData:[dsaPubKey dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    byte * buffer = new Byte[verifier.SignatureLength()];
+    
+    int put = CryptoPP::DSAConvertSignatureFormat(buffer,verifier.SignatureLength(), CryptoPP::DSASignatureFormat::DSA_P1363, reinterpret_cast<unsigned char const* >([signature bytes]), [signature length], CryptoPP::DSASignatureFormat::DSA_DER);
+    
+    [keyData appendBytes:buffer length:put];
+    delete buffer;
+    
+    bool result = false;
+    StringSource ss((byte *)[keyData bytes], [keyData length], true,
+                    new CryptoPP::SignatureVerificationFilter(
+                                                              verifier,
+                                                              new CryptoPP::ArraySink((byte*)&result, sizeof(result)),
+                                                              CryptoPP::SignatureVerificationFilter::Flags::PUT_RESULT |
+                                                              CryptoPP::SignatureVerificationFilter::Flags::SIGNATURE_AT_END
+                                                              ) // SignatureVerificationFilter
+                    ); // StringSource}
+    return result ? YES : NO;
+    
+}
+
 
 +(IdentityKeys *) generateKeyPairs {
     ECDHPrivateKey * dhKey = new ECDHPrivateKey();

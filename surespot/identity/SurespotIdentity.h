@@ -23,6 +23,7 @@
 - (ECDHPrivateKey *) getDhPrivateKeyForVersion: (NSString *) version;
 //- (ECDSAPPublicKey) getDsaPublicKey;
 - (ECDSAPrivateKey *) getDsaPrivateKey;
+- (ECDSAPrivateKey *) getDsaPrivateKeyForVersion: (NSString *) version;
 
 
 @property (atomic, strong) NSMutableDictionary* keyPairs;

@@ -179,6 +179,21 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     return keys.dsaPrivKey;
 }
 
+
+- (ECDSAPrivateKey *) getDsaPrivateKeyForVersion: (NSString *) version  {
+    IdentityKeys * keys = [self.keyPairs objectForKey:version];
+    if (!keys) {
+        keys = [[IdentityKeys alloc] init];
+        keys.version = version;
+        [self.keyPairs setValue: keys forKey: version];
+    }
+    
+    if (!keys.dsaPrivKey) {
+        [self recreateDsaKeys: keys forVersion:version validate:NO];
+    }
+    return keys.dsaPrivKey;
+}
+
 -(BOOL) recreateDsaKeys: (IdentityKeys *) keys forVersion: (NSString *) version validate: (BOOL) validate {
     DDLogInfo(@"recreating dsa keys for username: %@, version: %@ start", _username, version);
     NSString * dprivDsa = [[_jsonKeyPairs objectForKey:version ] objectForKey:@"dsaPriv"];

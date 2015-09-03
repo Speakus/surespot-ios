@@ -199,7 +199,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
 }
 
--(void) addUser: (NSString *) username derivedPassword:  (NSString *)derivedPassword dhKey: (NSString *)encodedDHKey dsaKey: (NSString *)encodedDSAKey signature: (NSString *)signature successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock: (HTTPFailureBlock) failureBlock {
+-(void) createUser2WithUsername:(NSString *)username derivedPassword:(NSString *)derivedPassword dhKey:(NSString *)encodedDHKey dsaKey:(NSString *)encodedDSAKey authSig:(NSString *)authSig clientSig:(NSString *)clientSig successBlock:(HTTPCookieSuccessBlock)successBlock failureBlock:(HTTPFailureBlock)failureBlock {
     
     [self clearCookies];
     
@@ -211,10 +211,11 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    username,@"username",
                                    derivedPassword,@"password",
-                                   signature, @"authSig",
+                                   authSig, @"authSig",
                                    encodedDHKey, @"dhPub",
                                    encodedDSAKey, @"dsaPub",
                                    versionString, @"version",
+                                   clientSig, @"clientSig",
                                    @"ios", @"platform", nil];
     
     [self addPurchaseReceiptToParams:params];
@@ -226,7 +227,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     
     
-    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"users" parameters: params];
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"users2" parameters: params];
     
     
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
@@ -287,7 +288,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [operation start];
 }
 
-- (void) getPublicKeysForUsername:(NSString *)username andVersion:(NSString *)version successBlock:(JSONSuccessBlock)successBlock failureBlock:(JSONFailureBlock) failureBlock{
+- (void) getPublicKeys2ForUsername:(NSString *)username andVersion:(NSString *)version successBlock:(JSONSuccessBlock)successBlock failureBlock:(JSONFailureBlock) failureBlock{
     NSURLRequest *request = [self buildPublicKeyRequestForUsername:username version:version];
     
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:successBlock failure: failureBlock];
@@ -298,7 +299,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 -(NSURLRequest *) buildPublicKeyRequestForUsername: (NSString *) username version: (NSString *) version {
-    NSString * path = [[NSString stringWithFormat: @"publickeys/%@/%@",username, version]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] ;
+    NSString * path = [[NSString stringWithFormat: @"publickeys/%@/since/%@",username, version]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] ;
     NSURLRequest *request = [self requestWithMethod:@"GET" path: path parameters: nil];
     return request;
 }
@@ -538,15 +539,16 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 }
 
 
--(void) updateKeysForUsername:(NSString *) username
-                     password:(NSString *) password
-                  publicKeyDH:(NSString *) pkDH
-                 publicKeyDSA:(NSString *) pkDSA
-                      authSig:(NSString *) authSig
-                     tokenSig:(NSString *) tokenSig
-                   keyVersion:(NSString *) keyversion
-                 successBlock:(HTTPSuccessBlock) successBlock
-                 failureBlock:(HTTPFailureBlock) failureBlock
+-(void) updateKeys2ForUsername:(NSString *) username
+                      password:(NSString *) password
+                   publicKeyDH:(NSString *) pkDH
+                  publicKeyDSA:(NSString *) pkDSA
+                       authSig:(NSString *) authSig
+                      tokenSig:(NSString *) tokenSig
+                    keyVersion:(NSString *) keyversion
+                     clientSig:(NSString *) clientSig
+                  successBlock:(HTTPSuccessBlock) successBlock
+                  failureBlock:(HTTPFailureBlock) failureBlock
 {
     
     NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -561,6 +563,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                    pkDSA, @"dsaPub",
                                    authSig, @"authSig",
                                    tokenSig, @"tokenSig",
+                                   clientSig, @"clientSig",
                                    keyversion, @"keyVersion",
                                    versionString, @"version",
                                    @"ios", @"platform", nil];
@@ -571,7 +574,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         [params setObject:[ChatUtils hexFromData:apnToken] forKey:@"apnToken"];
     }
     
-    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"keys"  parameters:params];
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"keys2"  parameters:params];
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
     [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
     [operation setSuccessCallbackQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
@@ -756,6 +759,17 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
     [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
+    [operation start];
+}
+
+-(void) updateSigs: (NSDictionary *) sigs {
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:sigs options:0 error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    
+    NSDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:jsonString, @"sigs", nil];
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"sigs" parameters: params];
+    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation start];
 }
 
