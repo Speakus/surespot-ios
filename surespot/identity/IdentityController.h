@@ -48,5 +48,6 @@
 -(BOOL) importIdentityFilename: (NSString *) filePath username: (NSString * ) username password: (NSString *) password;
 -(SurespotIdentity *) loadIdentityUsername: (NSString * ) username password: (NSString *) password;
 -(NSString *) getLastLoggedInUser;
+-(NSDictionary *) updateSignatures;
 @end
 

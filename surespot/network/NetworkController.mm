@@ -540,15 +540,15 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 
 -(void) updateKeys2ForUsername:(NSString *) username
-                     password:(NSString *) password
-                  publicKeyDH:(NSString *) pkDH
-                 publicKeyDSA:(NSString *) pkDSA
-                      authSig:(NSString *) authSig
-                     tokenSig:(NSString *) tokenSig
-                   keyVersion:(NSString *) keyversion
-                    clientSig:(NSString *) clientSig
-                 successBlock:(HTTPSuccessBlock) successBlock
-                 failureBlock:(HTTPFailureBlock) failureBlock
+                      password:(NSString *) password
+                   publicKeyDH:(NSString *) pkDH
+                  publicKeyDSA:(NSString *) pkDSA
+                       authSig:(NSString *) authSig
+                      tokenSig:(NSString *) tokenSig
+                    keyVersion:(NSString *) keyversion
+                     clientSig:(NSString *) clientSig
+                  successBlock:(HTTPSuccessBlock) successBlock
+                  failureBlock:(HTTPFailureBlock) failureBlock
 {
     
     NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -759,6 +759,17 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];
     [operation setCompletionBlockWithSuccess:successBlock failure:failureBlock];
+    [operation start];
+}
+
+-(void) updateSigs: (NSDictionary *) sigs {
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:sigs options:0 error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    
+    NSDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:jsonString, @"sigs", nil];
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"sigs" parameters: params];
+    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation start];
 }
 

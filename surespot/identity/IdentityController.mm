@@ -553,4 +553,27 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     return [self getIdentityNames].count;
 }
 
+-(NSDictionary *) updateSignatures {
+    SurespotIdentity * identity = [[CredentialCachingController sharedInstance] getLoggedInIdentity];
+    ECDSAPrivateKey * privateDsaKey = [identity getDsaPrivateKeyForVersion:@"1"];
+    NSMutableDictionary * signatures = [[NSMutableDictionary alloc] init];
+    
+    NSInteger latestVersion = [[identity latestVersion] integerValue];
+    for (int i = 1;i<=latestVersion;i++) {
+        NSString * currentVersion = [@(i) stringValue];
+        ECDHPrivateKey * dhPriv = [identity getDhPrivateKeyForVersion:currentVersion];
+        ECDSAPrivateKey * dsaPriv = [identity getDsaPrivateKeyForVersion:currentVersion];
+        
+        NSString * sDhPub = [EncryptionController encodeDHPublicKey:[EncryptionController createPublicDHFromPrivKey:dhPriv]];
+        NSString * sDsaPub = [EncryptionController encodeDSAPublicKey:[EncryptionController createPublicDSAFromPrivKey:dsaPriv]];
+        
+        [signatures setObject:[[EncryptionController signUsername:[identity username] andVersion:i andDhPubKey:sDhPub andDsaPubKey:sDsaPub withPrivateKey:privateDsaKey] SR_stringByBase64Encoding] forKey:currentVersion];
+        if (i>1) {
+            privateDsaKey = [identity getDsaPrivateKeyForVersion:[@(i-1) stringValue]];
+        }
+    }
+    
+    return signatures;
+}
+
 @end

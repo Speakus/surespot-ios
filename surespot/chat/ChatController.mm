@@ -392,6 +392,14 @@ static const int MAX_RETRY_DELAY = 30;
     [[NetworkController sharedInstance] getLatestDataSinceUserControlId: _homeDataSource.latestUserControlId spotIds:messageIds successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         
         DDLogVerbose(@"network call complete");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([JSON objectForKey:@"sigs"]) {
+                NSDictionary * sigs = [[IdentityController sharedInstance] updateSignatures];
+                [[NetworkController sharedInstance] updateSigs:sigs];
+            }
+        });
+
+        
         
         NSDictionary * conversationIds = [JSON objectForKey:@"conversationIds"];
         if (conversationIds) {
