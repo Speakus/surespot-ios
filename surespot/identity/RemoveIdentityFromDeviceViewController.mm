@@ -58,7 +58,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     if ([[IdentityController sharedInstance] getLoggedInUser]) {
         [_userPicker selectRow:[_identityNames indexOfObject:[[IdentityController sharedInstance] getLoggedInUser]] inComponent:0 animated:YES];
     } else {
-        [_userPicker selectRow:0 inComponent:0 animated:YES];
+        [_userPicker selectRow:(_selectUsername ? [_identityNames indexOfObject:_selectUsername] : 0) inComponent:0 animated:YES];
     }
 }
 

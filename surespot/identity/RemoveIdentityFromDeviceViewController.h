@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface RemoveIdentityFromDeviceViewController : UIViewController<UIPickerViewDataSource, UIPickerViewDelegate>
-
+@property (strong, nonatomic) NSString * selectUsername;
 @end

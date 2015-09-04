@@ -423,7 +423,9 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [menuItems addObject:restoreItem];
   
     REMenuItem * removeIdentityItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"remove_identity_from_device", nil) image:[UIImage imageNamed:@"ic_menu_delete"] highlightedImage:nil action:^(REMenuItem * item){
+        NSString * username = [_identityNames objectAtIndex:[_userPicker selectedRowInComponent:0]];
         RemoveIdentityFromDeviceViewController * controller = [[RemoveIdentityFromDeviceViewController alloc] init];
+        controller.selectUsername = username;
         [self.navigationController pushViewController:controller animated:YES];
     }];
     
