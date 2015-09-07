@@ -224,15 +224,16 @@ const Float32 voiceRecordDelay = 0.3;
     DDLogInfo(@"growingTextView height: %f", height);
     float diff = (growingTextView.frame.size.height - height);
     
-    CGRect r = growingTextView.frame;
-    r.size.height -= diff;
-    r.origin.y += diff;
-    growingTextView.frame = r;
+    CGRect containerRect = _textFieldContainer.frame;
+    containerRect.size.height -= diff;
+    containerRect.origin.y += diff;
+    _textFieldContainer.frame = containerRect;
     
     [self adjustTableViewHeight:-diff];
 }
 
 -(void) adjustTableViewHeight: (NSInteger) height {
+    
     CGRect frame = _swipeView.frame;
     frame.size.height -= height;
     _swipeView.frame = frame;
@@ -245,6 +246,12 @@ const Float32 voiceRecordDelay = 0.3;
 -(void)growingTextViewDidChange:(HPGrowingTextView *)growingTextView {
     [self updateTabChangeUI];
 }
+
+/*
+ -(void)growingTextView:(HPGrowingTextView *)growingTextView didChangeHeight:(float)height {
+    
+}
+*/
 
 - (BOOL) growingTextView:(HPGrowingTextView *)growingTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *) string
 {
@@ -362,8 +369,8 @@ const Float32 voiceRecordDelay = 0.3;
     
     
     CGRect keyboardFrameBegin = [self.view convertRect:keyboardBeginFrame toView:nil];
-    DDLogInfo(@"keyboard frame begin origin y: %f, height: %f", keyboardFrameBegin.origin.y, keyboardFrameBegin.size.height);
-    DDLogInfo(@"keyboard frame end origin y: %f, height: %f", keyboardFrameEnd.origin.y, keyboardFrameEnd.size.height);
+    //DDLogInfo(@"keyboard frame begin origin y: %f, height: %f", keyboardFrameBegin.origin.y, keyboardFrameBegin.size.height);
+    //DDLogInfo(@"keyboard frame end origin y: %f, height: %f", keyboardFrameEnd.origin.y, keyboardFrameEnd.size.height);
     int height = keyboardFrameBegin.origin.y - keyboardFrameEnd.origin.y;
     int heightDelta = height;
     
