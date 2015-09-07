@@ -606,6 +606,15 @@ const Float32 voiceRecordDelay = 0.3;
     
     [self showHeader];
     [self restoreScrollPositions];
+    [self scrollToBottomOfTextView];
+}
+
+-(void)scrollToBottomOfTextView
+{
+    if(_messageTextView.text.length > 0 ) {
+        NSRange bottom = NSMakeRange(_messageTextView.text.length -1, 1);
+        [_messageTextView scrollRangeToVisible:bottom];
+    }
 }
 
 -(void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView *__autoreleasing *)view {
