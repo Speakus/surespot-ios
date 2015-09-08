@@ -569,7 +569,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
         
         [signatures setObject:[[EncryptionController signUsername:[identity username] andVersion:i andDhPubKey:sDhPub andDsaPubKey:sDsaPub withPrivateKey:privateDsaKey] SR_stringByBase64Encoding] forKey:currentVersion];
         if (i>1) {
-            privateDsaKey = [identity getDsaPrivateKeyForVersion:[@(i-1) stringValue]];
+            privateDsaKey = [identity getDsaPrivateKeyForVersion:[@(i) stringValue]];
         }
     }
     
