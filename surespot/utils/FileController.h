@@ -16,7 +16,7 @@ extern NSString *const IDENTITY_EXTENSION;
 + (NSString*) getAppSupportDir;
 +(void) wipeDataForUsername: (NSString *) username friendUsername: (NSString *) friendUsername;
 +(NSString*)getPublicKeyFilenameForUsername: (NSString *) username version: (NSString *)version;
-+(void) wipeIdentityData: (NSString *) username;
++(void) wipeIdentityData: (NSString *) username preserveBackedUpIdentity: (BOOL) preserveBackedUpIdentity;
 +(NSString *) getIdentityDir;
 +(NSString *) getIdentityFile: (NSString *) username;
 +(void) saveSharedSecrets:(NSDictionary *) sharedSecretsDict forUsername: (NSString *) username withPassword: (NSString *) password;

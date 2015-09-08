@@ -41,7 +41,7 @@
                        keys: (IdentityKeys *) keys;
 -(void) setExpectedKeyVersionForUsername: (NSString *) username version: (NSString *) version;
 -(void) removeExpectedKeyVersionForUsername: (NSString *) username;
--(void) deleteIdentityUsername: (NSString *) username;
+-(void) deleteIdentityUsername: (NSString *) username preserveBackedUpIdentity: (BOOL) preserveBackedUpIdentity;
 -(void) updatePasswordForUsername: (NSString *) username currentPassword: (NSString *) currentPassword newPassword: (NSString *) newPassword newSalt: (NSString *) newSalt;
 -(NSInteger) getIdentityCount;
 -(void) exportIdentityToDocumentsForUsername: (NSString *) username password: (NSString *) password callback: (CallbackErrorBlock) callback;

@@ -158,14 +158,21 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
 }
 
-+(void) wipeIdentityData: (NSString *) username {
++(void) wipeIdentityData: (NSString *) username preserveBackedUpIdentity: (BOOL) preserveBackedUpIdentity {
+    //file manager thread safe supposedly
+    NSFileManager * fileMgr = [NSFileManager defaultManager];
+    BOOL wiped;
+    
+    // this doesn't wipe out the backed up identity
+    // is this a bug?  the preserveBackedUpIdentity flag will
+    // take care of preserving the backed up identity
+    // if we choose to delete it at a future time
+    
     //remove identity file
     NSString * identityFile = [self getIdentityFile:username];
     
     DDLogInfo( @"wiping identity file for username: %@,  path: %@", username,identityFile);
-    //file manager thread safe supposedly
-    NSFileManager * fileMgr = [NSFileManager defaultManager];
-    BOOL wiped = [fileMgr removeItemAtPath:identityFile error:nil];
+    wiped = [fileMgr removeItemAtPath:identityFile error:nil];
     DDLogInfo(@"wiped: %@", wiped ? @"YES" : @"NO");
     
     //wipe data (chats, keys, etc.)

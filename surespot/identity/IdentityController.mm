@@ -314,16 +314,16 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     // and should not be used on this device anymore
     if ([username isEqualToString:[self getLoggedInUser]] && [version integerValue] > [[self getOurLatestVersion] integerValue] && ![[_expectedVersions objectForKey:username] isEqualToString:version]) {
         DDLogInfo(@"user key revoked, deleting data and logging out. username: %@", username);
-        [self deleteIdentityUsername:username];
+        [self deleteIdentityUsername:username preserveBackedUpIdentity: NO];
     }
     else {
         [[CredentialCachingController sharedInstance] updateLatestVersionForUsername: username version: version];
     }
 }
 
--(void) deleteIdentityUsername: (NSString *) username {
+-(void) deleteIdentityUsername: (NSString *) username preserveBackedUpIdentity: (BOOL) preserveBackedUpIdentity {
     //make sure we wipe the identity file first so it doesn't show when we return to login screen
-    [FileController wipeIdentityData: username];
+    [FileController wipeIdentityData: username preserveBackedUpIdentity: preserveBackedUpIdentity];
     [[NetworkController sharedInstance] setUnauthorized];
     
     [[CredentialCachingController sharedInstance] clearIdentityData:username];
@@ -332,7 +332,7 @@ NSString *const EXPORT_IDENTITY_ID = @"_export_identity";
     [self clearStoredPasswordForIdentity:username];
     
     //then wipe the messages saved by logging out
-    [FileController wipeIdentityData: username];
+    [FileController wipeIdentityData: username preserveBackedUpIdentity: preserveBackedUpIdentity];
 }
 
 -(NSString *) getStoredPasswordForIdentity: (NSString *) username {

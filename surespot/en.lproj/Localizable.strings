@@ -8,6 +8,7 @@
 "import_sd"="Restore from Device Storage.";
 "delete_identity_user"="delete identity: %@";
 "remove_identity_from_device_user"="remove identity from device: %@";
+"identity_removed_from_device"="Identity removed from device";
 "import_identities"="restore identity...";
 "create_identity_label"="create new identity...";
 "no_identity_exported"="no identity backed up";

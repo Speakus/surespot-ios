@@ -115,12 +115,12 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         }
         
         if (![UIUtils stringIsNilOrEmpty:password]) {
-            [self deleteIdentityForUsername:_name password:password];
+            [self removeIdentityForUsername:_name password:password];
         }
     }
 }
 
--(void) deleteIdentityForUsername: (NSString *) username password: (NSString *) password {
+-(void) removeIdentityForUsername: (NSString *) username password: (NSString *) password {
     _progressView = [LoadingView showViewKey:@"remove_identity_from_device_progress"];
     SurespotIdentity * identity = [[IdentityController sharedInstance] loadIdentityUsername:username password:password];
     if (!identity) {
@@ -131,7 +131,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }
     
     [self loadIdentityNames];
-    [[IdentityController sharedInstance] deleteIdentityUsername:username];
+    [[IdentityController sharedInstance] deleteIdentityUsername:username preserveBackedUpIdentity:YES];
     [_progressView removeView];
     _progressView = nil;
     [UIUtils showToastKey:@"identity_removed_from_device" duration:2];

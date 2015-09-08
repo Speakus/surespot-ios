@@ -156,7 +156,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                                                                    
                                                                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                                                                        [self loadIdentityNames];
-                                                                                                       [[IdentityController sharedInstance] deleteIdentityUsername:username];
+                                                                                                       [[IdentityController sharedInstance] deleteIdentityUsername:username preserveBackedUpIdentity: NO];
                                                                                                        [_progressView removeView];
                                                                                                        _progressView = nil;
                                                                                                        [UIUtils showToastKey:@"identity_deleted" duration:2];
