@@ -135,6 +135,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [_progressView removeView];
     _progressView = nil;
     [UIUtils showToastKey:@"identity_removed_from_device" duration:2];
+    [self loadIdentityNames];
 }
 
 -(BOOL) shouldAutorotate {
