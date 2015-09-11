@@ -354,6 +354,11 @@ const Float32 voiceRecordDelay = 0.3;
 
 - (void)keyboardFrameDidChange:(NSNotification *)notification
 {
+    if (![_messageTextView isFirstResponder]) {
+        // if the message text view isn't the first responder, don't adjust control offsets
+        return;
+    }
+
     DDLogInfo(@"keyboardFrameDidChange");
     CGRect keyboardEndFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect keyboardBeginFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
@@ -374,14 +379,17 @@ const Float32 voiceRecordDelay = 0.3;
     
     //DDLogInfo(@"keyboard height: %d",height);
     //DDLogInfo(@"origin y before: %f",newFrame.origin.y);
+    //NSLog(@"textFieldContainer frame: origin x: %f, origin y: %f, height: %f",_textFieldContainer.frame.origin.x, _textFieldContainer.frame.origin.y, _textFieldContainer.frame.size.height);
     
     newFrame.origin.y = keyboardEndFrame.origin.y - newFrame.size.height;
     CGRect convertedToScreenCoords = [self.view convertRect:newFrame fromView:nil];
     newFrame.origin.y = convertedToScreenCoords.origin.y;
     _textFieldContainer.frame = newFrame;
     
+    //NSLog(@"NEW textFieldContainer frame: origin x: %f, origin y: %f, height: %f",_textFieldContainer.frame.origin.x, _textFieldContainer.frame.origin.y, _textFieldContainer.frame.size.height);
+    
     CGRect frame = _swipeView.frame;
-    //DDLogInfo(@"swipeview frame: origin x: %f, origin y: %f, height: %f",_swipeView.frame.origin.x, _swipeView.frame.origin.y, _swipeView.frame.size.height);
+    //NSLog(@"swipeview frame: origin x: %f, origin y: %f, height: %f",_swipeView.frame.origin.x, _swipeView.frame.origin.y, _swipeView.frame.size.height);
     CGRect actualSwipeViewTop = [self.view convertRect:frame fromView:nil];
     float f = self.view.frame.size.height;
     if (height <= 0) {
@@ -395,6 +403,7 @@ const Float32 voiceRecordDelay = 0.3;
     }
     
     _swipeView.frame = frame;
+    //NSLog(@"NEW swipeview frame: origin x: %f, origin y: %f, height: %f",_swipeView.frame.origin.x, _swipeView.frame.origin.y, _swipeView.frame.size.height);
     
     CGRect buttonFrame = _theButton.frame;
     buttonFrame.origin.y = newFrame.origin.y - 16;
