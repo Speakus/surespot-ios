@@ -354,7 +354,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 - (void)keyboardFrameDidChange:(NSNotification *)notification
 {
-    if (![_messageTextView isFirstResponder]) {
+    if (![_messageTextView isFirstResponder] && ![_inviteTextView isFirstResponder]) {
         // if the message text view isn't the first responder, don't adjust control offsets
         return;
     }
