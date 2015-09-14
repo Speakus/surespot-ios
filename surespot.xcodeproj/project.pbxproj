@@ -2226,7 +2226,7 @@
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv64";
 			};
 			name = Debug;
 		};
@@ -2252,13 +2252,13 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "09985f84-bc1b-44df-b4b4-ae9e79401095";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "09985f84-bc1b-44df-b4b4-ae9e79401095";
+				PROVISIONING_PROFILE = "18dcb900-c285-426d-9f79-acfed12ebf2a";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "18dcb900-c285-426d-9f79-acfed12ebf2a";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv64";
 			};
 			name = Release;
 		};
@@ -2293,7 +2293,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/surespot/libs/google-api-objectivec-client-read-only/Source/** /Users/adam/dev/surespot/libs/ios/github/src/QR-Code-Encoder-for-Objective-C/QRCodeEncoderObjectiveCAtGithub";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2304,8 +2304,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iOS Distribution: surespot llc";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Distribution: surespot llc";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2324,12 +2324,12 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "09985f84-bc1b-44df-b4b4-ae9e79401095";
+				PROVISIONING_PROFILE = "18dcb900-c285-426d-9f79-acfed12ebf2a";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "18dcb900-c285-426d-9f79-acfed12ebf2a";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/surespot/libs/google-api-objectivec-client-read-only/** $(SRCROOT)/surespot/libs/QR-Code-Encoder-for-Objective-C/QRCodeEncoderObjectiveCAtGithub";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
