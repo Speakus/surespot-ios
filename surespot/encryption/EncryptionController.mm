@@ -215,7 +215,13 @@ int const PBKDF_ROUNDS = 20000;
     ECDH < ECP >::Domain dhA( CURVE );
     CryptoPP::SecByteBlock secA(dhA.AgreedValueLength());
     dhA.Agree(secA, privateKey->GetPrivateExponent(), publicKey->GetPublicElement());
-    NSData * key = [NSData dataWithBytes:secA.data() length:secA.SizeInBytes()];
+    
+    //hash the generated key
+    CryptoPP::SHA256 hash;
+    CryptoPP::SecByteBlock digest( CryptoPP::SHA256::DIGESTSIZE );
+    hash.CalculateDigest( digest.BytePtr(), secA.data(), secA.SizeInBytes());
+    
+    NSData * key = [NSData dataWithBytes:digest.data() length:digest.SizeInBytes()];
     return key;
 }
 
