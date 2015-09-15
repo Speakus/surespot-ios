@@ -1412,6 +1412,13 @@ const Float32 voiceRecordDelay = 0.3;
         ChatDataSource * cds = [[ChatController sharedInstance] getDataSourceForFriendname:[self getCurrentTabName]];
         if (cds) {
             SurespotMessage * message = [cds.messages objectAtIndex:indexPath.row];
+        
+            //if hashed do nothing
+            if (message.hashed) {
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                return;
+            }
+            
             if ([message.mimeType isEqualToString: MIME_TYPE_IMAGE]) {
                 // Create array of `MWPhoto` objects
                 _imageMessage = message;
