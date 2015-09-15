@@ -25,10 +25,10 @@
 -(void) writeToDisk ;
 -(void) loadFriendsCallback: (void(^)(BOOL success)) callback;
 -(BOOL) hasAnyNewMessages;
--(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: version iv: iv;
+-(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: (NSString *) version iv: (NSString *) iv hashed: (BOOL) hashed;
 -(void) setCurrentChat: (NSString *) username;
 -(NSString *) getCurrentChat;
--(void) setFriendAlias: (NSString *) alias data: (NSString *) data  friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv;
+-(void) setFriendAlias: (NSString *) alias data: (NSString *) data  friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv hashed:(BOOL) hashed;
 -(void) removeFriendAlias: (NSString *) friendname;
 -(void) removeFriendImage: (NSString *) friendname;
 @end

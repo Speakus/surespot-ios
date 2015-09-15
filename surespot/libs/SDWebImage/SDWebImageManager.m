@@ -89,6 +89,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                              theirUsername: (NSString *) theirUsername
                               theirVersion: (NSString *) theirVersion
                                         iv: (NSString *) iv
+                                    hashed: (BOOL) hashed
                                    options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletedWithFinishedBlock)completedBlock
 {    
     // Invoking this method without a completedBlock is pointless
@@ -138,6 +139,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                        theirUsername:theirUsername
                                                         theirVersion:theirVersion
                                                                   iv:iv
+                                                              hashed:hashed
                                                                 done:^(id data, SDImageCacheType cacheType)
     {
         if (operation.isCancelled)
@@ -184,6 +186,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                                                 theirUsername: theirUsername
                                                                                  theirVersion: theirVersion
                                                                                            iv: iv
+                                                                                       hashed: hashed
                                                                                       options:downloaderOptions progress:progressBlock completed:^(id downloadedImage, NSData *data, NSString * mimeType, NSError *error, BOOL finished)
             {                
                 if (weakOperation.isCancelled)

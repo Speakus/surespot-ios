@@ -178,6 +178,7 @@ SDWebImageManager *manager = [SDWebImageManager sharedManager];
                              theirUsername: (NSString *) theirUsername
                               theirVersion: (NSString *) theirVersion
                                         iv: (NSString *) iv
+                                    hashed:(BOOL) hashed
                                    options:(SDWebImageOptions)options
                                   progress:(SDWebImageDownloaderProgressBlock)progressBlock
                                  completed:(SDWebImageCompletedWithFinishedBlock)completedBlock;

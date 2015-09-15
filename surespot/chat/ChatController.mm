@@ -496,7 +496,7 @@ static const int MAX_RETRY_DELAY = 30;
     [dict setObject:ourLatestVersion forKey:@"fromVersion"];
     [dict setObject:b64iv forKey:@"iv"];
     [dict setObject:@"text/plain" forKey:@"mimeType"];
-    //  [dict setObject:[NSNumber  numberWithBool:FALSE] forKey:@"shareable"];
+    [dict setObject:[NSNumber numberWithBool:YES] forKey:@"hashed"];
     
     SurespotMessage * sm =[[SurespotMessage alloc] initWithDictionary: dict];
     
@@ -1048,7 +1048,11 @@ static const int MAX_RETRY_DELAY = 30;
     
     if (theFriend) {
         if (message.moreData) {
-            [self setFriendImageUrl:[message.moreData objectForKey:@"url"] forFriendname: message.data version:[message.moreData objectForKey:@"version"] iv:[message.moreData objectForKey:@"iv"]];
+            [self setFriendImageUrl:[message.moreData objectForKey:@"url"]
+                      forFriendname: message.data
+                            version:[message.moreData objectForKey:@"version"]
+                                 iv:[message.moreData objectForKey:@"iv"]
+                             hashed:[message.moreData boolForKey:@"imageHashed"]];
         }
         else {
             [_homeDataSource removeFriendImage:message.data];
@@ -1278,8 +1282,8 @@ static const int MAX_RETRY_DELAY = 30;
     }
 }
 
--(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: version iv: iv {
-    [_homeDataSource setFriendImageUrl:url forFriendname:name version:version iv:iv];
+-(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: (NSString *) version iv: (NSString *) iv  hashed:(BOOL)hashed {
+    [_homeDataSource setFriendImageUrl:url forFriendname:name version:version iv:iv hashed:hashed];
 }
 
 -(void) assignFriendAlias: (NSString *) alias toFriendName: (NSString *) friendname  callbackBlock: (CallbackBlock) callbackBlock {
@@ -1305,7 +1309,7 @@ static const int MAX_RETRY_DELAY = 30;
                                                version:version
                                                iv:b64iv
                                                successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                   [self setFriendAlias: alias  data: b64data friendname: friendname version: version iv: b64iv];
+                                                   [self setFriendAlias: alias  data: b64data friendname: friendname version: version iv: b64iv hashed:YES];
                                                    callbackBlock([NSNumber numberWithBool:YES]);
                                                    [self stopProgress];
                                                } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1324,8 +1328,8 @@ static const int MAX_RETRY_DELAY = 30;
     
 }
 
--(void) setFriendAlias: (NSString *) alias data: (NSString *) data friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv {
-    [_homeDataSource setFriendAlias: alias data: data friendname: friendname version: version iv: iv];
+-(void) setFriendAlias: (NSString *) alias data: (NSString *) data friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv hashed:(BOOL)hashed {
+    [_homeDataSource setFriendAlias: alias data: data friendname: friendname version: version iv: iv hashed:hashed];
 }
 
 - (void)handleFriendAlias: (SurespotControlMessage *) message  {
@@ -1333,7 +1337,11 @@ static const int MAX_RETRY_DELAY = 30;
     if (theFriend) {
         if (message.moreData) {
             
-            [self setFriendAlias:nil data:[message.moreData objectForKey:@"data"] friendname:message.data version:[message.moreData objectForKey:@"version"] iv:[message.moreData objectForKey:@"iv"]];
+            [self setFriendAlias:nil data:[message.moreData objectForKey:@"data"]
+                      friendname:message.data
+                         version:[message.moreData objectForKey:@"version"]
+                              iv:[message.moreData objectForKey:@"iv"]
+                          hashed:[message.moreData boolForKey:@"hashed"]];
         }
         else {
             [_homeDataSource removeFriendAlias: message.data];

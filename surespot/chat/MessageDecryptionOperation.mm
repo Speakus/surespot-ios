@@ -38,7 +38,7 @@
     if ([_message.mimeType isEqualToString: MIME_TYPE_TEXT]) {
         if ([_message data]) {
             
-            [EncryptionController symmetricDecryptString:[_message data] ourVersion:[_message getOurVersion] theirUsername:[_message getOtherUser] theirVersion:[_message getTheirVersion]  iv:[_message iv]  callback:^(NSString * plaintext){
+            [EncryptionController symmetricDecryptString:[_message data] ourVersion:[_message getOurVersion] theirUsername:[_message getOtherUser] theirVersion:[_message getTheirVersion]  iv:[_message iv] hashed: [_message hashed] callback:^(NSString * plaintext){
                 
                 //figure out message height for both orientations
                 if (![UIUtils stringIsNilOrEmpty:plaintext]){

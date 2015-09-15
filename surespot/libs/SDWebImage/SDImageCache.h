@@ -96,6 +96,7 @@ typedef enum SDImageCacheType SDImageCacheType;
                         theirUsername: (NSString *) theirUsername
                          theirVersion: (NSString *) theirVersion
                                    iv: (NSString *) iv
+                               hashed: (BOOL) hashed
                                  done:(void (^)(id image, SDImageCacheType cacheType))doneBlock;
 /**
  * Query the memory cache synchronously.
