@@ -12,7 +12,6 @@
 #import "SocketIOPacket.h"
 #import "NSData+Base64.h"
 #import "SurespotControlMessage.h"
-#import "MessageProcessor.h"
 #import "NetworkController.h"
 #import "ChatUtils.h"
 #import "DDLog.h"
@@ -26,7 +25,7 @@
 #import "SoundController.h"
 
 #ifdef DEBUG
-static const int ddLogLevel = LOG_LEVEL_OFF;
+static const int ddLogLevel = LOG_LEVEL_INFO;
 #else
 static const int ddLogLevel = LOG_LEVEL_OFF;
 #endif
@@ -255,8 +254,8 @@ static const int MAX_RETRY_DELAY = 30;
         if ([name isEqualToString:@"message"]) {
             SurespotMessage * message = [[SurespotMessage alloc] initWithJSONString:[jsonData objectForKey:@"args"][0]];
             
-            //mark voice message to play automatically if tab is open
-            if (![ChatUtils isOurMessage: message] && [message.mimeType isEqualToString:MIME_TYPE_M4A] && [[message getOtherUser] isEqualToString:[self getCurrentChat]]) {
+            //mark voice message to play automatically if tab is open and message not hashed
+            if (![ChatUtils isOurMessage: message] && [message.mimeType isEqualToString:MIME_TYPE_M4A] && [[message getOtherUser] isEqualToString:[self getCurrentChat]] && !message.hashed) {
                 message.playVoice = YES;
             }
             
@@ -650,7 +649,7 @@ static const int MAX_RETRY_DELAY = 30;
         isNew = [cds addMessage: message refresh:YES];
     }
     
-    DDLogInfo(@"isnew: %hhd", isNew);
+    DDLogInfo(@"isnew: %d", isNew);
     
     //update ids
     Friend * afriend = [_homeDataSource getFriendByName:otherUser];
@@ -679,7 +678,7 @@ static const int MAX_RETRY_DELAY = 30;
         [_homeDataSource postRefresh];
     }
     
-    DDLogInfo(@"hasNewMessages: %hhd", afriend.hasNewMessages);
+    DDLogInfo(@"hasNewMessages: %d", afriend.hasNewMessages);
     
     //if we have new message let anyone who cares know
     if (afriend.hasNewMessages) {

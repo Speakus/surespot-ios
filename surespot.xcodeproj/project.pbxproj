@@ -181,7 +181,6 @@
 		66EBE0BD1855C97100F2452D /* ChatUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF0E1855C96F00F2452D /* ChatUtils.mm */; };
 		66EBE0BE1855C97100F2452D /* FilledRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF101855C96F00F2452D /* FilledRectView.m */; };
 		66EBE0BF1855C97100F2452D /* MessageDecryptionOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF121855C96F00F2452D /* MessageDecryptionOperation.mm */; };
-		66EBE0C01855C97100F2452D /* MessageProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF141855C96F00F2452D /* MessageProcessor.mm */; };
 		66EBE0C11855C97100F2452D /* MessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF161855C96F00F2452D /* MessageView.m */; };
 		66EBE0C31855C97100F2452D /* SurespotButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF191855C96F00F2452D /* SurespotButton.m */; };
 		66EBE0C41855C97100F2452D /* SurespotControlMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EBDF1B1855C96F00F2452D /* SurespotControlMessage.m */; };
@@ -707,8 +706,6 @@
 		66EBDF101855C96F00F2452D /* FilledRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilledRectView.m; sourceTree = "<group>"; };
 		66EBDF111855C96F00F2452D /* MessageDecryptionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDecryptionOperation.h; sourceTree = "<group>"; };
 		66EBDF121855C96F00F2452D /* MessageDecryptionOperation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MessageDecryptionOperation.mm; sourceTree = "<group>"; };
-		66EBDF131855C96F00F2452D /* MessageProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageProcessor.h; sourceTree = "<group>"; };
-		66EBDF141855C96F00F2452D /* MessageProcessor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MessageProcessor.mm; sourceTree = "<group>"; };
 		66EBDF151855C96F00F2452D /* MessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageView.h; sourceTree = "<group>"; };
 		66EBDF161855C96F00F2452D /* MessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageView.m; sourceTree = "<group>"; };
 		66EBDF171855C96F00F2452D /* OurMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OurMessageCell.xib; sourceTree = "<group>"; };
@@ -1569,8 +1566,6 @@
 				66EBDF101855C96F00F2452D /* FilledRectView.m */,
 				66EBDF111855C96F00F2452D /* MessageDecryptionOperation.h */,
 				66EBDF121855C96F00F2452D /* MessageDecryptionOperation.mm */,
-				66EBDF131855C96F00F2452D /* MessageProcessor.h */,
-				66EBDF141855C96F00F2452D /* MessageProcessor.mm */,
 				66EBDF151855C96F00F2452D /* MessageView.h */,
 				66EBDF161855C96F00F2452D /* MessageView.m */,
 				66EBDF171855C96F00F2452D /* OurMessageCell.xib */,
@@ -2063,7 +2058,6 @@
 				66E4F5BE176298CB00596E6B /* SRWebSocket.m in Sources */,
 				661F3B911868D160003C7AE3 /* KeyFingerprintCollectionCell.m in Sources */,
 				6686626D185B6A2E001491B1 /* UIImage+MultiFormat.mm in Sources */,
-				66EBE0C01855C97100F2452D /* MessageProcessor.mm in Sources */,
 				6686626E185B6A2E001491B1 /* UIImage+WebP.m in Sources */,
 				66E21DED1847D7F90005D91E /* IASKAppSettingsWebViewController.m in Sources */,
 				6659531C1885B95900BA2CC7 /* BackupHelpViewController.m in Sources */,
@@ -2220,7 +2214,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
 				SDKROOT = iphoneos;

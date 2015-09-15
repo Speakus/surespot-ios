@@ -11,7 +11,6 @@
 #import "ChatController.h"
 #import "IdentityController.h"
 #import "EncryptionController.h"
-#import "MessageProcessor.h"
 #import <UIKit/UIKit.h>
 #import "MessageView.h"
 #import "ChatUtils.h"
@@ -1355,7 +1354,7 @@ const Float32 voiceRecordDelay = 0.3;
                         cell.audioIcon.hidden = NO;
                         cell.audioSlider.hidden = NO;
                         
-                        if (message.playVoice && [username isEqualToString: [self getCurrentTabName]]) {
+                        if (!message.hashed && message.playVoice && [username isEqualToString: [self getCurrentTabName]]) {
                             [self ensureVoiceDelegate];
                             [_voiceDelegate playVoiceMessage:message cell:cell];
                         }

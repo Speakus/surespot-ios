@@ -36,6 +36,16 @@ static const NSInteger retryAttempts = 5;
 {
     [self cancelCurrentImageLoad];
     
+    if (message.hashed) {
+        self.messageStatusLabel.text = NSLocalizedString(@"decrypt_update", nil);
+        
+        if (completedBlock)
+        {
+            completedBlock(nil, message.mimeType, nil, SDImageCacheTypeNone);
+        }
+        
+        return;
+    }
     
     NSURL * url = [NSURL URLWithString:message.data];
     
@@ -72,7 +82,7 @@ static const NSInteger retryAttempts = 5;
                                                                                       }
                                                                                       else {
                                                                                           [wself.uiImageView setContentMode:UIViewContentModeScaleAspectFill];
-                                                                                      }                                   
+                                                                                      }
                                                                                   }
                                                                                   if (message.formattedDate) {
                                                                                       wself.messageStatusLabel.text = message.formattedDate;
