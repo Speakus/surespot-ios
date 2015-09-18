@@ -120,6 +120,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
                                   theirUsername: (NSString *) theirUsername
                                    theirVersion: (NSString *) theirVersion
                                              iv: (NSString *) iv
+                                         hashed: (BOOL) hashed
                                         options:(SDWebImageDownloaderOptions)options progress:(void (^)(NSUInteger, long long))progressBlock completed:(void (^)(id, NSData *, NSString *, NSError *, BOOL))completedBlock
 {
     __block SDWebImageDownloaderOperation *operation;
@@ -145,6 +146,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
                                                            theirUsername: theirUsername
                                                             theirVersion: theirVersion
                                                                       iv: iv
+                                                                  hashed: hashed
                                                                  options:options progress:^(NSUInteger receivedSize, long long expectedSize)
         {
             if (!wself) return;

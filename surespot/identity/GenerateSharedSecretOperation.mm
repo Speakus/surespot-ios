@@ -20,16 +20,18 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 @interface GenerateSharedSecretOperation()
 @property (nonatomic, assign) ECDHPrivateKey* ourPrivateKey;
 @property (nonatomic, assign) ECDHPublicKey* theirPublicKey;
+@property (nonatomic, assign) BOOL hashed;
 @end
 
 
 @implementation GenerateSharedSecretOperation
 
--(id) initWithOurPrivateKey: (ECDHPrivateKey *) ourPrivateKey theirPublicKey: (ECDHPublicKey *) theirPublicKey completionCallback:(void(^)(NSData *)) callback {
+-(id) initWithOurPrivateKey: (ECDHPrivateKey *) ourPrivateKey theirPublicKey: (ECDHPublicKey *) theirPublicKey hashed: (BOOL) hashed completionCallback:(void(^)(NSData *)) callback {
     if (self = [super init]) {
         self.callback = callback;
         self.ourPrivateKey = ourPrivateKey;
         self.theirPublicKey = theirPublicKey;
+        self.hashed = hashed;
     }
     return self;
 }
@@ -38,7 +40,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     @autoreleasepool {
         
         //generate shared secret and store it in cache
-        NSData * sharedSecret = [EncryptionController generateSharedSecret:_ourPrivateKey  publicKey:_theirPublicKey];
+        NSData * sharedSecret = [EncryptionController generateSharedSecret:_ourPrivateKey  publicKey:_theirPublicKey hashed:_hashed];
         self.callback(sharedSecret);
     }
 }

@@ -198,6 +198,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                           message.iv = [iv base64EncodedStringWithSeparateLines:NO];
                                                           NSString * key = [@"dataKey_" stringByAppendingString: message.iv];
                                                           message.data = key;
+                                                          message.hashed = YES;
                                                           
                                                           DDLogInfo(@"adding local image to cache %@", key);
                                                           [[[SDWebImageManager sharedManager] imageCache] storeImage:scaledImage imageData:encryptedImageData mimeType:MIME_TYPE_IMAGE forKey:key toDisk:YES];
@@ -222,7 +223,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                                                                         NSInteger size = [[JSON objectForKey:@"size"] integerValue];
                                                                                                         NSDate * date = [NSDate dateWithTimeIntervalSince1970: [[JSON objectForKey:@"time"] doubleValue]/1000];
                                                                                                         
-                                                                                                        DDLogInfo(@"uploaded data %@ to server successfully, server id: %d, url: %@, date: %@, size: %d", message.iv, serverid, url, date, size);
+                                                                                                        DDLogInfo(@"uploaded data %@ to server successfully, server id: %ld, url: %@, date: %@, size: %ld", message.iv, (long)serverid, url, date, (long)size);
                                                                                                         
                                                                                                         SurespotMessage * updatedMessage = [message copyWithZone:nil];
                                                                                                         
@@ -235,7 +236,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                                                                         
                                                                                                         [self stopProgress];
                                                                                                     } failureBlock:^(NSURLRequest *operation, NSHTTPURLResponse *responseObject, NSError *Error, id JSON) {
-                                                                                                        DDLogInfo(@"uploaded image %@ to server failed, statuscode: %d", key, responseObject.statusCode);
+                                                                                                        DDLogInfo(@"uploaded image %@ to server failed, statuscode: %ld", key, (long)responseObject.statusCode);
                                                                                                         [self stopProgress];
                                                                                                         if (responseObject.statusCode == 402) {
                                                                                                             message.errorStatus = 402;
@@ -316,7 +317,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                                                                           DDLogInfo(@"key exists for %@: %@", key, [[[SDWebImageManager sharedManager] imageCache] diskImageExistsWithKey:key] ? @"YES" : @"NO" );
                                                                                                       }
                                                                                                       
-                                                                                                      [[ChatController sharedInstance] setFriendImageUrl:url forFriendname:_theirUsername version:_ourVersion iv: b64iv];
+                                                                                                      [[ChatController sharedInstance] setFriendImageUrl:url forFriendname:_theirUsername version:_ourVersion iv: b64iv hashed: YES];
                                                                                                   }
                                                                                                   else {
                                                                                                       DDLogInfo(@"uploading friend image to server succeeded but there is no response object, wtf?");
@@ -330,7 +331,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                                                                   
                                                                                               } failureBlock:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                                                                   [self stopProgress];
-                                                                                                  DDLogInfo(@"uploading friend image %@ to server failed, statuscode: %d", key, operation.response.statusCode);
+                                                                                                  DDLogInfo(@"uploading friend image %@ to server failed, statuscode: %ld", key, (long)operation.response.statusCode);
                                                                                                   [UIUtils showToastKey:@"could_not_upload_friend_image" duration:2];
                                                                                                   
                                                                                                   if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {

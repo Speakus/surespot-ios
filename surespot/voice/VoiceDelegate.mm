@@ -169,7 +169,7 @@ const NSInteger SEND_THRESHOLD = 25;
         cell.message = message;
         DDLogVerbose(@"attaching message %@ to cell %@", [message iv], cell);
         
-        [[SDWebImageManager sharedManager] downloadWithURL:[NSURL URLWithString: message.data] mimeType:message.mimeType ourVersion:[message getOurVersion] theirUsername:[message getOtherUser] theirVersion:[message getTheirVersion] iv:message.iv options: SDWebImageRetryFailed progress:nil completed:^(id data, NSString *mimeType, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+        [[SDWebImageManager sharedManager] downloadWithURL:[NSURL URLWithString: message.data] mimeType:message.mimeType ourVersion:[message getOurVersion] theirUsername:[message getOtherUser] theirVersion:[message getTheirVersion] iv:message.iv hashed: message.hashed options: SDWebImageRetryFailed progress:nil completed:^(id data, NSString *mimeType, NSError *error, SDImageCacheType cacheType, BOOL finished) {
             
             if ((!data || error) && finished) {
                 message.playVoice = NO;
@@ -438,6 +438,7 @@ const NSInteger SEND_THRESHOLD = 25;
                                                           message.iv = [iv base64EncodedStringWithSeparateLines:NO];
                                                           NSString * key = [@"dataKey_" stringByAppendingString: message.iv];
                                                           message.data = key;
+                                                          message.hashed = YES;
                                                           
                                                           DDLogInfo(@"adding local data to cache %@", key);
                                                           [[[SDWebImageManager sharedManager] imageCache] storeImage:voiceData imageData:encryptedVoiceData mimeType: message.mimeType forKey:key toDisk:YES];

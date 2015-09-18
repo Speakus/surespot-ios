@@ -37,39 +37,31 @@
     
     if ([_message.mimeType isEqualToString: MIME_TYPE_TEXT]) {
         
-        //if it's hashed tell user to upgrade
-        if (_message.hashed) {
-            _message.plainData = NSLocalizedString(@"decrypt_update", nil);
-            [UIUtils setTextMessageHeights:_message size:_size];
-            [self finish];
+        if ([_message data]) {
+            
+            [EncryptionController symmetricDecryptString:[_message data] ourVersion:[_message getOurVersion] theirUsername:[_message getOtherUser] theirVersion:[_message getTheirVersion]  iv:[_message iv] hashed: [_message hashed] callback:^(NSString * plaintext){
+                
+                //figure out message height for both orientations
+                if (![UIUtils stringIsNilOrEmpty:plaintext]){
+                    _message.plainData = plaintext;
+                }
+                else {
+                    //todo more granular error messages
+                    _message.plainData = NSLocalizedString(@"message_error_decrypting_message",nil);
+                }
+                
+                [UIUtils setTextMessageHeights:_message size:_size];
+                [self finish];
+                
+            }];
+            
+            
         }
         else {
-            
-            if ([_message data]) {
-                
-                [EncryptionController symmetricDecryptString:[_message data] ourVersion:[_message getOurVersion] theirUsername:[_message getOtherUser] theirVersion:[_message getTheirVersion]  iv:[_message iv]  callback:^(NSString * plaintext){
-                    
-                    //figure out message height for both orientations
-                    if (![UIUtils stringIsNilOrEmpty:plaintext]){
-                        _message.plainData = plaintext;
-                    }
-                    else {
-                        //todo more granular error messages
-                        _message.plainData = NSLocalizedString(@"message_error_decrypting_message",nil);
-                    }
-                    
-                    [UIUtils setTextMessageHeights:_message size:_size];
-                    [self finish];
-                    
-                }];
-                
-                
-            }
-            else {
-                [self finish];
-            }
+            [self finish];
         }
     }
+    
     else {
         if ([_message.mimeType isEqualToString: MIME_TYPE_IMAGE]) {
             [UIUtils setImageMessageHeights:_message size:_size];

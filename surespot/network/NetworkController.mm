@@ -440,7 +440,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
               failureBlock: (JSONFailureBlock) failureBlock
 {
     DDLogInfo(@"postFileStream, fileid: %@", fileid);
-    NSString * path = [[NSString stringWithFormat:@"images/%@/%@/%@", ourVersion, theirUsername, theirVersion] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString * path = [[NSString stringWithFormat:@"images2/%@/%@/%@", ourVersion, theirUsername, theirVersion] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSMutableURLRequest *request
     = [self multipartFormRequestWithMethod:@"POST"
                                       path: path
@@ -475,7 +475,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                 failureBlock: (HTTPFailureBlock) failureBlock
 {
     DDLogInfo(@"postFriendFileStream, iv: %@", iv);
-    NSString * path = [[NSString stringWithFormat:@"images/%@/%@", theirUsername, ourVersion] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString * path = [[NSString stringWithFormat:@"images2/%@/%@", theirUsername, ourVersion] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSMutableURLRequest *request
     = [self multipartFormRequestWithMethod:@"POST"
                                       path: path
@@ -734,7 +734,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                    version,@"version",
                                    nil];
     
-    NSString * path = [[NSString stringWithFormat:@"users/%@/alias", friendname] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString * path = [[NSString stringWithFormat:@"users/%@/alias2", friendname] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURLRequest *request = [self requestWithMethod:@"PUT" path:path  parameters:params];
     
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request ];

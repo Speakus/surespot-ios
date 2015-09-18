@@ -328,6 +328,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data)
                         theirUsername:(NSString *) theirUsername
                          theirVersion:(NSString *) theirVersion
                                    iv:(NSString *) iv
+                               hashed:(BOOL) hashed
                                  done:(void (^)(id image, SDImageCacheType cacheType))doneBlock
 {
     NSOperation *operation = [NSOperation new];
@@ -359,7 +360,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data)
                        @autoreleasepool
                        {
                            
-                           [[CredentialCachingController sharedInstance] getSharedSecretForOurVersion:ourversion theirUsername:theirUsername theirVersion:theirVersion callback:^(id encryptionKey) {
+                           [[CredentialCachingController sharedInstance] getSharedSecretForOurVersion:ourversion theirUsername:theirUsername theirVersion:theirVersion hashed: hashed callback:^(id encryptionKey) {
                                
                                id diskImage = nil;
                                

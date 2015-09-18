@@ -253,7 +253,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
 }
 
--(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: version iv: iv {
+-(void) setFriendImageUrl: (NSString *) url forFriendname: (NSString *) name version: (NSString *) version iv: (NSString *) iv hashed: (BOOL) hashed {
     Friend * afriend = [self getFriendByName:name];
     if (afriend) {
         NSString * oldUrl = [afriend imageUrl];
@@ -264,18 +264,20 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         [afriend setImageUrl:url];
         [afriend setImageVersion:version];
         [afriend setImageIv:iv];
+        [afriend setImageHashed:hashed];
         
         [self writeToDisk];
         [self postRefresh];
     }
 }
 
--(void) setFriendAlias: (NSString *) alias data: (NSString *) data  friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv {
+-(void) setFriendAlias: (NSString *) alias data: (NSString *) data  friendname: (NSString *) friendname version: (NSString *) version iv: (NSString *) iv hashed: (BOOL) hashed {
     Friend * afriend = [self getFriendByName:friendname];
     if (afriend) {
         [afriend setAliasData:data];
         [afriend setAliasVersion:version];
         [afriend setAliasIv:iv];
+        [afriend setAliasHashed:hashed];
         
         //assign plain
         if (alias) {

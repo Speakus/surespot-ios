@@ -58,6 +58,7 @@ static const NSInteger retryAttempts = 5;
                                                                                theirUsername: [message getOtherUser]
                                                                                 theirVersion: [message getTheirVersion]
                                                                                           iv: [message iv]
+                                                                                      hashed: [message hashed]
                                                                                      options: SDWebImageRetryFailed
                                                                                     progress:progressBlock completed:^(id image, NSString * mimeType, NSError *error, SDImageCacheType cacheType, BOOL finished)
                                              {
