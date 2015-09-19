@@ -218,10 +218,10 @@ int const PBKDF_ROUNDS = 20000;
     
     NSData * key;
     if (hashed) {
-    //hash the generated key
-    CryptoPP::SHA256 hash;
-    CryptoPP::SecByteBlock digest( CryptoPP::SHA256::DIGESTSIZE );
-    hash.CalculateDigest( digest.BytePtr(), secA.data(), secA.SizeInBytes());
+        //hash the generated key
+        CryptoPP::SHA256 hash;
+        CryptoPP::SecByteBlock digest( CryptoPP::SHA256::DIGESTSIZE );
+        hash.CalculateDigest( digest.BytePtr(), secA.data(), secA.SizeInBytes());
         key = [NSData dataWithBytes:digest.data() length:digest.SizeInBytes()];
     }
     else {

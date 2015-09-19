@@ -1355,7 +1355,7 @@ const Float32 voiceRecordDelay = 0.3;
                         cell.audioIcon.hidden = NO;
                         cell.audioSlider.hidden = NO;
                         
-                        if (!message.hashed && message.playVoice && [username isEqualToString: [self getCurrentTabName]]) {
+                        if (message.playVoice && [username isEqualToString: [self getCurrentTabName]]) {
                             [self ensureVoiceDelegate];
                             [_voiceDelegate playVoiceMessage:message cell:cell];
                         }
@@ -1413,13 +1413,7 @@ const Float32 voiceRecordDelay = 0.3;
         ChatDataSource * cds = [[ChatController sharedInstance] getDataSourceForFriendname:[self getCurrentTabName]];
         if (cds) {
             SurespotMessage * message = [cds.messages objectAtIndex:indexPath.row];
-        
-            //if hashed do nothing
-            if (message.hashed) {
-                [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                return;
-            }
-            
+                                
             if ([message.mimeType isEqualToString: MIME_TYPE_IMAGE]) {
                 // Create array of `MWPhoto` objects
                 _imageMessage = message;

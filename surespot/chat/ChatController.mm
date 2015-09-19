@@ -254,8 +254,8 @@ static const int MAX_RETRY_DELAY = 30;
         if ([name isEqualToString:@"message"]) {
             SurespotMessage * message = [[SurespotMessage alloc] initWithJSONString:[jsonData objectForKey:@"args"][0]];
             
-            //mark voice message to play automatically if tab is open and message not hashed
-            if (![ChatUtils isOurMessage: message] && [message.mimeType isEqualToString:MIME_TYPE_M4A] && [[message getOtherUser] isEqualToString:[self getCurrentChat]] && !message.hashed) {
+            //mark voice message to play automatically if tab is open
+            if (![ChatUtils isOurMessage: message] && [message.mimeType isEqualToString:MIME_TYPE_M4A] && [[message getOtherUser] isEqualToString:[self getCurrentChat]]) {
                 message.playVoice = YES;
             }
             
