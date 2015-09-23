@@ -14,7 +14,6 @@
 		6604A2CB17626B9E0072216A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6604A2CA17626B9E0072216A /* main.m */; };
 		6604A2CF17626B9E0072216A /* SurespotAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6604A2CE17626B9E0072216A /* SurespotAppDelegate.mm */; };
 		6604A2D817626B9E0072216A /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6604A2D617626B9E0072216A /* MainStoryboard.storyboard */; };
-		6604A2E617626B9E0072216A /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2E517626B9E0072216A /* SenTestingKit.framework */; };
 		6604A2E717626B9E0072216A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2BE17626B9E0072216A /* UIKit.framework */; };
 		6604A2E817626B9E0072216A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A2C017626B9E0072216A /* Foundation.framework */; };
 		6604A2F017626B9E0072216A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6604A2EE17626B9E0072216A /* InfoPlist.strings */; };
@@ -279,8 +278,7 @@
 		6604A2CC17626B9E0072216A /* surespot-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surespot-Prefix.pch"; sourceTree = "<group>"; };
 		6604A2CD17626B9E0072216A /* SurespotAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SurespotAppDelegate.h; sourceTree = "<group>"; };
 		6604A2CE17626B9E0072216A /* SurespotAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = SurespotAppDelegate.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		6604A2E417626B9E0072216A /* surespotTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = surespotTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6604A2E517626B9E0072216A /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		6604A2E417626B9E0072216A /* surespotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = surespotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6604A2ED17626B9E0072216A /* surespotTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "surespotTests-Info.plist"; sourceTree = "<group>"; };
 		6604A2EF17626B9E0072216A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6604A2F117626B9E0072216A /* surespotTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = surespotTests.h; sourceTree = "<group>"; };
@@ -836,7 +834,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6604A2E617626B9E0072216A /* SenTestingKit.framework in Frameworks */,
 				6604A2E717626B9E0072216A /* UIKit.framework in Frameworks */,
 				6604A2E817626B9E0072216A /* Foundation.framework in Frameworks */,
 			);
@@ -860,7 +857,7 @@
 			isa = PBXGroup;
 			children = (
 				6604A2BB17626B9E0072216A /* surespot.app */,
-				6604A2E417626B9E0072216A /* surespotTests.octest */,
+				6604A2E417626B9E0072216A /* surespotTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -897,7 +894,6 @@
 				6604A2BE17626B9E0072216A /* UIKit.framework */,
 				6604A2C017626B9E0072216A /* Foundation.framework */,
 				6604A2C217626B9E0072216A /* CoreGraphics.framework */,
-				6604A2E517626B9E0072216A /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1814,8 +1810,8 @@
 			);
 			name = surespotTests;
 			productName = surespotTests;
-			productReference = 6604A2E417626B9E0072216A /* surespotTests.octest */;
-			productType = "com.apple.product-type.bundle.ocunit-test";
+			productReference = 6604A2E417626B9E0072216A /* surespotTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -1824,8 +1820,8 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = Surespot;
-				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0500;
+				LastTestingUpgradeCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = 2fours;
 				TargetAttributes = {
 					6604A2BA17626B9E0072216A = {
@@ -2202,6 +2198,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Patacchiola (BB4P69LVV7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Patacchiola (BB4P69LVV7)";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2215,8 +2212,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "b15570c7-6483-4dd1-9b6a-9a102005dbca";
+				PROVISIONING_PROFILE = "931c71d1-a96d-4e25-a094-4516503a55b8";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "931c71d1-a96d-4e25-a094-4516503a55b8";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2246,8 +2243,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "18dcb900-c285-426d-9f79-acfed12ebf2a";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "18dcb900-c285-426d-9f79-acfed12ebf2a";
+				PROVISIONING_PROFILE = "5e047876-21df-48e3-bc1d-ae0cc9227581";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5e047876-21df-48e3-bc1d-ae0cc9227581";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2264,6 +2261,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2281,6 +2279,7 @@
 					"-all_load",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twofours.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2300,6 +2299,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iOS Distribution: surespot llc";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Distribution: surespot llc";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2317,6 +2317,7 @@
 					"-all_load",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twofours.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "18dcb900-c285-426d-9f79-acfed12ebf2a";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "18dcb900-c285-426d-9f79-acfed12ebf2a";
@@ -2336,14 +2337,15 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "surespot/surespot-Prefix.pch";
 				INFOPLIST_FILE = "surespotTests/surespotTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "twofours.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -2354,13 +2356,14 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "surespot/surespot-Prefix.pch";
 				INFOPLIST_FILE = "surespotTests/surespotTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "twofours.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
