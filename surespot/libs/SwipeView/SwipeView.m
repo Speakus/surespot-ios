@@ -783,7 +783,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 
 - (void)setCurrentItemIndex:(NSInteger)currentItemIndex
 {
-    DDLogInfo(@"setCurrentItemIndex: %d",currentItemIndex);
+    DDLogInfo(@"setCurrentItemIndex: %ld", (long)currentItemIndex);
     _currentItemIndex = currentItemIndex;
     self.scrollOffset = currentItemIndex;
 }
@@ -863,7 +863,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     else
     {
         NSInteger offset = [self clampedIndex:_previousItemIndex + itemCount];
-        DDLogInfo(@"scrollByNumberOfItems setting scrollOffset to: %d", offset);
+        DDLogInfo(@"scrollByNumberOfItems setting scrollOffset to: %ld", (long)offset);
         self.scrollOffset = offset;
     }
 }

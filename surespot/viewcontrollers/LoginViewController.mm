@@ -243,7 +243,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
          andPassword:passwordString
          andSignature: signatureString
          successBlock:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON, NSHTTPCookie * cookie) {
-             DDLogVerbose(@"login response: %d",  [response statusCode]);
+             DDLogVerbose(@"login response: %ld",  (long)[response statusCode]);
              
              if (_storePassword.isOn) {
                  [[IdentityController sharedInstance] storePasswordForIdentity:username password:password];

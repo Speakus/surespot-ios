@@ -351,7 +351,7 @@ const NSInteger SEND_THRESHOLD = 25;
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
-    DDLogInfo(@"finished playing, successfully?: %hhd", flag);
+    DDLogInfo(@"finished playing, successfully?: %hhd", (char)flag);
     [self stopPlayingDeactivateSession:YES];
 }
 
@@ -463,7 +463,7 @@ const NSInteger SEND_THRESHOLD = 25;
                                                                                                         NSInteger size = [[JSON objectForKey:@"size"] integerValue];
                                                                                                         NSDate * date = [NSDate dateWithTimeIntervalSince1970: [[JSON objectForKey:@"time"] doubleValue]/1000];
                                                                                                         
-                                                                                                        DDLogInfo(@"uploaded voice data %@ to server successfully, server id: %d, url: %@, date: %@, size: %d", message.iv, serverid, url, date, size);
+                                                                                                        DDLogInfo(@"uploaded voice data %@ to server successfully, server id: %ld, url: %@, date: %@, size: %ld", message.iv, (long)serverid, url, date, (long)size);
                                                                                                         
                                                                                                         SurespotMessage * updatedMessage = [message copyWithZone:nil];
                                                                                                         
@@ -479,7 +479,7 @@ const NSInteger SEND_THRESHOLD = 25;
                                                                                                     failureBlock:^(NSURLRequest *operation, NSHTTPURLResponse *responseObject, NSError *Error, id JSON) {
                                                                                                         
                                                                                                         
-                                                                                                        DDLogInfo(@"uploaded voice %@ to server failed, statuscode: %d", key, responseObject.statusCode);
+                                                                                                        DDLogInfo(@"uploaded voice %@ to server failed, statuscode: %ld", key, (long)responseObject.statusCode);
                                                                                                         //  [self stopProgress];
                                                                                                         if (responseObject.statusCode == 402) {
                                                                                                             message.errorStatus = 402;
