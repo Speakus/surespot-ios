@@ -203,4 +203,8 @@
     return message;
 }
 
++ (BOOL) areMessagesEqual:(SurespotMessage *) lastMessage message:(SurespotMessage *)message {
+    return lastMessage.iv != NULL && [lastMessage.iv isEqualToString:message.iv];
+}
+
 @end

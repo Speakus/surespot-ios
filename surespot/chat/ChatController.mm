@@ -546,6 +546,7 @@ static const int MAX_RETRY_DELAY = 30;
 }
 
 -(void) enqueueMessage: (SurespotMessage * ) message {
+    // check that the message isn't a duplicate
     DDLogInfo(@"enqueing message %@", message);
     [_sendBuffer addObject:message];
 }
@@ -563,9 +564,23 @@ static const int MAX_RETRY_DELAY = 30;
     [_socketIO sendMessage: jsonMessage];
 }
 
+-(void) removeDuplicates: (NSMutableArray *) sendBuffer {
+    for (int forwardIdx = 0; forwardIdx < ((int)sendBuffer.count); forwardIdx++) {
+        SurespotMessage* originalMessage = sendBuffer[forwardIdx];
+        for (int i = ((int)sendBuffer.count) - 1; i > forwardIdx; i--) {
+            SurespotMessage* possibleDuplicate = sendBuffer[i];
+            if ([SurespotMessage areMessagesEqual:originalMessage message:possibleDuplicate] == YES) {
+                DDLogInfo(@"Removed duplicate message %@", possibleDuplicate);
+                [sendBuffer removeObjectAtIndex:i];
+            }
+        }
+    }
+}
+
 -(void) sendMessages {
     NSMutableArray * sendBuffer = _sendBuffer;
     _sendBuffer = [NSMutableArray new];
+    [self removeDuplicates:sendBuffer];
     [sendBuffer enumerateObjectsUsingBlock:^(SurespotMessage * message, NSUInteger idx, BOOL *stop) {
         
         
@@ -585,6 +600,7 @@ static const int MAX_RETRY_DELAY = 30;
 -(void) resendMessages {
     NSMutableArray * resendBuffer = _resendBuffer;
     _resendBuffer = [NSMutableArray new];
+    [self removeDuplicates:resendBuffer];
     NSMutableArray * jsonMessageList = [NSMutableArray new];
     [resendBuffer enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
