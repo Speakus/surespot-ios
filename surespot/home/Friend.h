@@ -19,6 +19,8 @@
 @property (atomic, strong) NSString * aliasData;
 @property (atomic, strong) NSString * aliasVersion;
 @property (atomic, strong) NSString * aliasIv;
+@property (atomic) BOOL aliasHashed;
+@property (atomic) BOOL imageHashed;
 @property (atomic, assign) NSInteger lastReceivedMessageId;
 @property (atomic, assign) NSInteger availableMessageId;
 @property (atomic, assign) NSInteger availableMessageControlId;

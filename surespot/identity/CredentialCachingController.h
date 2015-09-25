@@ -25,7 +25,7 @@
 @property (atomic, strong) NSString * loggedInUsername;
 
 
--(void) getSharedSecretForOurVersion: (NSString *) ourVersion theirUsername: (NSString *) theirUsername theirVersion: (NSString *) theirVersion callback: (CallbackBlock) callback;
+-(void) getSharedSecretForOurVersion: (NSString *) ourVersion theirUsername: (NSString *) theirUsername theirVersion: (NSString *) theirVersion hashed: (BOOL) hashed callback: (CallbackBlock) callback;
 -(void) loginIdentity: (SurespotIdentity *) identity password: (NSString *) password cookie: (NSHTTPCookie *) cookie;
 
 - (void) getLatestVersionForUsername: (NSString *) username callback:(CallbackStringBlock) callback;

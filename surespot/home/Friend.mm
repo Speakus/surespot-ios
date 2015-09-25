@@ -61,6 +61,8 @@
         _aliasData = [coder decodeObjectForKey:@"aliasData"];
         _aliasIv = [coder decodeObjectForKey:@"aliasIv"];
         _aliasVersion = [coder decodeObjectForKey:@"aliasVersion"];
+        _aliasHashed = [coder decodeBoolForKey:@"aliasHashed"];
+        _imageHashed = [coder decodeBoolForKey:@"imageHashed"];
         [self decryptAlias];
     }
     return self;
@@ -76,6 +78,8 @@
     _aliasData = [dictionary objectForKey:@"aliasData"];
     _aliasIv = [dictionary objectForKey:@"aliasIv"];
     _aliasVersion = [dictionary objectForKey:@"aliasVersion"];
+    _aliasHashed = [[dictionary objectForKey:@"aliasHashed"] boolValue];
+    _imageHashed = [[dictionary objectForKey:@"imageHashed"] boolValue];
     
 }
 
@@ -92,11 +96,14 @@
     [encoder encodeObject:_aliasVersion forKey:@"aliasVersion"];
     [encoder encodeObject:_aliasData forKey:@"aliasData"];
     [encoder encodeObject:_aliasIv forKey:@"aliasIv"];
+    [encoder encodeBool:_aliasHashed forKey:@"aliasHashed"];
+    [encoder encodeBool:_imageHashed forKey:@"imageHashed"];
+    
 }
 
 -(void) decryptAlias {
     if ([self hasFriendAliasAssigned] && [UIUtils stringIsNilOrEmpty: _aliasPlain]) {
-        [EncryptionController symmetricDecryptString:_aliasData ourVersion:_aliasVersion theirUsername:[[IdentityController sharedInstance] getLoggedInUser] theirVersion:_aliasVersion iv:_aliasIv callback:^(id result) {
+        [EncryptionController symmetricDecryptString:_aliasData ourVersion:_aliasVersion theirUsername:[[IdentityController sharedInstance] getLoggedInUser] theirVersion:_aliasVersion iv:_aliasIv hashed: _aliasHashed callback:^(id result) {
             _aliasPlain = result;
         }];
         

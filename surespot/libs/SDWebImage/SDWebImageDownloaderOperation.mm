@@ -36,6 +36,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 @property (strong, nonatomic) NSString * theirVersion;
 @property (strong, nonatomic) NSString * iv;
 @property (strong, nonatomic) NSString * mimeType;
+@property (assign, nonatomic) BOOL hashed;
 
 
 #if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
@@ -61,6 +62,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         theirUsername: (NSString *) theirUsername
          theirVersion: (NSString *) theirVersion
                    iv: (NSString *) iv
+               hashed: (BOOL) hashed
               options:(SDWebImageDownloaderOptions)options progress:(void (^)(NSUInteger, long long))progressBlock completed:(void (^)(id, NSData *, NSString *, NSError *, BOOL))completedBlock cancelled:(void (^)())cancelBlock
 {
     if ((self = [super init]))
@@ -71,6 +73,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         _theirVersion = theirVersion;
         _mimeType = mimeType;
         _iv = iv;
+        _hashed = hashed;
         _options = options;
         
         _progressBlock = [progressBlock copy];
@@ -351,7 +354,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
         }
         else
         {
-            [[CredentialCachingController sharedInstance] getSharedSecretForOurVersion:_ourVersion theirUsername:_theirUsername theirVersion:_theirVersion callback:^(id key) {
+            [[CredentialCachingController sharedInstance] getSharedSecretForOurVersion:_ourVersion theirUsername:_theirUsername theirVersion:_theirVersion hashed: _hashed callback:^(id key) {
                 
                 
                 if ([_mimeType isEqualToString:MIME_TYPE_IMAGE]) {

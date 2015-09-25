@@ -81,7 +81,11 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 37)];
-    label.text =  [_identityNames objectAtIndex:row];
+    if ([_identityNames count] == 0) {
+        label.text = @"";
+    } else {
+        label.text =  [_identityNames objectAtIndex:row];
+    }
     [label setFont:[UIFont systemFontOfSize:22]];
     label.textAlignment = NSTextAlignmentCenter;
     label.backgroundColor = [UIColor clearColor];

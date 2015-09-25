@@ -14,12 +14,14 @@
                ourVersion: (NSString *) ourversion
             theirUsername: (NSString *) theirUsername
              theirVersion: (NSString *) theirVersion
-                       iv: (NSString *) iv;
+                       iv: (NSString *) iv
+                   hashed: (BOOL) hashed;
 
 @property (nonatomic, strong) NSString * ourUsername;
 @property (nonatomic, strong) NSString * ourVersion;
 @property (nonatomic, strong) NSString * theirUsername;
 @property (nonatomic, strong) NSString * theirVersion;
 @property (nonatomic, strong) NSString * iv;
+@property (nonatomic) BOOL hashed;
 
 @end

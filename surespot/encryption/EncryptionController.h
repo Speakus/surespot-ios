@@ -103,7 +103,7 @@ extern int const PBKDF_ROUNDS;
 + (NSData *) signData1: (NSData *) data1 data2: (NSData *) data2 withPrivateKey: (ECDSAPrivateKey *) privateKey;
 + (NSData *) getIv;
 + (NSData *) encryptPlain: (NSString *) plain usingKey: (NSData *) key usingIv: (NSData *) iv;
-+ (NSData *) generateSharedSecret: (ECDHPrivateKey *) privateKey publicKey:(ECDHPublicKey *) publicKey;
++ (NSData *) generateSharedSecret: (ECDHPrivateKey *) privateKey publicKey:(ECDHPublicKey *) publicKey hashed:(BOOL) hashed;
 + (IdentityKeys *) generateKeyPairs;
 + (NSString *) encodeDHPrivateKey: (ECDHPrivateKey *) dhPrivKey;
 + (NSString *) encodeDHPublicKey: (ECDHPublicKey *) dhPubKey;
@@ -112,7 +112,7 @@ extern int const PBKDF_ROUNDS;
 + (ECDHPublicKey *) recreateDhPublicKey: (NSString *) encodedKey;
 +  (ECDSAPublicKey *) recreateDsaPublicKey: (NSString *) encodedKey;
 +(void) symmetricEncryptString: (NSString *) plaintext ourVersion: (NSString *) ourVersion theirUsername: (NSString *) theirUsername theirVersion: (NSString *)  theirVersion iv: (NSData *) iv callback: (CallbackBlock) callback;
-+(void) symmetricDecryptString: (NSString *) cipherData ourVersion: (NSString *) ourVersion theirUsername: (NSString *) theirUsername theirVersion: (NSString *) theirVersion iv: (NSString *) iv callback: (CallbackBlock) callback;
++(void) symmetricDecryptString: (NSString *) cipherData ourVersion: (NSString *) ourVersion theirUsername: (NSString *) theirUsername theirVersion: (NSString *) theirVersion iv: (NSString *) iv hashed: (BOOL) hashed callback: (CallbackBlock) callback;
 
 +(BOOL) verifyPublicKeySignature: (NSData *) signature data: (NSData *) data;
 +(void) symmetricEncryptData: (NSData *) data ourVersion: (NSString *) ourVersion theirUsername: (NSString *) theirUsername theirVersion: (NSString *) theirVersion iv: (NSData *) iv callback: (CallbackBlock) callback;

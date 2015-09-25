@@ -55,7 +55,7 @@ License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 If you would like to re-license this code to sell it,
-please contact us at [support@2fours.com](mailto:support@2fours.com).
+please contact us at [support@surespot.me](mailto:support@surespot.me).
 
 This software additionally references or incorporates the following sources
 of intellectual property, the license terms for which are set forth

@@ -15,5 +15,6 @@
          ourVersion: (NSString *) ourVersion
       theirUsername: (NSString *) theirUsername
        theirVersion: (NSString *) theirVersion
+             hashed: (BOOL) hashed
            callback: (CallbackBlock) callback;
 @end

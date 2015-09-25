@@ -8,7 +8,6 @@
 
 #import "ChatDataSource.h"
 #import "NetworkController.h"
-#import "MessageProcessor.h"
 #import "MessageDecryptionOperation.h"
 #import "ChatUtils.h"
 #import "IdentityController.h"

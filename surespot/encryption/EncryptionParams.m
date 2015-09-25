@@ -13,7 +13,8 @@
                ourVersion: (NSString *) ourVersion
             theirUsername: (NSString *) theirUsername
              theirVersion: (NSString *) theirVersion
-                       iv: (NSString *) iv {
+                       iv: (NSString *) iv
+                   hashed:(BOOL)hashed {
     self = [super init];
     if (self) {
         self.ourUsername = ourUsername;
@@ -21,6 +22,7 @@
         self.theirUsername = theirUsername;
         self.theirVersion = theirVersion;
         self.iv = iv;
+        self.hashed = hashed;
     }    
     
     return self;

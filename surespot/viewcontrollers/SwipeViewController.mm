@@ -11,7 +11,6 @@
 #import "ChatController.h"
 #import "IdentityController.h"
 #import "EncryptionController.h"
-#import "MessageProcessor.h"
 #import <UIKit/UIKit.h>
 #import "MessageView.h"
 #import "ChatUtils.h"
@@ -1108,7 +1107,8 @@ const Float32 voiceRecordDelay = 0.3;
                                                                        ourVersion:afriend.imageVersion
                                                                     theirUsername:afriend.name
                                                                      theirVersion:afriend.imageVersion
-                                                                               iv:afriend.imageIv];
+                                                                               iv:afriend.imageIv
+                                                                           hashed:afriend.imageHashed];
             
             DDLogVerbose(@"setting friend image for %@ to %@", afriend.name, afriend.imageUrl);
             [cell setImageForFriend:afriend withEncryptionParams: ep placeholderImage:  [UIImage imageNamed:@"surespot_logo"] progress:^(NSUInteger receivedSize, long long expectedSize) {
@@ -1413,6 +1413,7 @@ const Float32 voiceRecordDelay = 0.3;
         ChatDataSource * cds = [[ChatController sharedInstance] getDataSourceForFriendname:[self getCurrentTabName]];
         if (cds) {
             SurespotMessage * message = [cds.messages objectAtIndex:indexPath.row];
+                                
             if ([message.mimeType isEqualToString: MIME_TYPE_IMAGE]) {
                 // Create array of `MWPhoto` objects
                 _imageMessage = message;
@@ -2243,6 +2244,7 @@ const Float32 voiceRecordDelay = 0.3;
                                                        theirUsername: [message getOtherUser]
                                                         theirVersion: [message getTheirVersion]
                                                                   iv: [message iv]
+                                                              hashed: [message hashed]
                                                              options: (SDWebImageOptions) 0
                                                             progress:nil completed:^(id data, NSString * mimeType, NSError *error, SDImageCacheType cacheType, BOOL finished)
                      {
@@ -2728,7 +2730,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 - (SurespotPhoto *)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
     if (index == 0 && _imageMessage)
-        return [[SurespotPhoto alloc] initWithURL:[NSURL URLWithString:_imageMessage.data] encryptionParams:[[EncryptionParams alloc] initWithOurUsername:nil ourVersion:[_imageMessage getOurVersion] theirUsername: [_imageMessage getOtherUser] theirVersion:[_imageMessage getTheirVersion] iv:_imageMessage.iv]];
+        return [[SurespotPhoto alloc] initWithURL:[NSURL URLWithString:_imageMessage.data] encryptionParams:[[EncryptionParams alloc] initWithOurUsername:nil ourVersion:[_imageMessage getOurVersion] theirUsername: [_imageMessage getOtherUser] theirVersion:[_imageMessage getTheirVersion] iv:_imageMessage.iv hashed: [_imageMessage hashed]]];
     return nil;
 }
 

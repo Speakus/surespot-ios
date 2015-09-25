@@ -36,7 +36,6 @@ static const NSInteger retryAttempts = 5;
 {
     [self cancelCurrentImageLoad];
     
-    
     NSURL * url = [NSURL URLWithString:message.data];
     
     if (url)
@@ -48,6 +47,7 @@ static const NSInteger retryAttempts = 5;
                                                                                theirUsername: [message getOtherUser]
                                                                                 theirVersion: [message getTheirVersion]
                                                                                           iv: [message iv]
+                                                                                      hashed: [message hashed]
                                                                                      options: SDWebImageRetryFailed
                                                                                     progress:progressBlock completed:^(id image, NSString * mimeType, NSError *error, SDImageCacheType cacheType, BOOL finished)
                                              {
@@ -72,7 +72,7 @@ static const NSInteger retryAttempts = 5;
                                                                                       }
                                                                                       else {
                                                                                           [wself.uiImageView setContentMode:UIViewContentModeScaleAspectFill];
-                                                                                      }                                   
+                                                                                      }
                                                                                   }
                                                                                   if (message.formattedDate) {
                                                                                       wself.messageStatusLabel.text = message.formattedDate;

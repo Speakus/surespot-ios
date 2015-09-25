@@ -48,6 +48,7 @@ static NSInteger const retryAttempts = 5;
                                                                                theirUsername:encryptionParams.ourUsername
                                                                                 theirVersion:encryptionParams.ourVersion
                                                                                           iv:encryptionParams.iv
+                                                                                      hashed:encryptionParams.hashed
                                                                                      options: SDWebImageRetryFailed
                                                                                     progress:progressBlock completed:^(id image, NSString * mimeType,  NSError *error, SDImageCacheType cacheType, BOOL finished)
                                              {

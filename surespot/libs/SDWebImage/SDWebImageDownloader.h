@@ -130,6 +130,7 @@ typedef void(^SDWebImageDownloaderCompletedBlock)(id image,  NSData *data, NSStr
                                   theirUsername: (NSString *) theirUsername
                                    theirVersion: (NSString *) theirVersion
                                              iv: (NSString *) iv
+                                         hashed: (BOOL) hashed
                                         options:(SDWebImageDownloaderOptions)options
                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
                                       completed:(SDWebImageDownloaderCompletedBlock)completedBlock;

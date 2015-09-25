@@ -50,6 +50,7 @@
         _mimeType = [coder decodeObjectForKey:@"mimeType"];
         _dateTime = [coder decodeObjectForKey:@"datetime"];
         _shareable = [coder decodeBoolForKey:@"shareable"];
+        _hashed = [coder decodeBoolForKey:@"hashed"];
         _errorStatus = [coder decodeIntegerForKey:@"errorStatus"];
         _dataSize = [coder decodeIntegerForKey:@"dataSize"];
         _voicePlayed = [coder decodeBoolForKey:@"voicePlayed"];
@@ -66,6 +67,7 @@
     _iv = [dictionary objectForKey:@"iv"];
     _mimeType = [dictionary objectForKey:@"mimeType"];
     _shareable = [[dictionary objectForKey:@"shareable"] boolValue];
+    _hashed = [[dictionary objectForKey:@"hashed"] boolValue];
     _dataSize = [[dictionary objectForKey:@"dataSize"] integerValue];
     
     id dateTime = [dictionary objectForKey:@"datetime"];
@@ -120,6 +122,7 @@
     [encoder encodeObject:_iv forKey:@"iv"];
     [encoder encodeObject:_mimeType forKey:@"mimeType"];
     [encoder encodeBool:_shareable forKey:@"shareable"];
+    [encoder encodeBool:_hashed forKey:@"hashed"];
     [encoder encodeBool:_voicePlayed forKey:@"voicePlayed"];
     
     if (_dateTime) {
@@ -146,6 +149,7 @@
     [dict setObject:_data forKey:@"data"];
     [dict setObject:_iv forKey:@"iv"];
     [dict setObject:_mimeType forKey:@"mimeType"];
+    [dict setObject:[NSNumber numberWithBool:_hashed] forKey:@"hashed"];
     [dict setObject:[NSNumber numberWithBool:_shareable] forKey:@"shareable"];
     if (_dateTime) {
         [dict setObject:[@([_dateTime timeIntervalSince1970]*1000/1000) stringValue] forKey:@"datetime"];
@@ -193,6 +197,7 @@
     message.rowPortraitHeight = self.rowPortraitHeight;
     message.rowLandscapeHeight = self.rowLandscapeHeight;
     message.shareable = self.shareable;
+    message.hashed = self.hashed;
     message.voicePlayed = self.voicePlayed;
     message.playVoice = self.playVoice;
     return message;
