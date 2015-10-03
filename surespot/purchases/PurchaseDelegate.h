@@ -16,13 +16,10 @@ extern NSString * const PRODUCT_ID_VOICE_MESSAGING;
 @interface PurchaseDelegate : NSObject<SKProductsRequestDelegate, SKPaymentTransactionObserver, UIPopoverControllerDelegate>
 - (void) purchaseProductId: (NSString *) productId quantity: (NSInteger) quantity;
 +(PurchaseDelegate*)sharedInstance;
-@property (nonatomic, assign) BOOL hasVoiceMessaging;
--(void) setHasVoiceMessaging:(BOOL)hasVoiceMessaging;
 -(NSString *) getAppStoreReceipt;
 -(void) refresh;
 -(void) showPwylViewForController: (UIViewController *) parentController;
-- (void)orientationChanged;
+//- (void)orientationChanged;
 -(NSString *) formatPriceForProductId: (NSString *) productId;
--(void) showPurchaseVoiceViewForController: (UIViewController *) parentController;
 -(SKProduct *) getProductForId: (NSString *) productId;
 @end

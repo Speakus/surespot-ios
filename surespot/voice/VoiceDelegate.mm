@@ -22,7 +22,6 @@
 #import "SDWebImageManager.h"
 #import "FileController.h"
 #import "ChatUtils.h"
-#import "PurchaseDelegate.h"
 
 #ifdef DEBUG
 static const int ddLogLevel = LOG_LEVEL_INFO;
@@ -480,16 +479,9 @@ const NSInteger SEND_THRESHOLD = 25;
                                                                                                         
                                                                                                         
                                                                                                         DDLogInfo(@"uploaded voice %@ to server failed, statuscode: %d", key, responseObject.statusCode);
-                                                                                                        //  [self stopProgress];
-                                                                                                        if (responseObject.statusCode == 402) {
-                                                                                                            message.errorStatus = 402;
-                                                                                                            //disable voice
-                                                                                                            [[PurchaseDelegate sharedInstance] setHasVoiceMessaging:NO];
-                                                                                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"purchaseStatusChanged" object:nil];
-                                                                                                        }
-                                                                                                        else {
-                                                                                                            message.errorStatus = 500;
-                                                                                                        }
+                                                                                           
+                                                                                                        message.errorStatus = 500;
+                                                                                                        
                                                                                                         
                                                                                                         [cds postRefresh];
                                                                                                     }];
