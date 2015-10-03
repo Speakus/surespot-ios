@@ -50,6 +50,17 @@
                 <true/>
             </dict>
             
+            <dict>
+                <key>Type</key>
+                <string>PSToggleSwitchSpecifier</string>
+                <key>Title</key>
+                <string>pref_title_disable_voice</string>
+                <key>Key</key>
+                <string>_user_pref_disable_voice</string>
+                <key>DefaultValue</key>
+                <false/>
+            </dict>
+            
             
             
             

@@ -393,6 +393,17 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     return [value boolValue];
 }
 
++(BOOL) getBoolPrefWithDefaultNoForUser: (NSString *) username key:(NSString *) key {
+    //if the pref is not set then default to yes
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    key = [username stringByAppendingString:key];
+    NSNumber * value = [defaults objectForKey:key];
+    
+    if (!value) return NO;
+    
+    return [value boolValue];
+}
+
 +(void) clearLocalCache {
     [FileController wipeAllState];
     [[[SDWebImageManager sharedManager] imageCache] clearMemory];

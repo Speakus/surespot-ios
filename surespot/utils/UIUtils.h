@@ -42,6 +42,7 @@
       linkMatchTexts: (NSArray *) linkMatchTexts
           urlStrings: (NSArray *) urlStrings;
 +(BOOL) getBoolPrefWithDefaultYesForUser: (NSString *) username key:(NSString *) key;
++(BOOL) getBoolPrefWithDefaultNoForUser: (NSString *) username key:(NSString *) key;
 +(void) clearLocalCache;
 +(NSInteger) getDefaultImageMessageHeight;
 +(CGSize)imageSizeAfterAspectFit:(UIImageView*)imgview;

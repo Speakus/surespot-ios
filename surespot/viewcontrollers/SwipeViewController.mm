@@ -150,7 +150,7 @@ const Float32 voiceRecordDelay = 0.3;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"newMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(invite:) name:@"invite" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inviteAccepted:) name:@"inviteAccepted" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(purchaseStatusChanged:) name:@"purchaseStatusChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:kIASKAppSettingChanged object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundImageChanged:) name:@"backgroundImageChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification) name:@"openedFromNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSwitch) name:@"userSwitch" object:nil];
@@ -248,9 +248,9 @@ const Float32 voiceRecordDelay = 0.3;
 
 /*
  -(void)growingTextView:(HPGrowingTextView *)growingTextView didChangeHeight:(float)height {
-    
-}
-*/
+ 
+ }
+ */
 
 - (BOOL) growingTextView:(HPGrowingTextView *)growingTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *) string
 {
@@ -357,7 +357,7 @@ const Float32 voiceRecordDelay = 0.3;
         // if the message text view isn't the first responder, don't adjust control offsets
         return;
     }
-
+    
     DDLogInfo(@"keyboardFrameDidChange");
     CGRect keyboardEndFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect keyboardBeginFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
@@ -1413,7 +1413,7 @@ const Float32 voiceRecordDelay = 0.3;
         ChatDataSource * cds = [[ChatController sharedInstance] getDataSourceForFriendname:[self getCurrentTabName]];
         if (cds) {
             SurespotMessage * message = [cds.messages objectAtIndex:indexPath.row];
-                                
+            
             if ([message.mimeType isEqualToString: MIME_TYPE_IMAGE]) {
                 // Create array of `MWPhoto` objects
                 _imageMessage = message;
@@ -1692,9 +1692,8 @@ const Float32 voiceRecordDelay = 0.3;
                 [_theButton setImage:[UIImage imageNamed:@"ic_menu_send"] forState:UIControlStateNormal];
             }
             else {
-                
-                BOOL dontAsk = [[NSUserDefaults standardUserDefaults] boolForKey:@"pref_dont_ask"];
-                if (dontAsk) {
+                BOOL disableVoice = [UIUtils getBoolPrefWithDefaultNoForUser:[[IdentityController sharedInstance] getLoggedInUser] key:@"_user_pref_disable_voice"];
+                if (disableVoice) {
                     
                     [_theButton setImage:[UIImage imageNamed:@"ic_menu_home"] forState:UIControlStateNormal];
                 }
@@ -2503,11 +2502,9 @@ const Float32 voiceRecordDelay = 0.3;
     if (interval < voiceRecordDelay) {
         
         if (![self handleTextActionResign:NO]) {
-            if (afriend.isDeleted) {
-                [self resignAllResponders];
-                [self scrollHome];
-                
-            }
+            [self resignAllResponders];
+            [self scrollHome];
+            
         }
     }
     else {
@@ -2559,8 +2556,15 @@ const Float32 voiceRecordDelay = 0.3;
         }
         else {
             if (![self handleTextActionResign:NO]) {
+                BOOL disableVoice = [UIUtils getBoolPrefWithDefaultNoForUser:[[IdentityController sharedInstance] getLoggedInUser] key:@"_user_pref_disable_voice"];
+                if (!disableVoice) {
+                    
                     [self ensureVoiceDelegate];
                     [_voiceDelegate startRecordingUsername: afriend.name];
+                }
+                else {
+                    [self closeTab];
+                }
             }
         }
     }
@@ -2732,7 +2736,7 @@ const Float32 voiceRecordDelay = 0.3;
 }
 
 
--(void) purchaseStatusChanged: (NSNotification *) notification {
+-(void) settingsChanged: (NSNotification *) notification {
     [self updateTabChangeUI];
 }
 
