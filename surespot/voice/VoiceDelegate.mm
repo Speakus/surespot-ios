@@ -22,7 +22,6 @@
 #import "SDWebImageManager.h"
 #import "FileController.h"
 #import "ChatUtils.h"
-#import "PurchaseDelegate.h"
 
 #ifdef DEBUG
 static const int ddLogLevel = LOG_LEVEL_INFO;
@@ -351,7 +350,7 @@ const NSInteger SEND_THRESHOLD = 25;
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
-    DDLogInfo(@"finished playing, successfully?: %hhd", (char)flag);
+    DDLogInfo(@"finished playing, successfully?: %hhd", flag);
     [self stopPlayingDeactivateSession:YES];
 }
 
@@ -463,7 +462,7 @@ const NSInteger SEND_THRESHOLD = 25;
                                                                                                         NSInteger size = [[JSON objectForKey:@"size"] integerValue];
                                                                                                         NSDate * date = [NSDate dateWithTimeIntervalSince1970: [[JSON objectForKey:@"time"] doubleValue]/1000];
                                                                                                         
-                                                                                                        DDLogInfo(@"uploaded voice data %@ to server successfully, server id: %ld, url: %@, date: %@, size: %ld", message.iv, (long)serverid, url, date, (long)size);
+                                                                                                        DDLogInfo(@"uploaded voice data %@ to server successfully, server id: %d, url: %@, date: %@, size: %d", message.iv, serverid, url, date, size);
                                                                                                         
                                                                                                         SurespotMessage * updatedMessage = [message copyWithZone:nil];
                                                                                                         
@@ -479,17 +478,10 @@ const NSInteger SEND_THRESHOLD = 25;
                                                                                                     failureBlock:^(NSURLRequest *operation, NSHTTPURLResponse *responseObject, NSError *Error, id JSON) {
                                                                                                         
                                                                                                         
-                                                                                                        DDLogInfo(@"uploaded voice %@ to server failed, statuscode: %ld", key, (long)responseObject.statusCode);
-                                                                                                        //  [self stopProgress];
-                                                                                                        if (responseObject.statusCode == 402) {
-                                                                                                            message.errorStatus = 402;
-                                                                                                            //disable voice
-                                                                                                            [[PurchaseDelegate sharedInstance] setHasVoiceMessaging:NO];
-                                                                                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"purchaseStatusChanged" object:nil];
-                                                                                                        }
-                                                                                                        else {
-                                                                                                            message.errorStatus = 500;
-                                                                                                        }
+                                                                                                        DDLogInfo(@"uploaded voice %@ to server failed, statuscode: %d", key, responseObject.statusCode);
+                                                                                           
+                                                                                                        message.errorStatus = 500;
+                                                                                                        
                                                                                                         
                                                                                                         [cds postRefresh];
                                                                                                     }];
