@@ -2337,7 +2337,7 @@ const Float32 voiceRecordDelay = 0.3;
 
 -(void) deleteMessage: (SurespotMessage *) message {
     if (message) {
-        DDLogVerbose(@"taking action for chat iv: %@, plaindata: %@", message.iv, message.plainData);
+        DDLogVerbose(@"taking action for chat iv: %@", message.iv);
         [[ChatController sharedInstance] deleteMessage: message];
     }
 }
