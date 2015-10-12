@@ -92,20 +92,40 @@ static const int MAX_RETRY_DELAY = 30;
     return self;
 }
 
+-(void)setReachabilityStatus:(Reachability *) reach {
+    NetworkStatus remoteHostStatus = [reach currentReachabilityStatus];
+    
+    if (remoteHostStatus == NotReachable) {
+        DDLogInfo(@"network not reachable");
+        self.hasInet -= NO;
+    }
+    else if (remoteHostStatus == ReachableViaWiFi) {
+        DDLogInfo(@"network via wifi");
+        self.hasInet -= YES;
+    }
+    else if (remoteHostStatus == ReachableViaWWAN) {
+        DDLogInfo(@"network via cell");
+        self.hasInet -= YES;
+    }
+}
+
 -(void)reachabilityChanged:(NSNotification*)note
 {
     Reachability * reach = [note object];
     
-    if([reach isReachable])
+    [self setReachabilityStatus:reach];
+    _connectionRetries = 0;
+    
+    if([reach isReachable] || self.hasInet)
     {
-        DDLogInfo(@"wifi: %hhd, wwan, %hhd",[reach isReachableViaWiFi], [reach isReachableViaWWAN]);
+        DDLogInfo(@"wifi: %hhd, wwan, %hhd", (char)[reach isReachableViaWiFi], (char)[reach isReachableViaWWAN]);
         //reachibility changed, disconnect and reconnect
         [self disconnect];
         [self reconnect];
     }
     else
     {
-        DDLogInfo( @"Notification Says Unreachable");
+        DDLogInfo(@"Notification Says Unreachable");
     }
 }
 
@@ -113,7 +133,7 @@ static const int MAX_RETRY_DELAY = 30;
 -(void) disconnect {
     if (_socketIO) {
         DDLogVerbose(@"disconnecting socket");
-        [_socketIO disconnect ];
+        [_socketIO disconnect];
     }
 }
 
@@ -365,7 +385,7 @@ static const int MAX_RETRY_DELAY = 30;
 }
 
 -(void) getLatestData: (BOOL) suppressNew {
-    DDLogVerbose(@"getLatestData, chatDatasources count: %d", [_chatDataSources count]);
+    DDLogVerbose(@"getLatestData, chatDatasources count: %lu", (unsigned long)[_chatDataSources count]);
     
     NSMutableArray * messageIds = [[NSMutableArray alloc] init];
     
@@ -546,6 +566,7 @@ static const int MAX_RETRY_DELAY = 30;
 }
 
 -(void) enqueueMessage: (SurespotMessage * ) message {
+    // check that the message isn't a duplicate
     DDLogInfo(@"enqueing message %@", message);
     [_sendBuffer addObject:message];
 }
@@ -563,9 +584,23 @@ static const int MAX_RETRY_DELAY = 30;
     [_socketIO sendMessage: jsonMessage];
 }
 
+-(void) removeDuplicates: (NSMutableArray *) sendBuffer {
+    for (int forwardIdx = 0; forwardIdx < ((int)sendBuffer.count); forwardIdx++) {
+        SurespotMessage* originalMessage = sendBuffer[forwardIdx];
+        for (int i = ((int)sendBuffer.count) - 1; i > forwardIdx; i--) {
+            SurespotMessage* possibleDuplicate = sendBuffer[i];
+            if ([SurespotMessage areMessagesEqual:originalMessage message:possibleDuplicate] == YES) {
+                DDLogInfo(@"Removed duplicate message %@", possibleDuplicate);
+                [sendBuffer removeObjectAtIndex:i];
+            }
+        }
+    }
+}
+
 -(void) sendMessages {
     NSMutableArray * sendBuffer = _sendBuffer;
     _sendBuffer = [NSMutableArray new];
+    [self removeDuplicates:sendBuffer];
     [sendBuffer enumerateObjectsUsingBlock:^(SurespotMessage * message, NSUInteger idx, BOOL *stop) {
         
         
@@ -585,6 +620,7 @@ static const int MAX_RETRY_DELAY = 30;
 -(void) resendMessages {
     NSMutableArray * resendBuffer = _resendBuffer;
     _resendBuffer = [NSMutableArray new];
+    [self removeDuplicates:resendBuffer];
     NSMutableArray * jsonMessageList = [NSMutableArray new];
     [resendBuffer enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
@@ -900,7 +936,7 @@ static const int MAX_RETRY_DELAY = 30;
     [[NetworkController sharedInstance]
      inviteFriend:username
      successBlock:^(AFHTTPRequestOperation *operation, id responseObject) {
-         DDLogVerbose(@"invite friend response: %d",  [operation.response statusCode]);
+         DDLogVerbose(@"invite friend response: %ld",  (long)[operation.response statusCode]);
          
          [_homeDataSource addFriendInvited:username];
          [self stopProgress];
@@ -1228,7 +1264,7 @@ static const int MAX_RETRY_DELAY = 30;
                                                           NSInteger size = [[JSON objectForKey:@"size"] integerValue];
                                                           NSDate * date = [NSDate dateWithTimeIntervalSince1970: [[JSON objectForKey:@"time"] doubleValue]/1000];
                                                           
-                                                          DDLogInfo(@"uploaded data %@ to server successfully, server id: %d, url: %@, date: %@, size: %d", message.iv, serverid, url, date, size);
+                                                          DDLogInfo(@"uploaded data %@ to server successfully, server id: %ld, url: %@, date: %@, size: %ld", message.iv, (long)serverid, url, date, (long)size);
                                                           
                                                           message.serverid = serverid;
                                                           message.data = url;
@@ -1240,7 +1276,7 @@ static const int MAX_RETRY_DELAY = 30;
                                                           [self stopProgress];
                                                           
                                                       } failureBlock:^(NSURLRequest *operation, NSHTTPURLResponse *responseObject, NSError *Error, id JSON) {
-                                                          DDLogInfo(@"resend data %@ to server failed, statuscode: %d", message.data, responseObject.statusCode);
+                                                          DDLogInfo(@"resend data %@ to server failed, statuscode: %ld", message.data, (long)responseObject.statusCode);
                                                           if (responseObject.statusCode == 402) {
                                                               resendMessage.errorStatus = 402;
                                                           }
