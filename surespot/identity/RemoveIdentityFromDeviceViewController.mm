@@ -22,6 +22,8 @@
 #import "EncryptionController.h"
 #import "NetworkController.h"
 
+#import "SignUpViewController.h"
+
 #ifdef DEBUG
 static const int ddLogLevel = LOG_LEVEL_INFO;
 #else
@@ -139,6 +141,17 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     [UIUtils showToastKey:@"identity_removed_from_device" duration:2];
     [self loadIdentityNames];
     [_userPicker reloadAllComponents];
+
+    if ([_identityNames count] == 0) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
+        SignupViewController * svc = [storyboard instantiateViewControllerWithIdentifier:@"signupViewController"];
+        
+        NSMutableArray *  controllers = [NSMutableArray new];
+        [controllers addObject:svc];
+        
+        [self.navigationController setViewControllers:controllers animated:YES];
+        [self.navigationController removeFromParentViewController];
+    }
 }
 
 -(BOOL) shouldAutorotate {
