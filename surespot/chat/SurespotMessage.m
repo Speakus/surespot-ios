@@ -23,10 +23,6 @@
     return self;
 }
 
-//TODO prodhash
-- (BOOL) hashed {
-    return NO;
-}
 
 
 
