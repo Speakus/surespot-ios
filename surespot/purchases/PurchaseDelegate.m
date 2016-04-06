@@ -10,6 +10,7 @@
 #import "UIUtils.h"
 #import "DDLog.h"
 #import "NSData+Base64.h"
+#import "PurchaseVoiceViewController.h"
 #import "NSData+SRB64Additions.h"
 #import "NetworkController.h"
 #import "PwylViewController.h"
@@ -36,6 +37,7 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 
 @interface PurchaseDelegate()
 @property (strong, nonatomic) NSArray * products;
+@property (strong, nonatomic) PurchaseVoiceViewController * viewController;
 @property (strong, nonatomic) PwylViewController * pwylViewController;
 @property (strong, nonatomic) UIPopoverController * popover;
 @property (strong, nonatomic) UIViewController * parentController;
@@ -57,8 +59,9 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 -(id) init {
     self = [super init];
     if (self) {
-
-        [self validateProductIdentifiers: @[PRODUCT_ID_PWYL_1, PRODUCT_ID_PWYL_10]];
+        NSUserDefaults *storage = [NSUserDefaults standardUserDefaults];
+        [self setHasVoiceMessaging:[storage boolForKey:@"voice_messaging"]];
+        [self validateProductIdentifiers: @[PRODUCT_ID_PWYL_1, PRODUCT_ID_PWYL_10, PRODUCT_ID_VOICE_MESSAGING]];
     }
     return self;
 }
@@ -139,6 +142,26 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 
 -(void) processTransaction: (SKPaymentTransaction *) transaction {
     DDLogInfo(@"processTransaction");
+    if ([transaction.payment.productIdentifier isEqualToString:PRODUCT_ID_VOICE_MESSAGING]) {
+        if (transaction.transactionState == SKPaymentTransactionStatePurchased) {
+            DDLogInfo(@"transaction complete, setting has voice messaging to YES");
+            [self setHasVoiceMessaging:YES];
+            [self setReceipt:transaction.transactionReceipt];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"purchaseStatusChanged" object:nil];
+            return;
+        }
+        
+        if (transaction.transactionState == SKPaymentTransactionStateRestored) {
+            if (transaction.originalTransaction.transactionState == SKPaymentTransactionStatePurchased) {
+                DDLogInfo(@"transaction restored, setting has voice messaging to YES");
+                
+                [self setHasVoiceMessaging:YES];
+                [self setReceipt:transaction.transactionReceipt];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"purchaseStatusChanged" object:nil];
+                return;
+            }
+        }
+    }
     
     if ([transaction.payment.productIdentifier isEqualToString:PRODUCT_ID_PWYL_1] || [transaction.payment.productIdentifier isEqualToString:PRODUCT_ID_PWYL_10]  ) {
         if (transaction.transactionState == SKPaymentTransactionStatePurchased) {
@@ -149,6 +172,19 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
     }
     
     
+}
+
+-(void) setHasVoiceMessaging:(BOOL)hasVoiceMessaging {
+    _hasVoiceMessaging = hasVoiceMessaging;
+    [_viewController setVoiceOn:hasVoiceMessaging];
+    NSUserDefaults *storage = [NSUserDefaults standardUserDefaults];
+    [storage setBool:hasVoiceMessaging forKey:@"voice_messaging"];
+    if (!hasVoiceMessaging) {
+        [storage removeObjectForKey:@"appStoreReceipt"];
+    }
+    
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"pref_dont_ask"];
+    [_viewController setDontAsk: NO];
 }
 
 -(void) setReceipt: (NSData *) receipt {
@@ -171,6 +207,24 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
 
 -(void) refresh {
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+}
+
+-(void) showPurchaseVoiceViewForController: (UIViewController *) parentController {
+    _parentController = parentController;
+    _viewController = [[PurchaseVoiceViewController alloc] initWithNibName:@"PurchaseVoiceView" bundle:nil];
+    [_viewController setVoiceOn:_hasVoiceMessaging];
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        _popover = [[UIPopoverController alloc] initWithContentViewController:_viewController];
+        _popover.delegate = self;
+        CGFloat x =_parentController.view.bounds.size.width;
+        CGFloat y =_parentController.view.bounds.size.height;
+        [_popover setPopoverContentSize:CGSizeMake(578, 450) animated:NO];
+        DDLogInfo(@"setting popover x, y to: %f, %f", x/2,y/2);
+        [_popover presentPopoverFromRect:CGRectMake(x/2,y/2, 1,1 ) inView:parentController.view permittedArrowDirections:0 animated:YES];
+    } else {
+        [parentController.navigationController pushViewController:_viewController animated:YES];
+    }
 }
 
 
@@ -209,6 +263,7 @@ NSString *  const PRODUCT_ID_VOICE_MESSAGING = @"voice_messaging";
     self.popover = nil;
     _parentController = nil;
     _pwylViewController = nil;
+    _viewController = nil;
 }
 
 -(void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout                                                                                      UIView *__autoreleasing *)view {

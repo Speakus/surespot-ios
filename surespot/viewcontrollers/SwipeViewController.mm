@@ -1943,6 +1943,17 @@ const Float32 voiceRecordDelay = 0.3;
                                              }];
     [menuItems addObject:pwylItem];
     
+    if (![[PurchaseDelegate sharedInstance] hasVoiceMessaging]) {
+        REMenuItem * purchaseVoiceItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_purchase_voice_messaging", nil) image:
+                                          [UIImage imageNamed:@"gold_heart"]
+                                                          highlightedImage:nil action:^(REMenuItem * item){
+                                                              [[PurchaseDelegate sharedInstance] showPurchaseVoiceViewForController:self];
+                                                              
+                                                              
+                                                          }];
+        [menuItems addObject:purchaseVoiceItem];
+    }
+    
     REMenuItem * settingsItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"settings", nil) image:[UIImage imageNamed:@"ic_menu_preferences"] highlightedImage:nil action:^(REMenuItem * item){
         [self showSettings];
         
@@ -2265,6 +2276,18 @@ const Float32 voiceRecordDelay = 0.3;
     
     else {
         if ([message.mimeType isEqualToString:MIME_TYPE_M4A]) {
+            
+            if (![[PurchaseDelegate sharedInstance] hasVoiceMessaging]) {
+                REMenuItem * purchaseVoiceItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_purchase_voice_messaging", nil) image:
+                                                  [UIImage imageNamed:@"gold_heart"]
+                                                                  highlightedImage:nil action:^(REMenuItem * item){
+                                                                      [[PurchaseDelegate sharedInstance] showPurchaseVoiceViewForController:self];
+                                                                      
+                                                                      
+                                                                  }];
+                [menuItems addObject:purchaseVoiceItem];
+            }
+            
             if (message.errorStatus > 0 && ours) {
                 UIImage * image = nil;
                 NSString * title = nil;
@@ -2506,10 +2529,14 @@ const Float32 voiceRecordDelay = 0.3;
     if (interval < voiceRecordDelay) {
         
         if (![self handleTextActionResign:NO]) {
-            if (afriend.isDeleted) {
+            BOOL dontAsk = [[NSUserDefaults standardUserDefaults] boolForKey:@"pref_dont_ask"];
+            if (dontAsk || [[PurchaseDelegate sharedInstance] hasVoiceMessaging] || afriend.isDeleted) {
                 [self resignAllResponders];
                 [self scrollHome];
                 
+            }
+            else {
+                [[PurchaseDelegate sharedInstance] showPurchaseVoiceViewForController:self];
             }
         }
     }
@@ -2562,8 +2589,20 @@ const Float32 voiceRecordDelay = 0.3;
         }
         else {
             if (![self handleTextActionResign:NO]) {
+                if ([[PurchaseDelegate sharedInstance  ] hasVoiceMessaging]) {
                     [self ensureVoiceDelegate];
                     [_voiceDelegate startRecordingUsername: afriend.name];
+                }
+                else {
+                    BOOL dontAsk = [[NSUserDefaults standardUserDefaults] boolForKey:@"pref_dont_ask"];
+                    if (dontAsk) {
+                        [self closeTab];
+                    }
+                    else {
+                        [[PurchaseDelegate sharedInstance] showPurchaseVoiceViewForController:self];
+                    }
+                }
+                
             }
         }
     }
