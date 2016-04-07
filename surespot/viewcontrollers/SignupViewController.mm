@@ -349,7 +349,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
                                                      name:UIKeyboardWillHideNotification object:nil];
         
     }
-
+    
     
 }
 
@@ -380,26 +380,30 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     // DDLogInfo(@"keyboard height: %d",height);
     // DDLogInfo(@"origin y before: %f",newFrame.origin.y);
     
-    // newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
-    // DDLogInfo(@"origin y after: %f",newFrame.origin.y);
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbHeight, 0.0);
-    _scrollView.contentInset = contentInsets;
-    _scrollView.scrollIndicatorInsets = contentInsets;
-    
-    NSInteger totalHeight = self.view.frame.size.height;
-    NSInteger keyboardTop = totalHeight - kbHeight;
-    _offset = _scrollView.contentOffset;
-    
-    NSInteger loginButtonBottom =(_bCreateIdentity.frame.origin.y + _bCreateIdentity.frame.size.height);
-    NSInteger delta = keyboardTop - loginButtonBottom;
-    //  DDLogInfo(@"delta %d loginBottom %d keyboardtop: %d", delta, loginButtonBottom, keyboardTop);
-    
-    if (delta < 0 ) {
+    //if keyboard height hasn't changed, don't do a damn thing
+    if (kbHeight > 0) {
         
+        // newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
+        // DDLogInfo(@"origin y after: %f",newFrame.origin.y);
+        UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbHeight, 0.0);
+        _scrollView.contentInset = contentInsets;
+        _scrollView.scrollIndicatorInsets = contentInsets;
         
-        CGPoint scrollPoint = CGPointMake(0.0, -delta);
-        //  DDLogInfo(@"scrollPoint y: %f", scrollPoint.y);
-        [_scrollView setContentOffset:scrollPoint animated:YES];
+        NSInteger totalHeight = self.view.frame.size.height;
+        NSInteger keyboardTop = totalHeight - kbHeight;
+        _offset = _scrollView.contentOffset;
+        
+        NSInteger loginButtonBottom =(_bCreateIdentity.frame.origin.y + _bCreateIdentity.frame.size.height);
+        NSInteger delta = keyboardTop - loginButtonBottom;
+        //  DDLogInfo(@"delta %d loginBottom %d keyboardtop: %d", delta, loginButtonBottom, keyboardTop);
+        
+        if (delta < 0 ) {
+            
+            
+            CGPoint scrollPoint = CGPointMake(0.0, -delta);
+            //  DDLogInfo(@"scrollPoint y: %f", scrollPoint.y);
+            [_scrollView setContentOffset:scrollPoint animated:YES];
+        }
     }
 }
 
@@ -421,13 +425,13 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     NSInteger delta = keyboardTop - loginButtonBottom;
     //  DDLogInfo(@"delta %d loginBottom %d keyboardtop: %d", delta, loginButtonBottom, keyboardTop);
     
-    if (delta < 0 ) {
-        
-        
-        CGPoint scrollPoint = CGPointMake(0.0, -delta);
-        //  DDLogInfo(@"scrollPoint y: %f", scrollPoint.y);
-        [_scrollView setContentOffset:scrollPoint animated:YES];
-    }
+    //  if (delta < 0 ) {
+    
+    
+    CGPoint scrollPoint = CGPointMake(0.0, -delta);
+    //  DDLogInfo(@"scrollPoint y: %f", scrollPoint.y);
+    [_scrollView setContentOffset:scrollPoint animated:YES];
+    //  }
 }
 
 // Called when the UIKeyboardWillHideNotification is sent
@@ -470,10 +474,10 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     REMenuItem * aboutItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"about", nil) image:[UIImage imageNamed:@"surespot_logo48"] highlightedImage:nil action:^(REMenuItem * item){
         [self showAbout];
     }];
-
+    
     
     [menuItems addObject:aboutItem];
-
+    
     
     
     return [UIUtils createMenu: menuItems closeCompletionHandler:^{

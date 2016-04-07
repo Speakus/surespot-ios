@@ -1,4 +1,4 @@
- //
+//
 //  SurespotViewController.m
 //  surespot
 //
@@ -118,7 +118,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     
     
     
-//    CGRect newFrame = _textFieldContainer.frame;
+    //    CGRect newFrame = _textFieldContainer.frame;
     CGRect keyboardFrameEnd = [self.view convertRect:keyboardEndFrame toView:nil];
     
     
@@ -126,29 +126,32 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     DDLogInfo(@"keyboard frame begin origin y: %f, height: %f", keyboardFrameBegin.origin.y, keyboardFrameBegin.size.height);
     DDLogInfo(@"keyboard frame end origin y: %f, height: %f", keyboardFrameEnd.origin.y, keyboardFrameEnd.size.height);
     int kbHeight = keyboardFrameBegin.origin.y-keyboardFrameEnd.origin.y;
-   // DDLogInfo(@"keyboard height: %d",height);
-   // DDLogInfo(@"origin y before: %f",newFrame.origin.y);
+    // DDLogInfo(@"keyboard height: %d",height);
+    // DDLogInfo(@"origin y before: %f",newFrame.origin.y);
     
-   // newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
-   // DDLogInfo(@"origin y after: %f",newFrame.origin.y);
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbHeight, 0.0);
-    _scrollView.contentInset = contentInsets;
-    _scrollView.scrollIndicatorInsets = contentInsets;
+    // newFrame.origin.y -= height;// keyboardFrameEnd.origin.y - _textFieldContainer.frame.size.height - 10;
+    // DDLogInfo(@"origin y after: %f",newFrame.origin.y);
     
-    NSInteger totalHeight = self.view.frame.size.height;
-    NSInteger keyboardTop = totalHeight - kbHeight;
-    _offset = _scrollView.contentOffset;
-    
-    NSInteger loginButtonBottom =(_bLogin.frame.origin.y + _bLogin.frame.size.height);
-    NSInteger delta = keyboardTop - loginButtonBottom;
-    //  DDLogInfo(@"delta %d loginBottom %d keyboardtop: %d", delta, loginButtonBottom, keyboardTop);
-    
-    if (delta < 0 ) {
+    if (kbHeight > 0) {
+        UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbHeight, 0.0);
+        _scrollView.contentInset = contentInsets;
+        _scrollView.scrollIndicatorInsets = contentInsets;
         
+        NSInteger totalHeight = self.view.frame.size.height;
+        NSInteger keyboardTop = totalHeight - kbHeight;
+        _offset = _scrollView.contentOffset;
         
-        CGPoint scrollPoint = CGPointMake(0.0, -delta);
-        //  DDLogInfo(@"scrollPoint y: %f", scrollPoint.y);
-        [_scrollView setContentOffset:scrollPoint animated:YES];
+        NSInteger loginButtonBottom =(_bLogin.frame.origin.y + _bLogin.frame.size.height);
+        NSInteger delta = keyboardTop - loginButtonBottom;
+        //  DDLogInfo(@"delta %d loginBottom %d keyboardtop: %d", delta, loginButtonBottom, keyboardTop);
+        
+        if (delta < 0 ) {
+            
+            
+            CGPoint scrollPoint = CGPointMake(0.0, -delta);
+            //  DDLogInfo(@"scrollPoint y: %f", scrollPoint.y);
+            [_scrollView setContentOffset:scrollPoint animated:YES];
+        }
     }
 }
 
@@ -248,7 +251,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
              if (_storePassword.isOn) {
                  [[IdentityController sharedInstance] storePasswordForIdentity:username password:password];
              }
-
+             
              
              [[IdentityController sharedInstance] userLoggedInWithIdentity:identity password: password cookie: cookie reglogin:NO];
              
@@ -421,7 +424,7 @@ static const int ddLogLevel = LOG_LEVEL_OFF;
     }];
     
     [menuItems addObject:restoreItem];
-  
+    
     REMenuItem * removeIdentityItem = [[REMenuItem alloc] initWithTitle:NSLocalizedString(@"remove_identity_from_device", nil) image:[UIImage imageNamed:@"ic_menu_delete"] highlightedImage:nil action:^(REMenuItem * item){
         NSString * username = [_identityNames objectAtIndex:[_userPicker selectedRowInComponent:0]];
         RemoveIdentityFromDeviceViewController * controller = [[RemoveIdentityFromDeviceViewController alloc] init];
